@@ -1,6 +1,6 @@
-package it.polimi.ingsw.model;
+package it.polimi.ingsw.models;
 
-import it.polimi.ingsw.model.exceptions.PickTilesException;
+import it.polimi.ingsw.models.exceptions.PickTilesException;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.List;

@@ -1,4 +1,4 @@
-package it.polimi.ingsw.model;
+package it.polimi.ingsw.models;
 
 
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;

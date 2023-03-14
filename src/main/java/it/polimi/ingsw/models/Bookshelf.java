@@ -1,6 +1,6 @@
-package it.polimi.ingsw.model;
+package it.polimi.ingsw.models;
 
-import it.polimi.ingsw.model.exceptions.NotEnoughCellsException;
+import it.polimi.ingsw.models.exceptions.NotEnoughCellsException;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.List;
