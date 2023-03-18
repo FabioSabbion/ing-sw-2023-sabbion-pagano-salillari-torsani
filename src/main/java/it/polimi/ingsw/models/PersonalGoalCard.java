@@ -5,8 +5,12 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.List;
 
+/**
+ * Represents the personal goal card of a Player
+ */
 public class PersonalGoalCard implements GoalCard {
     private List<Utils.Pair<Category, Coordinates>> positions;
+
     public int checkGoal(Player player) {
         throw new NotImplementedException();
     }
