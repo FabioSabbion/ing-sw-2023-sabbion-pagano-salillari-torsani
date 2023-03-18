@@ -13,10 +13,6 @@ public class CommonGoalCard implements GoalCard{
     private List<Player> orderOfCompletionList;
     private int numPlayers;
 
-    /**
-     * @param player
-     * @return how many points has a player gotten for completing a goal
-     */
     public int checkGoal(Player player) {
         throw new NotImplementedException();
     }

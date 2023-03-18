@@ -16,7 +16,7 @@ public class Bookshelf {
      * given
      * @param column the column in which you want to insert your tiles
      * @param pickedTiles
-     * @throws NotEnoughCellsException if the <b>column<b/> cant contain all the tiles selected by the player
+     * @throws NotEnoughCellsException if the <b>column<b/> can't contain all the tiles selected by the player
      */
     void insertTiles(int column, List<Tile> pickedTiles) throws NotEnoughCellsException {
         throw new NotImplementedException();
