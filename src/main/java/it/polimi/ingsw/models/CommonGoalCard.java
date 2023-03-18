@@ -8,6 +8,7 @@ import java.util.function.Predicate;
 public class CommonGoalCard implements GoalCard{
     private Predicate<Bookshelf> controlFunction;
     private List<Player> orderOfCompletionList;
+    private int numPlayers;
     public int checkGoal(Player player) {
         throw new NotImplementedException();
     }
