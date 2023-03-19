@@ -4,6 +4,7 @@ package it.polimi.ingsw.models;
 import org.apache.commons.lang.NotImplementedException;
 
 import javax.annotation.Nullable;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -59,7 +60,8 @@ public class Game {
      * Change <b>currentPlayer</b> to the next player. Order is defined by <b>players</b>
      */
     public void nextPlayer() {
-        throw new NotImplementedException();
+        int index = Arrays.asList(this.players).indexOf(this.currentPlayer);
+        this.currentPlayer = this.players[(index + 1) % this.players.length];
     }
 
     /**
@@ -67,5 +69,9 @@ public class Game {
      */
     public boolean isEnded() {
         throw new NotImplementedException();
+    }
+
+    public void setGameEnder(Player gameEnder) {
+        this.gameEnder = gameEnder;
     }
 }
