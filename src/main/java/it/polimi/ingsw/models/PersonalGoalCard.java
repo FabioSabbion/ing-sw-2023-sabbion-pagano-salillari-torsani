@@ -9,7 +9,11 @@ import java.util.List;
  * Represents the personal goal card of a Player
  */
 public class PersonalGoalCard implements GoalCard {
-    private List<Pair<Category, Coordinates>> positions;
+    private final List<Pair<Category, Coordinates>> positions;
+
+    public PersonalGoalCard(List<Pair<Category, Coordinates>> positions) {
+        this.positions = positions;
+    }
 
     public int checkGoal(Player player) {
         throw new NotImplementedException();

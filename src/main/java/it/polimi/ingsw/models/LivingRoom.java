@@ -9,7 +9,11 @@ import java.util.List;
  * Represents the living room of the game. It contains Tiles that can be picked up by Players
  */
 public class LivingRoom {
-    private Tile[][] board = new Tile[9][9];
+    private final Tile[][] board;
+
+    public LivingRoom() {
+        this.board = new Tile[9][9];
+    }
 
     public Tile[][] getBoard() {
         return board;
