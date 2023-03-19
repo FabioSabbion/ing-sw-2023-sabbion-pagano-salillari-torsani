@@ -1,7 +1,6 @@
 package it.polimi.ingsw.models;
 
 import org.apache.commons.lang.NotImplementedException;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
