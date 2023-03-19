@@ -3,6 +3,7 @@ package it.polimi.ingsw.models;
 
 import org.apache.commons.lang.NotImplementedException;
 
+import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Map;
 
@@ -10,14 +11,23 @@ import java.util.Map;
  * Contains all game information
  */
 public class Game {
-    private Player gameEnder;
+    private @Nullable Player gameEnder;
     private Player currentPlayer;
-    private Player[] players;
-    private CommonGoalCard[] commonGoalCards;
-    private List<Tile> remainingTiles;
-    private LivingRoom livingRoom;
+    private final Player[] players;
+    private final CommonGoalCard[] commonGoalCards;
+    private final List<Tile> remainingTiles;
+    private final LivingRoom livingRoom;
 
-    public Player getGameEnder() {
+
+    public Game(Player[] players, CommonGoalCard[] commonGoalCards, List<Tile> remainingTiles, LivingRoom livingRoom) {
+        this.players = players;
+        this.commonGoalCards = commonGoalCards;
+        this.remainingTiles = remainingTiles;
+        this.livingRoom = livingRoom;
+        this.currentPlayer = players[0];
+    }
+
+    public @Nullable Player getGameEnder() {
         return gameEnder;
     }
 

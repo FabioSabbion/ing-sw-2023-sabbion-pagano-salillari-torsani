@@ -9,7 +9,11 @@ import java.util.List;
  * Representation of the current state of the bookshelf of the player that keeps it
  */
 public class Bookshelf {
-    private Tile[][] bookshelf = new Tile[6][5];
+    private final Tile[][] bookshelf;
+
+    public Bookshelf() {
+        this.bookshelf = new Tile[6][5];
+    }
 
     /**
      * Try to insert a list of tiles into a <b>single</b> column, one after the other in the order in which they are

@@ -1,12 +1,19 @@
 package it.polimi.ingsw.models;
 
+
 /**
  * Represents one player in the game
  */
 public class Player {
-    private String nickname;
-    private PersonalGoalCard personalGoalCard;
-    private Bookshelf bookshelf;
+    private final String nickname;
+    private final PersonalGoalCard personalGoalCard;
+    private final Bookshelf bookshelf;
+
+    public Player(String nickname, PersonalGoalCard personalGoalCard) {
+        this.nickname = nickname;
+        this.personalGoalCard = personalGoalCard;
+        this.bookshelf = new Bookshelf();
+    }
 
     /**
      * @return the <b>Nickname</b> of the player
