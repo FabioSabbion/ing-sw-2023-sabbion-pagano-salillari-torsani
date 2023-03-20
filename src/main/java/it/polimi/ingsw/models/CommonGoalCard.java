@@ -10,6 +10,13 @@ import java.util.function.Predicate;
  * Representation in java of a single generic Common Goal
  */
 public class CommonGoalCard implements GoalCard{
+    private final int[][] points = {
+            {},
+            {},
+            {8, 4},
+            {8, 6, 4},
+            {8, 6, 4, 2}
+    };
     private final Predicate<Bookshelf> controlFunction;
     private final List<Player> orderOfCompletionList;
     private final int numPlayers;
@@ -21,6 +28,17 @@ public class CommonGoalCard implements GoalCard{
     }
 
     public int checkGoal(Player player) {
-        throw new NotImplementedException();
+        // if the player has already been registered getting a certain result, we give back the same result
+        if(orderOfCompletionList.contains(player)) {
+            return points[numPlayers][orderOfCompletionList.indexOf(player)];
+        }
+
+        if(controlFunction.test(player.getBookshelf())) {
+            orderOfCompletionList.add(player);
+
+            return points[numPlayers][orderOfCompletionList.size() - 1];
+        }
+
+        return 0;
     }
 }
