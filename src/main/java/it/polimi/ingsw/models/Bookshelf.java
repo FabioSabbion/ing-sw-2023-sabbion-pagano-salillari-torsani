@@ -1,6 +1,7 @@
 package it.polimi.ingsw.models;
 
 import it.polimi.ingsw.models.exceptions.NotEnoughCellsException;
+import it.polimi.ingsw.models.exceptions.PickTilesException;
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -23,7 +24,7 @@ public class Bookshelf {
      * @param pickedTiles
      * @throws NotEnoughCellsException if the <b>column<b/> can't contain all the tiles selected by the player
      */
-    void insertTiles(int column, List<Tile> pickedTiles) throws NotEnoughCellsException {
+    void insertTiles(int column, List<Tile> pickedTiles) throws NotEnoughCellsException, PickTilesException {
         throw new NotImplementedException();
     }
 
