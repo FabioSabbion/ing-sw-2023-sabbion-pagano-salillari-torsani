@@ -2,6 +2,7 @@ package it.polimi.ingsw.models;
 
 import it.polimi.ingsw.models.exceptions.NotEnoughCellsException;
 import org.apache.commons.lang.NotImplementedException;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.List;
 
@@ -34,5 +35,12 @@ public class Bookshelf {
     }
     public Tile[][] getBookshelf() {
         return bookshelf;
+    }
+
+    /**
+     * @return A list of groups of {@link Tile}s, with the number of repetitions in the group
+     */
+    public List<Pair<Category, Integer>> getCloseTiles() {
+        throw new NotImplementedException();
     }
 }
