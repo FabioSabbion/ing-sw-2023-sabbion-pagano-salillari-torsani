@@ -1,9 +1,11 @@
 package it.polimi.ingsw.models;
 
+import it.polimi.ingsw.models.exceptions.NumPlayerException;
 import it.polimi.ingsw.models.exceptions.PickTilesException;
 import org.apache.commons.lang.NotImplementedException;
 
 import javax.annotation.Nullable;
+import javax.naming.OperationNotSupportedException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -68,8 +70,8 @@ public class LivingRoom {
      * @param numPlayers
      * @param remainingTiles Will remove tiles from remainingTiles and insert them into the board
      */
-    public void fillBoard(int numPlayers, List<Tile> remainingTiles) {
-        if (numPlayers > 4) throw new NotImplementedException();
+    public void fillBoard(int numPlayers, List<Tile> remainingTiles) throws NumPlayerException {
+        if (numPlayers <= 1 || numPlayers > 4) throw new NumPlayerException("You can't choose " + numPlayers + " players");
         List<Coordinates> validCoordinates = new ArrayList<>();
         for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 9; j++) {
