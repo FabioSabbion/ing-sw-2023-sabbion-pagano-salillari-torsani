@@ -24,7 +24,7 @@ public class GameController {
         try {
             List<Tile> tiles = this.game.getLivingRoom().chooseTiles(coordinatesList);
             this.game.getCurrentPlayer().getBookshelf().insertTiles(column, tiles);
-            this.game.getLivingRoom().removeTiles(tiles);
+            this.game.getLivingRoom().removeTiles(coordinatesList);
         } catch (PickTilesException | NotEnoughCellsException e) {
             throw new RuntimeException(e);
         }

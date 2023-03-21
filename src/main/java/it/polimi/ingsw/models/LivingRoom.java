@@ -44,12 +44,12 @@ public class LivingRoom {
         for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 9; j++) {
                 if (this.board[i][j] != null && this.validCoords[i][j] != -1) {
-                    if (!this.hasAdjacentTile(i, j))
-                        return true;
+                    if (this.hasAdjacentTile(i, j))
+                        return false;
                 }
             }
         }
-        return false;
+        return true;
     }
 
     private boolean hasAdjacentTile(int i, int j) {
@@ -152,7 +152,7 @@ public class LivingRoom {
         return false;
     }
 
-    public void removeTiles(List<Tile> tiles) throws PickTilesException{
+    public void removeTiles(List<Coordinates> coordinates) throws PickTilesException{
         for (Coordinates coords : coordinates) {
             if (this.board[coords.x][coords.y] == null)
                 throw new PickTilesException("No tiles in coordinates: %d %d".formatted(coords.x, coords.y));
