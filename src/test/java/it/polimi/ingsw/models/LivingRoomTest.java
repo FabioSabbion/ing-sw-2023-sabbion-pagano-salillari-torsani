@@ -45,6 +45,18 @@ public class LivingRoomTest {
         }
     }
 
+    @Test
+    @DisplayName("Checking if needRefill works correctly")
+    public void needRefillPossibleStates() throws Exception {
+        // Checking if an empty board needs to be refilled
+        assertTrue(livingRoom.needRefill());
+        List<Tile> singleTile = new ArrayList<>();
+        singleTile.add(new Tile(Category.BOOKS, Icon.VARIATION1, Orientation.RIGHT));
+        assertEquals(true, livingRoom.fillBoardIfNeeded(3, singleTile));
+        // Since it is an isolated Tile it must still be true
+        assertEquals(true, livingRoom.needRefill());
+    }
+
 
     @BeforeEach
     public void setup() {
