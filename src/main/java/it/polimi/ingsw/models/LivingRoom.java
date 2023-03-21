@@ -37,7 +37,7 @@ public class LivingRoom {
     /**
      * @return Whether the board needs to be refilled
      */
-    private boolean needRefill() {
+    public boolean needRefill() {
         if (Arrays.stream(this.board).allMatch((row) ->
                 Arrays.stream(row).allMatch(Objects::isNull)
         )) {
@@ -68,7 +68,7 @@ public class LivingRoom {
      * @param numPlayers
      * @param remainingTiles Will remove tiles from remainingTiles and insert them into the board
      */
-    private void fillBoard(int numPlayers, List<Tile> remainingTiles) {
+    public void fillBoard(int numPlayers, List<Tile> remainingTiles) {
         if (numPlayers > 3) throw new NotImplementedException();
         List<Coordinates> validCoordinates = new ArrayList<>();
         for (int i = 0; i < 9; i++) {
