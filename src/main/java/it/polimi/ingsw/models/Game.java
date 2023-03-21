@@ -1,11 +1,8 @@
 package it.polimi.ingsw.models;
 
-
-import org.apache.commons.lang.NotImplementedException;
-
 import javax.annotation.Nullable;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Contains all game information
@@ -17,7 +14,6 @@ public class Game {
     private final CommonGoalCard[] commonGoalCards;
     private final List<Tile> remainingTiles;
     private final LivingRoom livingRoom;
-
 
     public Game(Player[] players, CommonGoalCard[] commonGoalCards, List<Tile> remainingTiles, LivingRoom livingRoom) {
         this.players = players;
@@ -48,24 +44,21 @@ public class Game {
     }
 
     /**
-     * Calculates the current scores for all the players
-     * @return Current scores for all the players
-     */
-    public Map<Player, Integer> getScoreBoard() {
-        throw new NotImplementedException();
-    }
-
-    /**
      * Change <b>currentPlayer</b> to the next player. Order is defined by <b>players</b>
      */
     public void nextPlayer() {
-        throw new NotImplementedException();
+        int index = Arrays.asList(this.players).indexOf(this.currentPlayer);
+        this.currentPlayer = this.players[(index + 1) % this.players.length];
     }
 
     /**
      * @return Whether the game is ended
      */
     public boolean isEnded() {
-        throw new NotImplementedException();
+        return (this.gameEnder != null && this.currentPlayer == this.players[0]);
+    }
+
+    public void setGameEnder(Player gameEnder) {
+        this.gameEnder = gameEnder;
     }
 }
