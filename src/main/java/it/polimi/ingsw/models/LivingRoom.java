@@ -73,7 +73,7 @@ public class LivingRoom {
         List<Coordinates> validCoordinates = new ArrayList<>();
         for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 9; j++) {
-                if (this.board[i][j] == null) {
+                if (this.board[i][j] == null && this.validCoords[i][j] != -1 && this.validCoords[i][j] <= numPlayers) {
                     validCoordinates.add(new Coordinates(i, j));
                 }
             }
