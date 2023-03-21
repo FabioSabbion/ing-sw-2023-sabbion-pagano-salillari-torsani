@@ -44,12 +44,12 @@ public class LivingRoom {
         for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 9; j++) {
                 if (this.board[i][j] != null && this.validCoords[i][j] != -1) {
-                    if (!this.hasAdjacentTile(i, j))
-                        return true;
+                    if (this.hasAdjacentTile(i, j))
+                        return false;
                 }
             }
         }
-        return false;
+        return true;
     }
 
     private boolean hasAdjacentTile(int i, int j) {
