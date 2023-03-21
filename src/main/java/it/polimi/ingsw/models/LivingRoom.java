@@ -4,10 +4,7 @@ import it.polimi.ingsw.models.exceptions.PickTilesException;
 import org.apache.commons.lang.NotImplementedException;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -40,7 +37,7 @@ public class LivingRoom {
     /**
      * @return Whether the board needs to be refilled
      */
-    private boolean needRefill() {
+    public boolean needRefill() {
         if (Arrays.stream(this.board).allMatch((row) ->
                 Arrays.stream(row).allMatch(Objects::isNull)
         )) {
@@ -69,10 +66,23 @@ public class LivingRoom {
      * Fill the board with new <b>Tile</b>s, accordingly to the number of players.
      *
      * @param numPlayers
-     * @param remainingTiles
+     * @param remainingTiles Will remove tiles from remainingTiles and insert them into the board
      */
-    private void fillBoard(int numPlayers, List<Tile> remainingTiles) {
-        throw new NotImplementedException();
+    public void fillBoard(int numPlayers, List<Tile> remainingTiles) {
+        if (numPlayers > 4) throw new NotImplementedException();
+        List<Coordinates> validCoordinates = new ArrayList<>();
+        for (int i = 0; i < 9; i++) {
+            for (int j = 0; j < 9; j++) {
+                if (this.board[i][j] == null && this.validCoords[i][j] != -1 && this.validCoords[i][j] <= numPlayers) {
+                    validCoordinates.add(new Coordinates(i, j));
+                }
+            }
+        }
+        Collections.shuffle(validCoordinates);
+        while (!validCoordinates.isEmpty() && !remainingTiles.isEmpty()) {
+            Coordinates popped = validCoordinates.remove(0);
+            this.board[popped.x][popped.y] = remainingTiles.remove(0);
+        }
     }
 
     /**
@@ -80,10 +90,12 @@ public class LivingRoom {
      *
      * @param coordinates Represents the coordinates of the Tiles to pick up
      * @return The list of Tiles that have been removed from the board
-     * @throws PickTilesException The picked up Tiles are in invalid positions
+     * @throws PickTilesException The picked up Tiles are in invalid positions or invalid number of coordinates
      */
     public List<Tile> chooseTiles(List<Coordinates> coordinates) throws PickTilesException {
         List<Tile> picked = new ArrayList<>();
+        if (coordinates.size() > 3 || coordinates.isEmpty())
+            throw new PickTilesException("You can't pick " + coordinates.size() + " tiles");
         for (Coordinates coordinate : coordinates) {
             //Checking for invalid coordinates
             if (!(0 <= coordinate.x && coordinate.x < 9) || !(0 <= coordinate.y && coordinate.y < 9) || this.validCoords[coordinate.x][coordinate.y] == -1)
@@ -92,11 +104,9 @@ public class LivingRoom {
             if (this.board[coordinate.x][coordinate.y] == null)
                 throw new PickTilesException("No tiles in coordinates: %d %d".formatted(coordinate.x, coordinate.y));
             // Looking if "coordinates" exceeds maximum size
-            if (coordinates.size() > 3) throw new PickTilesException("You can't pick " + coordinates.size() + " tiles");
-
         }
         // Now verify if they are adjacent and form a straight line
-        if (coordinates.size() > 1) {
+
             int[] x = new int[coordinates.size()];
             int[] y = new int[coordinates.size()];
 
@@ -105,21 +115,21 @@ public class LivingRoom {
                 y[i] = coordinates.get(i).y;
             }
             if (Arrays.stream(x).allMatch((val) -> val == x[0])) {
-                List<Integer> sortedY = Arrays.stream(y).sorted().boxed().collect(Collectors.toList());
+                List<Integer> sortedY = Arrays.stream(y).sorted().boxed().toList();
                 for (int i = 1; i < sortedY.size(); i++) {
                     if ((sortedY.get(i - 1) + 1) != (sortedY.get(i))) {
                         throw new PickTilesException("No straight line");
                     }
                 }
             } else if (Arrays.stream(y).allMatch((val) -> val == y[0])) {
-                List<Integer> sortedX = Arrays.stream(x).sorted().boxed().collect(Collectors.toList());
+                List<Integer> sortedX = Arrays.stream(x).sorted().boxed().toList();
                 for (int i = 1; i < sortedX.size(); i++) {
                     if ((sortedX.get(i - 1) + 1) != (sortedX.get(i))) {
                         throw new PickTilesException("No straight line");
                     }
                 }
             }
-        }
+
 
         // Removing them from the livingRoom and returning them to the player
         for (Coordinates c : coordinates) {
@@ -142,6 +152,14 @@ public class LivingRoom {
             return true;
         }
         return false;
+    }
+
+    public void pickTiles(List<Coordinates> coordinates) throws PickTilesException{
+        for (Coordinates coords : coordinates) {
+            if (this.board[coords.x][coords.y] == null)
+                throw new PickTilesException("No tiles in coordinates: %d %d".formatted(coords.x, coords.y));
+            this.board[coords.x][coords.y] = null;
+        }
     }
 }
 
