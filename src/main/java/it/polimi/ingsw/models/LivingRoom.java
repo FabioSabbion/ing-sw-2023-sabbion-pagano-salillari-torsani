@@ -1,13 +1,9 @@
 package it.polimi.ingsw.models;
 
-import it.polimi.ingsw.models.exceptions.NumPlayerException;
+import it.polimi.ingsw.models.exceptions.NumPlayersException;
 import it.polimi.ingsw.models.exceptions.PickTilesException;
-import org.apache.commons.lang.NotImplementedException;
 
-import javax.annotation.Nullable;
-import javax.naming.OperationNotSupportedException;
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * Represents the living room of the game. It contains Tiles that can be picked up by Players
@@ -67,11 +63,11 @@ public class LivingRoom {
     /**
      * Fill the board with new <b>Tile</b>s, accordingly to the number of players.
      *
-     * @param numPlayers
+     * @param numPlayers Min 2, Max 4. If wrong throws NumPlayerException on Runtime
      * @param remainingTiles Will remove tiles from remainingTiles and insert them into the board
      */
-    public void fillBoard(int numPlayers, List<Tile> remainingTiles) throws NumPlayerException {
-        if (numPlayers <= 1 || numPlayers > 4) throw new NumPlayerException("You can't choose " + numPlayers + " players");
+    public void fillBoard(int numPlayers, List<Tile> remainingTiles) {
+        if (numPlayers <= 1 || numPlayers > 4) throw new NumPlayersException("You can't choose " + numPlayers + " players");
         List<Coordinates> validCoordinates = new ArrayList<>();
         for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 9; j++) {

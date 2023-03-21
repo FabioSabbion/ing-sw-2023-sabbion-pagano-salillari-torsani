@@ -6,11 +6,11 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
 public class LivingRoomTest {
@@ -47,7 +47,7 @@ public class LivingRoomTest {
 
     @Test
     @DisplayName("Checking if needRefill works correctly")
-    public void needRefillPossibleStates() throws Exception {
+    public void needRefillPossibleStates() {
         // Checking if an empty board needs to be refilled
         assertTrue(livingRoom.needRefill());
         List<Tile> singleTile = new ArrayList<>();
@@ -56,6 +56,8 @@ public class LivingRoomTest {
         // Since it is an isolated Tile it must still be true
         assertEquals(true, livingRoom.needRefill());
     }
+
+
 
 
     @BeforeEach
