@@ -5,7 +5,9 @@ import it.polimi.ingsw.models.exceptions.PickTilesException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -17,109 +19,54 @@ class BookshelfTest {
     @BeforeEach
     void setUp(){
         bookshelf = new Bookshelf();
+
+    }
+
+    @Test
+    void insertTiles() throws PickTilesException, NotEnoughCellsException {
         tile1 = new Tile(Category.CATS, Icon.VARIATION1, Orientation.UP);
         tile2 = new Tile(Category.FRAMES, Icon.VARIATION2, Orientation.LEFT);
         tile3 = new Tile(Category.BOOKS, Icon.VARIATION3, Orientation.DOWN);
+        tiles = new ArrayList<>();
+        tiles.add(tile1);
+        bookshelf.insertTiles(0,tiles);
+        assertEquals(tile1, bookshelf.getBookshelf()[0][0]);
+        tiles.add(tile2);
+        tiles.add(tile3);
+        bookshelf.insertTiles(2, tiles);
+        assertEquals(tile1, bookshelf.getBookshelf()[0][2]);
+        assertEquals(tile2, bookshelf.getBookshelf()[1][2]);
+        assertEquals(tile3, bookshelf.getBookshelf()[2][2]);
+        bookshelf.insertTiles(0, tiles);
+        assertEquals(tile1, bookshelf.getBookshelf()[1][0]);
+        assertEquals(tile2, bookshelf.getBookshelf()[2][0]);
+        assertEquals(tile3, bookshelf.getBookshelf()[3][0]);
+        assertThrows(NotEnoughCellsException.class, () -> bookshelf.insertTiles(0, tiles));
+        Throwable exception = assertThrows(PickTilesException.class, () -> bookshelf.insertTiles(5, tiles));
+        assertEquals("Invalid column", exception.getMessage());
+        tiles.add(tile1);
+        exception = assertThrows(PickTilesException.class, () -> bookshelf.insertTiles(1, tiles));
+        assertEquals("You can't insert 4 tiles", exception.getMessage());
+        tiles.clear();
+        exception = assertThrows(PickTilesException.class, () -> bookshelf.insertTiles(1, tiles));
+        assertEquals("You can't insert 0 tiles", exception.getMessage());
     }
 
     @Test
-    void insertTiles(){
-        tiles.add(tile1);
-        for(int i = 1; i <= 5; i++) {
-            try {
-                bookshelf.insertTiles(1, tiles);
-            } catch (NotEnoughCellsException | PickTilesException e) {
-            }
-            assertEquals(tile1, bookshelf.getBookshelf()[0][i]);
-        }
-        tiles.add(tile2);
-        for(int i = 1; i <= 5; i++) {
-            try {
-                bookshelf.insertTiles(1, tiles);
-            } catch (NotEnoughCellsException | PickTilesException e) {
-            }
-            assertEquals(tile1, bookshelf.getBookshelf()[1][i]);
-            assertEquals(tile2, bookshelf.getBookshelf()[2][i]);
-        }
-        tiles.add(tile3);
-        for(int i = 1; i <= 5; i++) {
-            try {
-                bookshelf.insertTiles(1, tiles);
-            } catch (NotEnoughCellsException | PickTilesException e) {
-            }
-            assertEquals(tile1, bookshelf.getBookshelf()[3][i]);
-            assertEquals(tile2, bookshelf.getBookshelf()[4][i]);
-            assertEquals(tile3, bookshelf.getBookshelf()[5][i]);
-        }
-        tiles.clear();
-        tiles.add(tile1);
-        NotEnoughCellsException thrown = assertThrows(NotEnoughCellsException.class, () -> {bookshelf.insertTiles(1, tiles);});
-        assertEquals("message", thrown.getMessage());
-        bookshelf = new Bookshelf();
-        try {
-            bookshelf.insertTiles(1, tiles);
-        } catch (NotEnoughCellsException e) {
-        } catch (PickTilesException e) {
-            throw new RuntimeException(e);
-        }
-        try {
-            bookshelf.insertTiles(1, tiles);
-        } catch (NotEnoughCellsException | PickTilesException e) {
-        }
-        try {
-            bookshelf.insertTiles(1, tiles);
-        } catch (NotEnoughCellsException | PickTilesException e) {
-        }
-        try {
-            bookshelf.insertTiles(1, tiles);
-        } catch (NotEnoughCellsException | PickTilesException e) {
-        }
-        tiles.add(tile2);
-        tiles.add(tile3);
-        thrown = assertThrows(NotEnoughCellsException.class, () -> {bookshelf.insertTiles(1, tiles);});
-        assertEquals("message", thrown.getMessage());
-        tiles.clear();
-        tiles.add(tile1);
-        bookshelf = new Bookshelf();
-        try {
-            bookshelf.insertTiles(1, tiles);
-        } catch (NotEnoughCellsException | PickTilesException e) {
-        }
-        try {
-            bookshelf.insertTiles(1, tiles);
-        } catch (NotEnoughCellsException | PickTilesException e1) {
-        }
-        try {
-            bookshelf.insertTiles(1, tiles);
-        } catch (NotEnoughCellsException | PickTilesException e) {
-        }
-        try {
-            bookshelf.insertTiles(1, tiles);
-        } catch (NotEnoughCellsException | PickTilesException e) {
-        }
-        try {
-            bookshelf.insertTiles(1, tiles);
-        } catch (NotEnoughCellsException | PickTilesException e) {
-        }
-        tiles.add(tile2);
-        thrown = assertThrows(NotEnoughCellsException.class, () -> {bookshelf.insertTiles(1, tiles);});
-        assertEquals("message", thrown.getMessage());
-    }
-
-    @Test
-    void isFull() {
+    void isFull() throws PickTilesException, NotEnoughCellsException {
+        tile1 = new Tile(Category.CATS, Icon.VARIATION1, Orientation.UP);
+        tile2 = new Tile(Category.FRAMES, Icon.VARIATION2, Orientation.LEFT);
+        tile3 = new Tile(Category.BOOKS, Icon.VARIATION3, Orientation.DOWN);
+        tiles = new ArrayList<>();
         assertFalse(bookshelf.isFull());
         tiles.clear();
         tiles.add(tile1);
         tiles.add(tile2);
         tiles.add(tile3);
-        for(int i = 1; i <= 5; i++) {
+        for(int i = 0; i < 5; i++) {
             for (int j = 0; j < 2; j++) {
-                try {
-                    bookshelf.insertTiles(i, tiles);
-                } catch (NotEnoughCellsException | PickTilesException e) {
-                }
-                if(i != 5 && j != 0){
+                bookshelf.insertTiles(i, tiles);
+                if(i != 4 || j != 1){
                     assertFalse(bookshelf.isFull());
                 }
             }
@@ -129,5 +76,18 @@ class BookshelfTest {
 
     @Test
     void getBookshelf() {
+    }
+    @Test
+    void getCloseTilesTest () throws PickTilesException, NotEnoughCellsException{
+        tiles = new ArrayList<>();
+        tiles.add(new Tile(Category.CATS, Icon.VARIATION1, Orientation.UP));
+        tiles.add(new Tile(Category.CATS, Icon.VARIATION1, Orientation.UP));
+        tiles.add(new Tile(Category.CATS, Icon.VARIATION1, Orientation.UP));
+        bookshelf.insertTiles(0, tiles);
+        tiles.clear();
+        tiles.add(new Tile(Category.FRAMES, Icon.VARIATION1, Orientation.UP));
+        tiles.add(new Tile(Category.FRAMES, Icon.VARIATION1, Orientation.UP));
+        bookshelf.insertTiles(1, tiles);
+        bookshelf.getCloseTiles();
     }
 }
