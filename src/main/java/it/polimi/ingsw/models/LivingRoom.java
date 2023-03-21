@@ -152,7 +152,7 @@ public class LivingRoom {
         return false;
     }
 
-    public void pickTiles(List<Coordinates> coordinates) throws PickTilesException{
+    public void removeTiles(List<Tile> tiles) throws PickTilesException{
         for (Coordinates coords : coordinates) {
             if (this.board[coords.x][coords.y] == null)
                 throw new PickTilesException("No tiles in coordinates: %d %d".formatted(coords.x, coords.y));

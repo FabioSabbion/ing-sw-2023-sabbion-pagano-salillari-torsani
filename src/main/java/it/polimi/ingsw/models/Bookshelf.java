@@ -33,7 +33,7 @@ public class Bookshelf {
      * @param pickedTiles
      * @throws NotEnoughCellsException if the <b>column<b/> can't contain all the tiles selected by the player
      */
-    void insertTiles(int column, List<Tile> pickedTiles) throws NotEnoughCellsException, PickTilesException {
+    public void insertTiles(int column, List<Tile> pickedTiles) throws NotEnoughCellsException, PickTilesException {
         if (column < 0 || column > COLUMNS - 1){
             throw new PickTilesException("Invalid column");
         }
@@ -58,7 +58,7 @@ public class Bookshelf {
     /**
      * @return true if all the tiles of the bookshelf have been filled
      */
-    boolean isFull() {
+    public boolean isFull() {
         for (int i = ROWS - 1; i >= 0; i--) {
             for (int j = COLUMNS - 1; j >= 0; j--) {
                 if (this.bookshelf[i][j] == null){
