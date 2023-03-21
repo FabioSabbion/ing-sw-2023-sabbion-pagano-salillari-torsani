@@ -69,7 +69,7 @@ public class LivingRoom {
      * @param remainingTiles Will remove tiles from remainingTiles and insert them into the board
      */
     public void fillBoard(int numPlayers, List<Tile> remainingTiles) {
-        if (numPlayers > 3) throw new NotImplementedException();
+        if (numPlayers > 4) throw new NotImplementedException();
         List<Coordinates> validCoordinates = new ArrayList<>();
         for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 9; j++) {
