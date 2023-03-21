@@ -62,20 +62,11 @@ class GameTest {
 
         CommonGoalCard[] commonGoalCards = new CommonGoalCard[]{commonGoalCard1, commonGoalCard2};
 
-        // Create tiles
-        List<Tile> tiles = new ArrayList<>();
-        for (Category c: Category.values()) {
-            for (int i = 0; i < 22; i++) {
-                tiles.add(new Tile(c, Icon.VARIATION1, Orientation.UP));
-            }
-        }
-        Collections.shuffle(tiles);
-
         // Create living room
         LivingRoom livingRoom = new LivingRoom();
 
         // Create game
-        this.game = new Game(players, commonGoalCards, tiles, livingRoom);
+        this.game = Game.emptyGame(players, commonGoalCards);
 
     }
 }
