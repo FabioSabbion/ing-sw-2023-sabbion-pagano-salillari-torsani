@@ -4,10 +4,7 @@ import it.polimi.ingsw.models.exceptions.PickTilesException;
 import org.apache.commons.lang.NotImplementedException;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -70,9 +67,23 @@ public class LivingRoom {
      *
      * @param numPlayers
      * @param remainingTiles
+     * Will remove tiles from remainingTiles and insert them into the board
      */
     private void fillBoard(int numPlayers, List<Tile> remainingTiles) {
-        throw new NotImplementedException();
+        if (numPlayers > 3) throw new NotImplementedException();
+        List<Coordinates> validCoordinates = new ArrayList<>();
+        for (int i = 0; i < 9; i++) {
+            for (int j = 0; j < 9; j++) {
+                if(this.board[i][j] == null){
+                    validCoordinates.add(new Coordinates(i, j));
+                }
+            }
+        }
+        Collections.shuffle(validCoordinates);
+        while(!validCoordinates.isEmpty() && !remainingTiles.isEmpty()){
+            Coordinates popped = validCoordinates.remove(0);
+            this.board[popped.x][popped.y] = remainingTiles.remove(0);
+        }
     }
 
     /**
@@ -80,7 +91,7 @@ public class LivingRoom {
      *
      * @param coordinates Represents the coordinates of the Tiles to pick up
      * @return The list of Tiles that have been removed from the board
-     * @throws PickTilesException The picked up Tiles are in invalid positions
+     * @throws PickTilesException The picked up Tiles are in invalid positions or invalid number of coordinates
      */
     public List<Tile> chooseTiles(List<Coordinates> coordinates) throws PickTilesException {
         List<Tile> picked = new ArrayList<>();
@@ -92,7 +103,7 @@ public class LivingRoom {
             if (this.board[coordinate.x][coordinate.y] == null)
                 throw new PickTilesException("No tiles in coordinates: %d %d".formatted(coordinate.x, coordinate.y));
             // Looking if "coordinates" exceeds maximum size
-            if (coordinates.size() > 3) throw new PickTilesException("You can't pick " + coordinates.size() + " tiles");
+            if (coordinates.size() > 3 || coordinates.size() == 0) throw new PickTilesException("You can't pick " + coordinates.size() + " tiles");
 
         }
         // Now verify if they are adjacent and form a straight line
