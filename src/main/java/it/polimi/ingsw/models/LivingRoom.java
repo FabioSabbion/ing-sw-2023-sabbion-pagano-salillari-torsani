@@ -18,15 +18,15 @@ public class LivingRoom {
         this.board = new Tile[9][9];
         // -1 for invalid positions
         this.validCoords = new int[][]{
-                {-1, -1, -1,  3,  4, -1, -1, -1, -1},
-                {-1, -1, -1,  2,  2,  2, -1, -1, -1},
-                {-1, -1,  3,  2,  2,  2,  3, -1, -1},
-                {-1,  4,  2,  2,  2,  2,  2,  2,  3},
-                { 4,  2,  2,  2,  2,  2,  2,  2,  4},
-                { 3,  2,  2,  2,  2,  2,  2,  4, -1},
-                {-1, -1,  3,  2,  2,  2,  3, -1, -1},
-                {-1, -1, -1,  4,  2,  2, -1, -1, -1},
-                {-1, -1, -1, -1,  4,  3, -1, -1, -1}
+                {-1, -1, -1, 3, 4, -1, -1, -1, -1},
+                {-1, -1, -1, 2, 2, 2, -1, -1, -1},
+                {-1, -1, 3, 2, 2, 2, 3, -1, -1},
+                {-1, 4, 2, 2, 2, 2, 2, 2, 3},
+                {4, 2, 2, 2, 2, 2, 2, 2, 4},
+                {3, 2, 2, 2, 2, 2, 2, 4, -1},
+                {-1, -1, 3, 2, 2, 2, 3, -1, -1},
+                {-1, -1, -1, 4, 2, 2, -1, -1, -1},
+                {-1, -1, -1, -1, 4, 3, -1, -1, -1}
         };
     }
 
@@ -66,21 +66,20 @@ public class LivingRoom {
      * Fill the board with new <b>Tile</b>s, accordingly to the number of players.
      *
      * @param numPlayers
-     * @param remainingTiles
-     * Will remove tiles from remainingTiles and insert them into the board
+     * @param remainingTiles Will remove tiles from remainingTiles and insert them into the board
      */
     private void fillBoard(int numPlayers, List<Tile> remainingTiles) {
         if (numPlayers > 3) throw new NotImplementedException();
         List<Coordinates> validCoordinates = new ArrayList<>();
         for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 9; j++) {
-                if(this.board[i][j] == null){
+                if (this.board[i][j] == null) {
                     validCoordinates.add(new Coordinates(i, j));
                 }
             }
         }
         Collections.shuffle(validCoordinates);
-        while(!validCoordinates.isEmpty() && !remainingTiles.isEmpty()){
+        while (!validCoordinates.isEmpty() && !remainingTiles.isEmpty()) {
             Coordinates popped = validCoordinates.remove(0);
             this.board[popped.x][popped.y] = remainingTiles.remove(0);
         }
@@ -95,6 +94,8 @@ public class LivingRoom {
      */
     public List<Tile> chooseTiles(List<Coordinates> coordinates) throws PickTilesException {
         List<Tile> picked = new ArrayList<>();
+        if (coordinates.size() > 3 || coordinates.isEmpty())
+            throw new PickTilesException("You can't pick " + coordinates.size() + " tiles");
         for (Coordinates coordinate : coordinates) {
             //Checking for invalid coordinates
             if (!(0 <= coordinate.x && coordinate.x < 9) || !(0 <= coordinate.y && coordinate.y < 9) || this.validCoords[coordinate.x][coordinate.y] == -1)
@@ -103,8 +104,6 @@ public class LivingRoom {
             if (this.board[coordinate.x][coordinate.y] == null)
                 throw new PickTilesException("No tiles in coordinates: %d %d".formatted(coordinate.x, coordinate.y));
             // Looking if "coordinates" exceeds maximum size
-            if (coordinates.size() > 3 || coordinates.size() == 0) throw new PickTilesException("You can't pick " + coordinates.size() + " tiles");
-
         }
         // Now verify if they are adjacent and form a straight line
         if (coordinates.size() > 1) {
@@ -153,6 +152,14 @@ public class LivingRoom {
             return true;
         }
         return false;
+    }
+
+    public void pickTiles(List<Coordinates> coordinates) throws PickTilesException{
+        for (Coordinates coords : coordinates) {
+            if (this.board[coords.x][coords.y] == null)
+                throw new PickTilesException("No tiles in coordinates: %d %d".formatted(coords.x, coords.y));
+            this.board[coords.x][coords.y] = null;
+        }
     }
 }
 
