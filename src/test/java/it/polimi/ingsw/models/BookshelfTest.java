@@ -6,6 +6,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -88,6 +89,9 @@ class BookshelfTest {
         tiles.add(new Tile(Category.FRAMES, Icon.VARIATION1, Orientation.UP));
         tiles.add(new Tile(Category.FRAMES, Icon.VARIATION1, Orientation.UP));
         bookshelf.insertTiles(1, tiles);
-        bookshelf.getCloseTiles();
+        Map<Category, List<Integer>> expectedResult = new HashMap<>();
+        expectedResult.put(Category.CATS, List.of(3));
+        expectedResult.put(Category.FRAMES, List.of(2));
+        assertEquals(bookshelf.getCloseTiles(), expectedResult);
     }
 }
