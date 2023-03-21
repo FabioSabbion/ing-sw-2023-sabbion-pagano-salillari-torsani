@@ -106,7 +106,7 @@ public class LivingRoom {
             // Looking if "coordinates" exceeds maximum size
         }
         // Now verify if they are adjacent and form a straight line
-        if (coordinates.size() > 1) {
+
             int[] x = new int[coordinates.size()];
             int[] y = new int[coordinates.size()];
 
@@ -115,21 +115,21 @@ public class LivingRoom {
                 y[i] = coordinates.get(i).y;
             }
             if (Arrays.stream(x).allMatch((val) -> val == x[0])) {
-                List<Integer> sortedY = Arrays.stream(y).sorted().boxed().collect(Collectors.toList());
+                List<Integer> sortedY = Arrays.stream(y).sorted().boxed().toList();
                 for (int i = 1; i < sortedY.size(); i++) {
                     if ((sortedY.get(i - 1) + 1) != (sortedY.get(i))) {
                         throw new PickTilesException("No straight line");
                     }
                 }
             } else if (Arrays.stream(y).allMatch((val) -> val == y[0])) {
-                List<Integer> sortedX = Arrays.stream(x).sorted().boxed().collect(Collectors.toList());
+                List<Integer> sortedX = Arrays.stream(x).sorted().boxed().toList();
                 for (int i = 1; i < sortedX.size(); i++) {
                     if ((sortedX.get(i - 1) + 1) != (sortedX.get(i))) {
                         throw new PickTilesException("No straight line");
                     }
                 }
             }
-        }
+
 
         // Removing them from the livingRoom and returning them to the player
         for (Coordinates c : coordinates) {
