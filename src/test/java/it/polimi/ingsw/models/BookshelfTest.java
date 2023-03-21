@@ -1,6 +1,7 @@
 package it.polimi.ingsw.models;
 
 import it.polimi.ingsw.models.exceptions.NotEnoughCellsException;
+import it.polimi.ingsw.models.exceptions.PickTilesException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -27,7 +28,7 @@ class BookshelfTest {
         for(int i = 1; i <= 5; i++) {
             try {
                 bookshelf.insertTiles(1, tiles);
-            } catch (NotEnoughCellsException e) {
+            } catch (NotEnoughCellsException | PickTilesException e) {
             }
             assertEquals(tile1, bookshelf.getBookshelf()[0][i]);
         }
@@ -35,7 +36,7 @@ class BookshelfTest {
         for(int i = 1; i <= 5; i++) {
             try {
                 bookshelf.insertTiles(1, tiles);
-            } catch (NotEnoughCellsException e) {
+            } catch (NotEnoughCellsException | PickTilesException e) {
             }
             assertEquals(tile1, bookshelf.getBookshelf()[1][i]);
             assertEquals(tile2, bookshelf.getBookshelf()[2][i]);
@@ -44,7 +45,7 @@ class BookshelfTest {
         for(int i = 1; i <= 5; i++) {
             try {
                 bookshelf.insertTiles(1, tiles);
-            } catch (NotEnoughCellsException e) {
+            } catch (NotEnoughCellsException | PickTilesException e) {
             }
             assertEquals(tile1, bookshelf.getBookshelf()[3][i]);
             assertEquals(tile2, bookshelf.getBookshelf()[4][i]);
@@ -58,18 +59,20 @@ class BookshelfTest {
         try {
             bookshelf.insertTiles(1, tiles);
         } catch (NotEnoughCellsException e) {
+        } catch (PickTilesException e) {
+            throw new RuntimeException(e);
         }
         try {
             bookshelf.insertTiles(1, tiles);
-        } catch (NotEnoughCellsException e) {
+        } catch (NotEnoughCellsException | PickTilesException e) {
         }
         try {
             bookshelf.insertTiles(1, tiles);
-        } catch (NotEnoughCellsException e) {
+        } catch (NotEnoughCellsException | PickTilesException e) {
         }
         try {
             bookshelf.insertTiles(1, tiles);
-        } catch (NotEnoughCellsException e) {
+        } catch (NotEnoughCellsException | PickTilesException e) {
         }
         tiles.add(tile2);
         tiles.add(tile3);
@@ -80,23 +83,23 @@ class BookshelfTest {
         bookshelf = new Bookshelf();
         try {
             bookshelf.insertTiles(1, tiles);
-        } catch (NotEnoughCellsException e) {
+        } catch (NotEnoughCellsException | PickTilesException e) {
         }
         try {
             bookshelf.insertTiles(1, tiles);
-        } catch (NotEnoughCellsException e) {
+        } catch (NotEnoughCellsException | PickTilesException e1) {
         }
         try {
             bookshelf.insertTiles(1, tiles);
-        } catch (NotEnoughCellsException e) {
+        } catch (NotEnoughCellsException | PickTilesException e) {
         }
         try {
             bookshelf.insertTiles(1, tiles);
-        } catch (NotEnoughCellsException e) {
+        } catch (NotEnoughCellsException | PickTilesException e) {
         }
         try {
             bookshelf.insertTiles(1, tiles);
-        } catch (NotEnoughCellsException e) {
+        } catch (NotEnoughCellsException | PickTilesException e) {
         }
         tiles.add(tile2);
         thrown = assertThrows(NotEnoughCellsException.class, () -> {bookshelf.insertTiles(1, tiles);});
@@ -114,7 +117,7 @@ class BookshelfTest {
             for (int j = 0; j < 2; j++) {
                 try {
                     bookshelf.insertTiles(i, tiles);
-                } catch (NotEnoughCellsException e) {
+                } catch (NotEnoughCellsException | PickTilesException e) {
                 }
                 if(i != 5 && j != 0){
                     assertFalse(bookshelf.isFull());
