@@ -35,4 +35,19 @@ public class Player {
     public Bookshelf getBookshelf() {
         return bookshelf;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Player player = (Player) o;
+
+        return nickname.equals(player.nickname);
+    }
+
+    @Override
+    public int hashCode() {
+        return nickname.hashCode();
+    }
 }

@@ -66,7 +66,7 @@ class GameTest {
         LivingRoom livingRoom = new LivingRoom();
 
         // Create game
-        this.game = Game.emptyGame(players, commonGoalCards);
+        this.game = new Game(players, commonGoalCards, new ArrayList<>(), livingRoom);
 
     }
 }
