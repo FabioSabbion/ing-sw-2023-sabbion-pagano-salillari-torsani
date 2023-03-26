@@ -6,11 +6,11 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 
 public class LivingRoomTest {
@@ -18,9 +18,63 @@ public class LivingRoomTest {
     private List<Tile> remainingTiles;
 
     @Test
-    @DisplayName("")
+    @DisplayName("Checking if this function works on all impossible states, like wrong coordinates or wrong number" +
+            "of coordinates")
     public void chooseTilesImpossibleStates() {
+        var tiles = new Coordinates[]{
+                new Coordinates(0, 0),
+                new Coordinates(0, 0),
+                new Coordinates(0, 0),
+                new Coordinates(0, 0),
+        };
 
+        //Checking wrong number of elements
+        assertThrows(PickTilesException.class
+                , () -> {
+            livingRoom.chooseTiles(new ArrayList<>());
+        });
+
+        assertThrows(PickTilesException.class, () -> {
+            livingRoom.chooseTiles(Arrays.asList(tiles[0], tiles[1], tiles[2], tiles[3]));
+        });
+
+        assertThrows(PickTilesException.class, () -> {
+            livingRoom.chooseTiles(Arrays.asList(tiles[0], tiles[0]));
+        });
+
+        //Checked impossible positions
+        assertThrows(PickTilesException.class, () -> {
+            livingRoom.chooseTiles(Arrays.asList(new Coordinates(-1, 0)));
+        });
+
+        assertThrows(PickTilesException.class, () -> {
+            livingRoom.chooseTiles(Arrays.asList(new Coordinates(0, -1)));
+        });
+
+        assertThrows(PickTilesException.class, () -> {
+            livingRoom.chooseTiles(Arrays.asList(new Coordinates(9, 0)));
+        });
+
+        assertThrows(PickTilesException.class, () -> {
+            livingRoom.chooseTiles(Arrays.asList(new Coordinates(0, 9)));
+        });
+
+        List<Tile> tilesList = new ArrayList<>(81);
+
+        for (int i = 0; i < 81; i++) {
+            tilesList.add(new Tile(Category.CATS, Icon.VARIATION1, Orientation.UP));
+        }
+
+        livingRoom.fillBoardIfNeeded(4, tilesList);
+        try {
+            livingRoom.pickTiles(Arrays.asList(new Coordinates(4, 4)));
+        } catch (PickTilesException ignored) {
+            throw new RuntimeException("Error in picking tiles, probably was null");
+        }
+
+        assertThrows(PickTilesException.class, () -> {
+            livingRoom.chooseTiles(Arrays.asList(new Coordinates(4, 4)));
+        });
     }
 
     @Test
