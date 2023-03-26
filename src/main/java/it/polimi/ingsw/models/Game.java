@@ -59,7 +59,7 @@ public class Game {
      * @return Whether the game is ended
      */
     public boolean isEnded() {
-        return (this.gameEnder != null && this.currentPlayer == this.players[0]);
+        return (this.gameEnder != null && this.currentPlayer.equals(this.players[0]));
     }
 
     public void setGameEnder(Player gameEnder) {
