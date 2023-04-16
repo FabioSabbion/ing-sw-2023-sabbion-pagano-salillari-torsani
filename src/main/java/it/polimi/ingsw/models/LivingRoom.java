@@ -1,14 +1,16 @@
 package it.polimi.ingsw.models;
 
+import it.polimi.ingsw.controller.events.ViewEvent;
 import it.polimi.ingsw.models.exceptions.NumPlayersException;
 import it.polimi.ingsw.models.exceptions.PickTilesException;
+import it.polimi.ingsw.utils.Observable;
 
 import java.util.*;
 
 /**
  * Represents the living room of the game. It contains Tiles that can be picked up by Players
  */
-public class LivingRoom {
+public class LivingRoom extends Observable<LivingRoom, ViewEvent> {
     private final Tile[][] board;
     private final int[][] validCoordinates;
 
@@ -92,6 +94,8 @@ public class LivingRoom {
             Coordinates popped = validCoordinates.remove(0);
             this.board[popped.x][popped.y] = remainingTiles.remove(0);
         }
+
+        notifyObservers(this, ViewEvent.ACTION_UPDATE);
     }
 
     /**
@@ -176,6 +180,8 @@ public class LivingRoom {
                 throw new PickTilesException("No tiles in coordinates: %d %d".formatted(coords.x, coords.y));
             this.board[coords.x][coords.y] = null;
         }
+
+        notifyObservers(this, ViewEvent.ACTION_UPDATE);
     }
 }
 

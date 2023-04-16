@@ -1,10 +1,15 @@
 package it.polimi.ingsw.models;
 
 
+import it.polimi.ingsw.controller.events.ViewEvent;
+import it.polimi.ingsw.distributed.PlayerUpdate;
+import it.polimi.ingsw.utils.Observable;
+import it.polimi.ingsw.utils.Observer;
+
 /**
  * Represents one player in the game
  */
-public class Player {
+public class Player extends Observable<PlayerUpdate, ViewEvent> {
     private final String nickname;
     private final PersonalGoalCard personalGoalCard;
     private final Bookshelf bookshelf;
@@ -13,6 +18,13 @@ public class Player {
         this.nickname = nickname;
         this.personalGoalCard = personalGoalCard;
         this.bookshelf = new Bookshelf();
+
+        this.bookshelf.addObserver(new Observer<Bookshelf, ViewEvent>() {
+            @Override
+            public void update(Bookshelf value, ViewEvent eventType) {
+                notifyObservers(new PlayerUpdate(nickname, value, null), eventType);
+            }
+        });
     }
 
     /**
