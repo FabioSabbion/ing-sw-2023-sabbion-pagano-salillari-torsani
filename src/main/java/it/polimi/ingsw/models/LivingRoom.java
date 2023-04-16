@@ -47,12 +47,12 @@ public class LivingRoom extends Observable<LivingRoom, ViewEvent> {
         for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 9; j++) {
                 if (this.board[i][j] != null && this.validCoordinates[i][j] != -1) {
-                    if (this.hasAdjacentTile(i, j))
-                        return false;
+                    if (!this.hasAdjacentTile(i, j))
+                        return true;
                 }
             }
         }
-        return true;
+        return false;
     }
 
     /**
@@ -66,6 +66,17 @@ public class LivingRoom extends Observable<LivingRoom, ViewEvent> {
         if (column != 8 && this.board[row][column + 1] != null) return true;
         if (column != 0 && this.board[row][column - 1] != null) return true;
         return false;
+    }
+
+    private boolean hasEmptySide(int row, int column) {
+        if(row + 1 == 9 || column + 1 == 9 || row == 0 || column == 0) {
+            return true;
+        }
+
+        return this.board[row + 1][column] == null ||
+                this.board[row - 1][column] == null ||
+                this.board[row][column + 1] == null ||
+                this.board[row][column - 1] == null;
     }
 
     /**
@@ -119,6 +130,11 @@ public class LivingRoom extends Observable<LivingRoom, ViewEvent> {
             if (this.board[coordinate.x][coordinate.y] == null)
                 throw new PickTilesException("No tiles in coordinates: %d %d".formatted(coordinate.x, coordinate.y));
             // Looking if "coordinates" exceeds maximum size
+
+//            Checking if a tile has a empty side
+            if(!this.hasEmptySide(coordinate.x, coordinate.y)) {
+                throw  new PickTilesException("Tile in pos (%d, %d) has no empty side".formatted(coordinate.x, coordinate.y));
+            }
         }
         // Now verify if they are adjacent and form a straight line
 
@@ -143,6 +159,8 @@ public class LivingRoom extends Observable<LivingRoom, ViewEvent> {
                         throw new PickTilesException("No straight line");
                     }
                 }
+            } else {
+                throw new PickTilesException("No straight line");
             }
 
 
