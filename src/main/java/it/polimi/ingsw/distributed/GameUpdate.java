@@ -8,6 +8,6 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 @Nullable
-public record GameUpdate(LivingRoom livingRoom, List<Player> players, List<CommonGoalCard> commonGoalCards, Player gameEnder, Player currentPlayer) {
+public record GameUpdate(LivingRoom livingRoom, List<PlayerUpdate> players, List<CommonGoalCard> commonGoalCards, PlayerUpdate gameEnder, PlayerUpdate currentPlayer) {
 
 }
