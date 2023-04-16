@@ -7,7 +7,7 @@ import java.util.function.Predicate;
 /**
  * Representation in java of a single generic Common Goal
  */
-public class CommonGoalCard implements GoalCard{
+public class CommonGoalCard implements GoalCard {
     private final int[][] points = {
             {},
             {},
@@ -38,5 +38,14 @@ public class CommonGoalCard implements GoalCard{
         }
 
         return 0;
+    }
+
+    static CommonGoalCard[] createCommonGoalCards(int numPlayers) {
+        //TODO to implement
+        System.out.println("WARNING, this is fake");
+
+        return new CommonGoalCard[]{new CommonGoalCard((bookshelf) -> {
+            return false;
+        }, numPlayers)};
     }
 }

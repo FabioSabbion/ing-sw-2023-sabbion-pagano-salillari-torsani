@@ -44,17 +44,22 @@ public class Game extends Observable<GameUpdate, ViewEvent> {
         });
     }
 
-    static public Game createEmptyGame(Player[] players, CommonGoalCard[] commonGoalCards) {
+    static public Game createEmptyGame(Player[] players) {
         // Create tiles
         Random rand = new Random();
         List<Tile> tiles = new ArrayList<>();
         for (Category c: Category.values()) {
             for (int i = 0; i < 22; i++) {
-                tiles.add(new Tile(c, Icon.values()[rand.nextInt()%Icon.values().length], Orientation.values()[rand.nextInt()%Icon.values().length]));
+                tiles.add(new Tile(c, Icon.values()[Math.abs(rand.nextInt()) % Icon.values().length],
+                        Orientation.values()[Math.abs(rand.nextInt()) % Icon.values().length]
+                ));
             }
         }
         Collections.shuffle(tiles);
-        return new Game(players, commonGoalCards, tiles, new LivingRoom());
+
+        var livingRoom = new LivingRoom();
+        livingRoom.fillBoard(players.length, tiles);
+        return new Game(players, CommonGoalCard.createCommonGoalCards(players.length), tiles, livingRoom);
     }
 
     public @Nullable Player getGameEnder() {
@@ -88,7 +93,10 @@ public class Game extends Observable<GameUpdate, ViewEvent> {
         int index = Arrays.asList(this.players).indexOf(this.currentPlayer);
         this.currentPlayer = this.players[(index + 1) % this.players.length];
 
-        notifyObservers(new GameUpdate(null, null, null, null, PlayerUpdate.from(this.currentPlayer, false)), ViewEvent.ACTION_UPDATE);
+        notifyObservers(
+                new GameUpdate(null, null, null, null, PlayerUpdate.from(this.currentPlayer, false)),
+                this.isEnded() ? ViewEvent.GAME_END : ViewEvent.ACTION_UPDATE
+        );
     }
 
     public void emitGameState(String nickname) {

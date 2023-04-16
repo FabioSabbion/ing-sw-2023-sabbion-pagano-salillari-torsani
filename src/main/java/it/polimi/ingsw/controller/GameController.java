@@ -3,26 +3,16 @@ package it.polimi.ingsw.controller;
 import it.polimi.ingsw.models.*;
 import it.polimi.ingsw.models.exceptions.NotEnoughCellsException;
 import it.polimi.ingsw.models.exceptions.PickTilesException;
-import org.apache.commons.lang.NotImplementedException;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class GameController {
-    private Game game;
+    private final Game game;
 
-    public GameController(Player[] players) {
-        this.game = Game.createEmptyGame(players, selectCommonGoalCards());
-        this.play();
-    }
-
-    private void play() {
-        while (true) {
-            throw new NotImplementedException();
-            /**
-             * gets from the socket the coordinate list and a column number, than if that socked mached the current
-             * player, calls gameTurn(...)
-             */
-        }
+    public GameController(Game game) {
+        this.game = game;
     }
 
     private void gameTurn(List<Coordinates> coordinatesList, int column) {
@@ -35,11 +25,6 @@ public class GameController {
 
 
         this.game.nextPlayer();
-        if (this.game.isEnded()) {
-            // TODO CHANGE STATE TO "GAME FINISHED"
-            throw new NotImplementedException();
-        }
-
     }
 
     private void playerAction(List<Coordinates> coordinatesList, int column) {
@@ -75,8 +60,10 @@ public class GameController {
         return results;
     }
 
+    public void update(List<Coordinates> coordinatesList, int column) {
+        System.out.println("WARNING, fake, super fake");
+        //TODO JUST FOR TEST
 
-    private CommonGoalCard[] selectCommonGoalCards() {
-        throw new NotImplementedException();
+        this.gameTurn(coordinatesList, column);
     }
 }

@@ -5,10 +5,7 @@ import it.polimi.ingsw.models.exceptions.NotEnoughCellsException;
 import it.polimi.ingsw.models.exceptions.PickTilesException;
 import it.polimi.ingsw.utils.Observable;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static java.lang.Math.abs;
@@ -100,5 +97,12 @@ public class Bookshelf extends Observable<Bookshelf, ViewEvent> {
         }
         return groups.entrySet().stream().map((e) -> Map.entry(e.getKey(), e.getValue().stream().map(List::size).toList()))
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+    }
+
+    @Override
+    public String toString() {
+        return "Bookshelf{" +
+                "bookshelf=\n" + Arrays.stream(bookshelf).map((value) -> Arrays.toString(value) + "\n").toList() +
+                '}';
     }
 }
