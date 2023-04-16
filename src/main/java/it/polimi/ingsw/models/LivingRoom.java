@@ -10,12 +10,12 @@ import java.util.*;
  */
 public class LivingRoom {
     private final Tile[][] board;
-    private final int[][] validCoords;
+    private final int[][] validCoordinates;
 
     public LivingRoom() {
         this.board = new Tile[9][9];
         // -1 for invalid positions
-        this.validCoords = new int[][]{
+        this.validCoordinates = new int[][]{
                 {-1, -1, -1,  3,  4, -1, -1, -1, -1},
                 {-1, -1, -1,  2,  2,  2, -1, -1, -1},
                 {-1, -1,  3,  2,  2,  2,  3, -1, -1},
@@ -41,22 +41,28 @@ public class LivingRoom {
         )) {
             return true;
         }
+
         for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 9; j++) {
-                if (this.board[i][j] != null && this.validCoords[i][j] != -1) {
-                    if (!this.hasAdjacentTile(i, j))
-                        return true;
+                if (this.board[i][j] != null && this.validCoordinates[i][j] != -1) {
+                    if (this.hasAdjacentTile(i, j))
+                        return false;
                 }
             }
         }
-        return false;
+        return true;
     }
 
-    private boolean hasAdjacentTile(int i, int j) {
-        if (i != 8 && this.board[i + 1][j] != null) return true;
-        if (i != 0 && this.board[i - 1][j] != null) return true;
-        if (j != 8 && this.board[i][j + 1] != null) return true;
-        if (j != 0 && this.board[i][j - 1] != null) return true;
+    /**
+     * Checks if a tile is not isolated
+     * @param row
+     * @param column
+     */
+    private boolean hasAdjacentTile(int row, int column) {
+        if (row != 8 && this.board[row + 1][column] != null) return true;
+        if (row != 0 && this.board[row - 1][column] != null) return true;
+        if (column != 8 && this.board[row][column + 1] != null) return true;
+        if (column != 0 && this.board[row][column - 1] != null) return true;
         return false;
     }
 
@@ -67,16 +73,21 @@ public class LivingRoom {
      * @param remainingTiles Will remove tiles from remainingTiles and insert them into the board
      */
     public void fillBoard(int numPlayers, List<Tile> remainingTiles) {
-        if (numPlayers <= 1 || numPlayers > 4) throw new NumPlayersException("You can't choose " + numPlayers + " players");
+        if (numPlayers <= 1 || numPlayers > 4)
+            throw new NumPlayersException("You can't choose " + numPlayers + " players");
+
         List<Coordinates> validCoordinates = new ArrayList<>();
         for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 9; j++) {
-                if (this.board[i][j] == null && this.validCoords[i][j] != -1 && this.validCoords[i][j] <= numPlayers) {
+                if (this.board[i][j] == null
+                        && this.validCoordinates[i][j] != -1
+                        && this.validCoordinates[i][j] <= numPlayers) {
                     validCoordinates.add(new Coordinates(i, j));
                 }
             }
         }
         Collections.shuffle(validCoordinates);
+
         while (!validCoordinates.isEmpty() && !remainingTiles.isEmpty()) {
             Coordinates popped = validCoordinates.remove(0);
             this.board[popped.x][popped.y] = remainingTiles.remove(0);
@@ -96,7 +107,9 @@ public class LivingRoom {
             throw new PickTilesException("You can't pick " + coordinates.size() + " tiles");
         for (Coordinates coordinate : coordinates) {
             //Checking for invalid coordinates
-            if (!(0 <= coordinate.x && coordinate.x < 9) || !(0 <= coordinate.y && coordinate.y < 9) || this.validCoords[coordinate.x][coordinate.y] == -1)
+            if (!(0 <= coordinate.x && coordinate.x < 9)
+                    || !(0 <= coordinate.y && coordinate.y < 9)
+                    || this.validCoordinates[coordinate.x][coordinate.y] == -1)
                 throw new PickTilesException("Coordinates outside boundaries");
             //Checking for empty coordinate in the board
             if (this.board[coordinate.x][coordinate.y] == null)
@@ -152,7 +165,12 @@ public class LivingRoom {
         return false;
     }
 
-    public void pickTiles(List<Coordinates> coordinates) throws PickTilesException{
+    /**
+     * Removes tiles from the board
+     * @param coordinates
+     * @throws PickTilesException if a chosen tile has been already removed (is null)
+     */
+    public void removeTiles(List<Coordinates> coordinates) throws PickTilesException{
         for (Coordinates coords : coordinates) {
             if (this.board[coords.x][coords.y] == null)
                 throw new PickTilesException("No tiles in coordinates: %d %d".formatted(coords.x, coords.y));
