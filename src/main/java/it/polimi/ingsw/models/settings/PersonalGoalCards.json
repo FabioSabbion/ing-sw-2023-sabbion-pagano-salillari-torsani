@@ -1,0 +1,113 @@
+{
+  "PersonalGoalCards": [
+    {
+      "PG_1": [
+        {"x": 0, "y": 0, "tile": "PLANTS"},
+        {"x": 1, "y": 3, "tile": "GAMES"},
+        {"x": 0, "y": 3, "tile": "FRAMES"},
+        {"x": 0, "y": 5, "tile": "TROPHIES"},
+        {"x": 3, "y": 2, "tile": "BOOKS"},
+        {"x": 4, "y": 1, "tile": "CATS"}
+      ]
+    },
+    {
+      "PG_2": [
+        {"x": 0, "y": 2, "tile": "CATS"},
+        {"x": 1, "y": 1, "tile": "PLANTS"},
+        {"x": 2, "y": 2, "tile": "GAMES"},
+        {"x": 3, "y": 4, "tile": "TROPHIES"},
+        {"x": 4, "y": 3, "tile": "BOOKS"}
+        {"x": 4, "y": 5, "tile": "FRAMES"}
+      ]
+    },
+    {
+      "PG_3": [
+        {"x": 0, "y": 1, "tile": "FRAMES"},
+        {"x": 0, "y": 5, "tile": "BOOKS"},
+        {"x": 1, "y": 3, "tile": "CATS"},
+        {"x": 2, "y": 2, "tile": "PLANTS"},
+        {"x": 3, "y": 1, "tile": "GAMES"},
+        {"x": 4, "y": 3, "tile": "TROPHIES"}
+      ]
+    },
+    {
+      "PG_4": [
+        {"x": 0, "y": 2, "tile": "TROPHIES"},
+        {"x": 1, "y": 4, "tile": "BOOKS"},
+        {"x": 2, "y": 2, "tile": "FRAMES"},
+        {"x": 2, "y": 4, "tile": "CATS"},
+        {"x": 3, "y": 3, "tile": "PLANTS"},
+        {"x": 0, "y": 4, "tile": "GAMES"}
+      ]
+    },
+    {
+      "PG_5": [
+        {"x": 0, "y": 5, "tile": "GAMES"},
+        {"x": 1, "y": 1, "tile": "TROPHIES"},
+        {"x": 1, "y": 3, "tile": "FRAMES"},
+        {"x": 2, "y": 3, "tile": "BOOKS"},
+        {"x": 3, "y": 5, "tile": "CATS"},
+        {"x": 4, "y": 4, "tile": "PLANTS"}
+      ]
+    },
+    {
+      "PG_6": [
+        {"x": 0, "y": 5, "tile": "PLANTS"},
+        {"x": 1, "y": 0, "tile": "GAMES"},
+        {"x": 2, "y": 0, "tile": "F"},
+        {"x": 3, "y": 0, "tile": "F"},
+        {"x": 4, "y": 1, "tile": "F"},
+        {"x": 4, "y": 1, "tile": "F"},
+        {"x": 5, "y": 1, "tile": "F"}
+      ]
+    },
+    {
+      "PG_7": [
+        {"x": 0, "y": 2, "tile": "G"},
+        {"x": 1, "y": 2, "tile": "G"},
+        {"x": 0, "y": 3, "tile": "G"},
+        {"x": 1, "y": 3, "tile": "G"}
+      ]
+    },
+    {
+      "PG_8": [
+        {"x": 2, "y": 2, "tile": "H"},
+        {"x": 3, "y": 2, "tile": "H"},
+        {"x": 2, "y": 3, "tile": "H"},
+        {"x": 3, "y": 3, "tile": "H"}
+      ]
+    },
+    {
+      "PG_9": [
+        {"x": 4, "y": 2, "tile": "I"},
+        {"x": 5, "y": 2, "tile": "I"},
+        {"x": 4, "y": 3, "tile": "I"},
+        {"x": 5, "y": 3, "tile": "I"}
+      ]
+    },
+    {
+      "PG_10": [
+        {"x": 6, "y": 2, "tile": "J"},
+        {"x": 7, "y": 2, "tile": "J"},
+        {"x": 6, "y": 3, "tile": "J"},
+        {"x": 7, "y": 3, "tile": "J"}
+      ]
+    },
+    {
+      "PG_11": [
+        {"x": 8, "y": 2, "tile": "K"},
+        {"x": 9, "y": 2, "tile": "K"},
+        {"x": 8, "y": 3, "tile": "K"},
+        {"x": 9, "y": 3, "tile": "K"}
+      ]
+    },
+    {
+      "PG_12": [
+        {"x": 10, "y": 2, "tile": "L"},
+        {"x": 11, "y": 2,"tile": "L"},
+        {"x": 10, "y": 3, "tile": "L"},
+        {"x": 11, "y": 3, "tile": "L"}
+      ]
+    }
+  ]
+}
