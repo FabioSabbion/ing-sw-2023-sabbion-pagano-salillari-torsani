@@ -1,14 +1,14 @@
 package it.polimi.ingsw.distributed;
 
 import it.polimi.ingsw.distributed.exceptions.LobbyException;
-import it.polimi.ingsw.distributed.networking.Connection;
+import it.polimi.ingsw.distributed.networking.Client;
 
 import java.rmi.RemoteException;
 import java.util.HashMap;
 import java.util.Map;
 
 public class Lobby {
-    Map<String, Connection> connections;
+    Map<String, Client> connections;
     Map<String, GameServer> nicknameServer;
     enum State {
         WAITING_FOR_GAME,
@@ -22,7 +22,7 @@ public class Lobby {
     private Lobby() {
 
     }
-    public synchronized void setNickname(String nickname, Connection connection) {
+    public synchronized void setNickname(String nickname, Client client) {
         System.out.println("New nickname from client " + nickname);
 
         if (nicknameServer == null) {
@@ -43,7 +43,7 @@ public class Lobby {
                 }
             }
 
-            this.connections.put(nickname, connection);
+            this.connections.put(nickname, client);
 
 //            if (this.numPlayer == this.connections.size()) {
 //                this.state = State.WAITING_FOR_GAME;
@@ -53,7 +53,7 @@ public class Lobby {
 //            }
         } else {
             this.connections = new HashMap<>();
-            this.connections.put(nickname, connection);
+            this.connections.put(nickname, client);
             this.state = State.CREATING_GAME;
         }
     }

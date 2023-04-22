@@ -5,26 +5,25 @@ import java.rmi.server.RMIClientSocketFactory;
 import java.rmi.server.RMIServerSocketFactory;
 import java.rmi.server.UnicastRemoteObject;
 
-public class ConnectionRMIClient extends UnicastRemoteObject implements Connection {
-    Connection server;
+public class ClientRMI extends UnicastRemoteObject implements Client {
+    Server server;
 
-    public ConnectionRMIClient(Connection server) throws RemoteException {
+    public ClientRMI(Server server) throws RemoteException {
         super();
         initialize(server);
     }
 
-    public ConnectionRMIClient(Connection sever, int port) throws RemoteException {
+    public ClientRMI(Server sever, int port) throws RemoteException {
         super(port);
         initialize(sever);
     }
 
-    public ConnectionRMIClient(Connection sever, int port, RMIClientSocketFactory csf, RMIServerSocketFactory ssf) throws RemoteException {
+    public ClientRMI(Server sever, int port, RMIClientSocketFactory csf, RMIServerSocketFactory ssf) throws RemoteException {
         super(port, csf, ssf);
         initialize(sever);
     }
 
-    public void initialize(Connection server) throws RemoteException {
-        server.initialize(this);
+    public void initialize(Server server) throws RemoteException {
         this.server = server;
     }
 
@@ -36,6 +35,6 @@ public class ConnectionRMIClient extends UnicastRemoteObject implements Connecti
     @Override
     public void setNickname(String nickname) throws RemoteException {
         System.out.println("Client my name is:" + nickname);
-        server.setNickname(nickname);
+        server.setNickname(nickname, this);
     }
 }
