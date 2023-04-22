@@ -5,6 +5,7 @@ import it.polimi.ingsw.distributed.GameUpdate;
 import it.polimi.ingsw.distributed.PlayerUpdate;
 import it.polimi.ingsw.utils.Observable;
 import it.polimi.ingsw.utils.Observer;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -44,7 +45,19 @@ public class Game extends Observable<GameUpdate, ViewEvent> {
         });
     }
 
-    static public Game createEmptyGame(Player[] players) {
+    static public Game createEmptyGame(List<String> nicknames) {
+        PersonalGoalCard temp = new PersonalGoalCard(new ArrayList<>(Arrays.asList(
+                new ImmutablePair<>(Category.GAMES, new Coordinates(0, 0)),
+                new ImmutablePair<>(Category.BOOKS, new Coordinates(1, 1)),
+                new ImmutablePair<>(Category.PLANTS, new Coordinates(2, 2))
+        )
+        )
+        );
+
+        Player[] players = nicknames.stream().map((nickname) -> new Player(nickname, temp)).toList().toArray(new Player[0]);
+
+        System.out.println("Players: " + Arrays.toString(players));
+
         // Create tiles
         Random rand = new Random();
         List<Tile> tiles = new ArrayList<>();

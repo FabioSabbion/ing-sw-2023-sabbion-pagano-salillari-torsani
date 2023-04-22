@@ -9,6 +9,7 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * Hello world!
@@ -25,16 +26,13 @@ public class App
         )
         )
         );
-        Player[] players = {
-                new Player("Andri", temp),
-                new Player("LP", temp)
+        String[] players = {
+                "Andri", "LP"
         };
 
-        var game = Game.createEmptyGame(players);
+        GameController controller = new GameController(List.of(players));
 
-        GameController controller = new GameController(game);
-
-        game.addObserver(new Observer<GameUpdate, ViewEvent>() {
+        controller.game.addObserver(new Observer<GameUpdate, ViewEvent>() {
             @Override
             public void update(GameUpdate value, ViewEvent eventType) {
                 System.out.println("NEW UPDATE");
