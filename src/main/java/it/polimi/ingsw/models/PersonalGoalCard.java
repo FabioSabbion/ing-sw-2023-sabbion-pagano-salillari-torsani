@@ -42,21 +42,26 @@ public class PersonalGoalCard implements GoalCard {
      */
     public static List<PersonalGoalCard> buildFromJson(){
         if(jsonFile == null) reloadJson();
+
         List<PersonalGoalCard> personalGoalCards = new ArrayList<>();
         JSONArray personalGoalCardsJson = (JSONArray) jsonFile.get("PersonalGoalCards");
+
         for (Object pg : personalGoalCardsJson) {
             JSONObject pgJson = (JSONObject) pg;
             String pgId = pgJson.keySet().iterator().next().toString();
             JSONArray tilesJson = (JSONArray) pgJson.get(pgId);
             List<Pair<Category, Coordinates>> positions = new ArrayList<>();
+
             for (Object tile : tilesJson) {
                 JSONObject tileJson = (JSONObject) tile;
                 int x = Integer.parseInt(tileJson.get("x").toString());
                 int y = Integer.parseInt(tileJson.get("y").toString());
+
                 Category category = Category.valueOf(tileJson.get("tile").toString());
                 Coordinates coordinates = new Coordinates(x, y);
                 positions.add(new ImmutablePair<>(category, coordinates));
             }
+
             personalGoalCards.add(new PersonalGoalCard(positions));
         }
         return personalGoalCards;
