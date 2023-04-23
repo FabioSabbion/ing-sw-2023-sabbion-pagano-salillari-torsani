@@ -34,16 +34,16 @@ public class Lobby {
 //            TEST DISCONNECTION WITH A BLOCKING PATTERN
 //            AND ADD TO CONNECTION A VALUE THAT WILL STORE THE WAIT OF THE CURRENT THREAD
         } else if(this.state == State.CREATING_GAME) {
+            this.connections.put(nickname, client);
+
             for (var oldConnections: this.connections.entrySet()) {
                 System.out.println("Sending nickname: " + nickname + " to " + oldConnections.getKey());
                 try {
-                    oldConnections.getValue().newPlayer(nickname);
+                    oldConnections.getValue().updatedPlayerList(this.connections.keySet().stream().toList());
                 } catch (RemoteException e) {
                     System.out.println("Error");
                 }
             }
-
-            this.connections.put(nickname, client);
 
 //            if (this.numPlayer == this.connections.size()) {
 //                this.state = State.WAITING_FOR_GAME;
