@@ -9,10 +9,10 @@ import java.util.List;
 import java.util.Map;
 
 public class GameController {
-    private final Game game;
+    public Game game;
 
-    public GameController(Game game) {
-        this.game = game;
+    public GameController(List<String> nicknames) {
+        this.game = Game.createEmptyGame(nicknames);
     }
 
     private void gameTurn(List<Coordinates> coordinatesList, int column) {
