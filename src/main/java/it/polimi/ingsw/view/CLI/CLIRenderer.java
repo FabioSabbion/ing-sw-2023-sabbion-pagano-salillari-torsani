@@ -88,5 +88,28 @@ public class CLIRenderer {
     }
 
 
+    public static String renderLivingRoom(LivingRoom livingRoom) {
+        Formatter formatter = new Formatter();
+        List<String> render = new ArrayList<>();
+
+        Tile[][] tiles = livingRoom.getBoard();
+        String matrix[][] = new String[9][9];
+
+        for (int i = 0; i < 9; i++) {
+            for (int j = 0; j < 9; j++) {
+                if (tiles[i][j] == null) {
+                    matrix[i][j] = "  ";
+                }
+                else{
+                    Color color = CategoryToColor(tiles[i][j].getCategory());
+                    matrix[i][j] = color.escape() + square + " " + Color.RESET;
+                }
+            }
+        }
+        Arrays.stream(matrix).forEach(row -> Arrays.stream(row).forEach(render::add));
+
+        return String.valueOf(formatter.format(ASCIIArt.livingRoom, render.toArray()));
+
+    }
 }
 
