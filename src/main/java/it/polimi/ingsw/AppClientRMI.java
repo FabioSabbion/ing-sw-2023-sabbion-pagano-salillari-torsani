@@ -1,6 +1,6 @@
 package it.polimi.ingsw;
 
-import it.polimi.ingsw.distributed.networking.ClientRMI;
+import it.polimi.ingsw.distributed.networking.ClientImpl;
 import it.polimi.ingsw.distributed.networking.Server;
 
 import java.rmi.NotBoundException;
@@ -14,12 +14,14 @@ public class AppClientRMI {
         Registry registry = LocateRegistry.getRegistry();
         Server server = (Server) registry.lookup("server");
 
-        ClientRMI client = new ClientRMI(server);
-        client.setNickname("Andri 3");
+        ClientImpl client = new ClientImpl(server);
+        Scanner sc = new Scanner(System.in);
 
-        Scanner in = new Scanner(System.in);
+        String s = sc.nextLine();
+        server.setNickname(s, client);
 
-        in.nextLine();
-        client.setNickname("Andri 3pr");
+        s = sc.nextLine();
+
+        // TODO: run view with client.run
     }
 }
