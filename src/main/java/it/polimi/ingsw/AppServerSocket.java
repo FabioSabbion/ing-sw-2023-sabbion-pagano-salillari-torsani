@@ -5,25 +5,25 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.rmi.RemoteException;
 
-public class AppServerSocket
+public class AppServerSocket extends Thread
 {
     static final int PORT = 4445;
-    public static void main( String[] args ) throws RemoteException {
+    public void run() {
         try (ServerSocket serverSocket = new ServerSocket(PORT)) {
-            System.out.println("Server started on port " + PORT);
+            System.out.println("Socket Server started on port " + PORT);
             while(true){
                 try{
                     Socket socket = serverSocket.accept();
-                    System.out.println("New client connected");
+                    System.out.println("New socket client connected");
                     new ClientHandler(socket).start();
                 }
                 catch(IOException e){
-                    e.printStackTrace();
-                    System.out.println("New client tried to connect but failed");
+                    // e.printStackTrace();
+                    System.out.println("A socket client failed to connect");
                 }
             }
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            System.out.println("Couldn't start Socket Server.");
         }
     }
 }
