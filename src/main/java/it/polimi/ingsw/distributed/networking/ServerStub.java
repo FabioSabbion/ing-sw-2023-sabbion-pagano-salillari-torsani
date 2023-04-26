@@ -1,12 +1,14 @@
 package it.polimi.ingsw.distributed.networking;
 
 import it.polimi.ingsw.controller.events.EventType;
+import it.polimi.ingsw.distributed.GameUpdate;
 import it.polimi.ingsw.models.Coordinates;
 import it.polimi.ingsw.models.Player;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.net.Socket;
 import java.rmi.RemoteException;
 import java.util.List;
@@ -47,11 +49,24 @@ public class ServerStub implements Server{
 
     @Override
     public void setNumPlayers(int num, Client client) throws RemoteException {
-
+        try {
+            oos.writeObject(new SocketMessage(EventType.NUM_PLAYERS, num));
+            oos.flush();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
     public void playerMove(List<Coordinates> coordinates, int column, Client client) throws RemoteException {
+        try {
+            oos.writeObject(new SocketMessage(EventType.PICK_TILES, (Serializable) coordinates));
+            oos.flush();
+            oos.writeObject(new SocketMessage(EventType.CHOOSE_COLUMN, column));
+            oos.flush();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void receive(Client client) throws RemoteException {
@@ -60,23 +75,28 @@ public class ServerStub implements Server{
             message = (SocketMessage) ois.readObject();
             switch (message.eventType) {
                 case NUM_PLAYERS -> {
-
+                    client.askNumPlayers();
                 }
                 case LOBBY_UPDATE -> {
                     List<String> players = (List<String>) message.data;
                     client.updatedPlayerList(players);
                 }
                 case GAME_STATE -> {
-
+                    GameUpdate gameUpdate = (GameUpdate) message.data;
+                    client.updateGame(gameUpdate);
+                }
+                case LOBBY_ERROR -> {
+                    String msg = (String) message.data;
+                    client.serverError(msg);
                 }
             }
         } catch (IOException e) {
             // TODO: handle connection errors
+            client.serverError("Connection error");
             throw new RuntimeException(e);
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
-
     }
 
     public void close() throws RemoteException {

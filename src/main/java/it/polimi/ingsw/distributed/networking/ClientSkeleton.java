@@ -3,6 +3,8 @@ package it.polimi.ingsw.distributed.networking;
 import it.polimi.ingsw.controller.events.EventType;
 import it.polimi.ingsw.distributed.GameUpdate;
 import it.polimi.ingsw.distributed.Lobby;
+import it.polimi.ingsw.distributed.exceptions.LobbyException;
+import it.polimi.ingsw.models.Coordinates;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -32,17 +34,32 @@ public class ClientSkeleton implements Client{
 
     @Override
     public void updateGame(GameUpdate update) throws RemoteException {
-
+        try {
+            oos.writeObject(new SocketMessage(EventType.GAME_STATE, update));
+            oos.flush();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
     public void serverError(String message) throws RemoteException {
-        System.out.println("Error: " + message);
+        try {
+            oos.writeObject(new SocketMessage(EventType.LOBBY_ERROR, message));
+            oos.flush();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
     public void askNumPlayers() throws RemoteException {
-
+        try {
+            oos.writeObject(new SocketMessage(EventType.NUM_PLAYERS, null));
+            oos.flush();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void receive() throws RemoteException {
@@ -55,18 +72,26 @@ public class ClientSkeleton implements Client{
                     Lobby.getInstance().setNickname(nickname, this);
                 }
                 case NUM_PLAYERS -> {
-
+                    int n = (int) message.data;
+                    Lobby.getInstance().setNumPlayer(n);
                 }
-                case PLAYER_ACTION -> {
-
+                case PICK_TILES -> {
+                    List<Coordinates> pickedTiles = (List<Coordinates>) message.data;
+                    message = (SocketMessage) ois.readObject();
+                    if (message.eventType != EventType.CHOOSE_COLUMN) {
+                        throw new LobbyException("Expecting a CHOOSE_COLUMN event");
+                    }
+                    int col = (int) message.data;
+                    // TODO: call method on Lobby to perform action
                 }
             }
 
         } catch (IOException | ClassNotFoundException e) {
-            // TODO IOException fires when socket connection fails
-            // We need to notify GameServer/Lobby that the client has disconnected
+            // TODO: call method on Lobby to notify the client is disconnected
 
             throw new RuntimeException(e);
+        } catch (LobbyException e) {
+            serverError(e.getMessage());
         }
 
     }
