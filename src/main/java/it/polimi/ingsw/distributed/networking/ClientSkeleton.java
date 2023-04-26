@@ -3,13 +3,11 @@ package it.polimi.ingsw.distributed.networking;
 import it.polimi.ingsw.controller.events.EventType;
 import it.polimi.ingsw.distributed.GameUpdate;
 import it.polimi.ingsw.distributed.Lobby;
-import it.polimi.ingsw.models.Coordinates;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.net.Socket;
 import java.rmi.RemoteException;
 import java.util.List;
 
@@ -35,6 +33,11 @@ public class ClientSkeleton implements Client{
     @Override
     public void updateGame(GameUpdate update) throws RemoteException {
 
+    }
+
+    @Override
+    public void serverError(String message) throws RemoteException {
+        System.out.println("Error: " + message);
     }
 
     @Override

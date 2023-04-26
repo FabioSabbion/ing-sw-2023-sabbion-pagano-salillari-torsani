@@ -1,7 +1,6 @@
 package it.polimi.ingsw.distributed.networking;
 
 import it.polimi.ingsw.distributed.GameUpdate;
-import it.polimi.ingsw.models.Coordinates;
 
 import java.rmi.RemoteException;
 import java.rmi.server.RMIClientSocketFactory;
@@ -38,6 +37,11 @@ public class ClientImpl extends UnicastRemoteObject implements Client, Runnable 
     @Override
     public void updateGame(GameUpdate update) throws RemoteException {
         System.out.println("Received game update");
+    }
+
+    @Override
+    public void serverError(String message) throws RemoteException {
+        System.out.println("Error: " + message);
     }
 
     @Override
