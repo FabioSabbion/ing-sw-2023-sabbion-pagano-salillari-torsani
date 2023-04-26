@@ -48,8 +48,8 @@ public class ClientSkeleton implements Client{
             message = (SocketMessage) ois.readObject();
             switch (message.eventType) {
                 case CONNECT -> {
-                    String nickame = (String) message.data;
-                    Lobby.getInstance().setNickname(nickame, this);
+                    String nickname = (String) message.data;
+                    Lobby.getInstance().setNickname(nickname, this);
                 }
                 case NUM_PLAYERS -> {
 
