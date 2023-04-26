@@ -1,6 +1,8 @@
 package it.polimi.ingsw.distributed.networking;
 
+import it.polimi.ingsw.controller.events.EventType;
 import it.polimi.ingsw.models.Coordinates;
+import it.polimi.ingsw.models.Player;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -36,7 +38,7 @@ public class ServerStub implements Server{
     @Override
     public void setNickname(String nickname, Client client) throws RemoteException {
         try {
-            oos.writeObject(nickname);
+            oos.writeObject(new SocketMessage(EventType.CONNECT, nickname));
             oos.flush();
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -54,15 +56,28 @@ public class ServerStub implements Server{
     }
 
     public void receive(Client client) throws RemoteException {
-        List<String> players;
+        SocketMessage message;
         try {
-            players = (List<String>) ois.readObject();
+            message = (SocketMessage) ois.readObject();
+            switch (message.eventType) {
+                case NUM_PLAYERS -> {
+
+                }
+                case LOBBY_UPDATE -> {
+                    List<String> players = (List<String>) message.data;
+                    client.updatedPlayerList(players);
+                }
+                case GAME_STATE -> {
+
+                }
+            }
         } catch (IOException e) {
+            // TODO: handle connection errors
             throw new RuntimeException(e);
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
-        client.updatedPlayerList(players);
+
     }
 
     public void close() throws RemoteException {

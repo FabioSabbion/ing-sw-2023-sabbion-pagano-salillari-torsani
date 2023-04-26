@@ -1,5 +1,6 @@
 package it.polimi.ingsw.distributed.networking;
 
+import it.polimi.ingsw.controller.events.EventType;
 import it.polimi.ingsw.distributed.GameUpdate;
 import it.polimi.ingsw.distributed.Lobby;
 import it.polimi.ingsw.models.Coordinates;
@@ -7,6 +8,7 @@ import it.polimi.ingsw.models.Coordinates;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.net.Socket;
 import java.rmi.RemoteException;
 import java.util.List;
@@ -23,7 +25,7 @@ public class ClientSkeleton implements Client{
     @Override
     public void updatedPlayerList(List<String> players) throws RemoteException {
         try {
-            oos.writeObject(players);
+            oos.writeObject(new SocketMessage(EventType.LOBBY_UPDATE, (Serializable) players));
             oos.flush();
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -41,12 +43,26 @@ public class ClientSkeleton implements Client{
     }
 
     public void receive() throws RemoteException {
-        String s;
+        SocketMessage message;
         try {
-            s = (String) ois.readObject();
-            System.out.println("Client skeleton read " + s);
-            Lobby.getInstance().setNickname(s, this);
+            message = (SocketMessage) ois.readObject();
+            switch (message.eventType) {
+                case CONNECT -> {
+                    String nickame = (String) message.data;
+                    Lobby.getInstance().setNickname(nickame, this);
+                }
+                case NUM_PLAYERS -> {
+
+                }
+                case PLAYER_ACTION -> {
+
+                }
+            }
+
         } catch (IOException | ClassNotFoundException e) {
+            // TODO IOException fires when socket connection fails
+            // We need to notify GameServer/Lobby that the client has disconnected
+
             throw new RuntimeException(e);
         }
 
