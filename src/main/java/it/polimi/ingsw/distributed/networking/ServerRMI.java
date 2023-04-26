@@ -1,6 +1,7 @@
 package it.polimi.ingsw.distributed.networking;
 
 import it.polimi.ingsw.distributed.Lobby;
+import it.polimi.ingsw.distributed.exceptions.LobbyException;
 import it.polimi.ingsw.models.Coordinates;
 
 import java.rmi.RemoteException;
@@ -28,12 +29,22 @@ public class ServerRMI extends UnicastRemoteObject implements Server {
 
     @Override
     public void setNumPlayers(int num, Client client) throws RemoteException {
-
+        try {
+            Lobby.getInstance().setNumPlayer(num);
+        } catch (LobbyException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
-    public void playerMove(List<Coordinates> coordinates, int column) throws RemoteException {
+    public void playerMove(List<Coordinates> coordinates, int column, Client client) throws RemoteException {
+        try {
+            var gameData = Lobby.getInstance().getNicknameController(client);
 
+            gameData.getRight().update(coordinates, column, gameData.getLeft());
+        } catch (LobbyException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }

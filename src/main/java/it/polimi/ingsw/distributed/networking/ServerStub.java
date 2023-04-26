@@ -51,8 +51,7 @@ public class ServerStub implements Server{
     }
 
     @Override
-    public void playerMove(List<Coordinates> coordinates, int column) throws RemoteException {
-
+    public void playerMove(List<Coordinates> coordinates, int column, Client client) throws RemoteException {
     }
 
     public void receive(Client client) throws RemoteException {

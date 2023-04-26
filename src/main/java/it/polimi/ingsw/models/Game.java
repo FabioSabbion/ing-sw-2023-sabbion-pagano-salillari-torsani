@@ -5,7 +5,6 @@ import it.polimi.ingsw.distributed.GameUpdate;
 import it.polimi.ingsw.distributed.PlayerUpdate;
 import it.polimi.ingsw.utils.Observable;
 import it.polimi.ingsw.utils.Observer;
-import org.apache.commons.lang3.tuple.ImmutablePair;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -46,17 +45,17 @@ public class Game extends Observable<GameUpdate, ViewEvent> {
     }
 
     static public Game createEmptyGame(List<String> nicknames) {
-        PersonalGoalCard temp = new PersonalGoalCard(new ArrayList<>(Arrays.asList(
-                new ImmutablePair<>(Category.GAMES, new Coordinates(0, 0)),
-                new ImmutablePair<>(Category.BOOKS, new Coordinates(1, 1)),
-                new ImmutablePair<>(Category.PLANTS, new Coordinates(2, 2))
-        )
-        )
-        );
+        var personalGoalCards = PersonalGoalCard.buildFromJson();
 
-        Player[] players = nicknames.stream().map((nickname) -> new Player(nickname, temp)).toList().toArray(new Player[0]);
+        Collections.shuffle(personalGoalCards);
 
-        System.out.println("Players: " + Arrays.toString(players));
+        ArrayList<Player> players = new ArrayList<>(nicknames.size());
+
+        for(int i = 0; i < nicknames.size(); i++) {
+            players.add(new Player(nicknames.get(i), personalGoalCards.get(i)));
+        }
+
+        System.out.println("Players: " + players);
 
         // Create tiles
         Random rand = new Random();
@@ -71,8 +70,8 @@ public class Game extends Observable<GameUpdate, ViewEvent> {
         Collections.shuffle(tiles);
 
         var livingRoom = new LivingRoom();
-        livingRoom.fillBoard(players.length, tiles);
-        return new Game(players, CommonGoalCard.createCommonGoalCards(players.length), tiles, livingRoom);
+        livingRoom.fillBoard(players.size(), tiles);
+        return new Game(players.toArray(new Player[0]), CommonGoalCard.createCommonGoalCards(players.size()), tiles, livingRoom);
     }
 
     public @Nullable Player getGameEnder() {

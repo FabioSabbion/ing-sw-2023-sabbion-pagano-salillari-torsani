@@ -39,7 +39,5 @@ public class App
                 System.out.println(value);
             }
         });
-
-        controller.update(Arrays.asList(new Coordinates(1, 4), new Coordinates(1, 5)), 3);
     }
 }
