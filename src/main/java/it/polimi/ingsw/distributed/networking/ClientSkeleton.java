@@ -82,13 +82,14 @@ public class ClientSkeleton implements Client{
                         throw new LobbyException("Expecting a CHOOSE_COLUMN event");
                     }
                     int col = (int) message.data;
-                    // TODO: call method on Lobby to perform action
+
+                    var gameData = Lobby.getInstance().getNicknameController(this);
+                    gameData.getRight().update(pickedTiles, col, gameData.getLeft());
                 }
             }
 
         } catch (IOException | ClassNotFoundException e) {
             // TODO: call method on Lobby to notify the client is disconnected
-
             throw new RuntimeException(e);
         } catch (LobbyException e) {
             serverError(e.getMessage());
