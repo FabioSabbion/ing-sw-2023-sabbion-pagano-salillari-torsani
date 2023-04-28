@@ -31,7 +31,7 @@ public class ASCIIArt {
             |---|---|---|---|---|
             | %s| %s| %s| %s| %s|
             +---+---+---+---+---+
-              0   1   2   3   4""";
+           \s  0   1   2   3   4  \s""";
 
     public static final String livingRoom = """
               +---+---+---+---+---+---+---+---+---+
