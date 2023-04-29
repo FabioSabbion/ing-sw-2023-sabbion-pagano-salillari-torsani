@@ -57,8 +57,8 @@ class GameTest {
         Player[] players = new Player[]{player1, player2, player3, player4};
 
         // Create common goal cards
-        CommonGoalCard commonGoalCard1 = new CommonGoalCard((b) -> true, players.length);
-        CommonGoalCard commonGoalCard2 = new CommonGoalCard((b) -> false, players.length);
+        CommonGoalCard commonGoalCard1 = new CommonGoalCard((b) -> true, players.length, 0);
+        CommonGoalCard commonGoalCard2 = new CommonGoalCard((b) -> false, players.length, 0);
 
         CommonGoalCard[] commonGoalCards = new CommonGoalCard[]{commonGoalCard1, commonGoalCard2};
 

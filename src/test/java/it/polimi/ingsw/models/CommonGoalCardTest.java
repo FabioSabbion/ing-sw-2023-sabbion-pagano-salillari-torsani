@@ -24,7 +24,7 @@ public class CommonGoalCardTest {
     @DisplayName("Checking what happens when it's impossible to win")
     public void checkGoalFailed() {
         for (int i = 2; i <= 4; i++) {
-            CommonGoalCard testedGoal = new CommonGoalCard((bookshelf) -> {return false;}, i);
+            CommonGoalCard testedGoal = new CommonGoalCard((bookshelf) -> {return false;}, i, 0);
 
             Bookshelf tempBookShelf = new Bookshelf();
 
@@ -45,7 +45,7 @@ public class CommonGoalCardTest {
             return Arrays.stream(winningPlayers).anyMatch(player -> {
                 return player.getBookshelf().equals(bookshelf);
             });
-        }, 2);
+        }, 2, 0);
 
 
         assertEquals(8, testedGoal.checkGoal(player1));
@@ -69,7 +69,7 @@ public class CommonGoalCardTest {
             return Arrays.stream(winningPlayers).anyMatch(player -> {
                 return player.getBookshelf().equals(bookshelf);
             });
-        }, 3);
+        }, 3, 0);
 
 
         assertEquals(8, testedGoal.checkGoal(player1));
@@ -98,7 +98,7 @@ public class CommonGoalCardTest {
             return Arrays.stream(winningPlayers).anyMatch(player -> {
                 return player.getBookshelf().equals(bookshelf);
             });
-        }, 4);
+        }, 4, 0);
 
 
         assertEquals(8, testedGoal.checkGoal(player1));

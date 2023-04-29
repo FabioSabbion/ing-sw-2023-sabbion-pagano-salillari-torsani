@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
+import java.util.Random;
 
 public class CommonGoalCardFactory {
     private final List<JSONObject> jsonObjects = new ArrayList<JSONObject>();
@@ -22,10 +23,13 @@ public class CommonGoalCardFactory {
 
     private final JSONParser parser = new JSONParser();
 
-    public CommonGoalCard buildFromJson(int cgcNum, int numPlayers) {
+    public CommonGoalCard buildFromJson(int numPlayers) {
         if(jsonObjects.size() == 0) {
             reloadJson();
         }
+        Random rand = new Random();
+        int upperbound = jsonObjects.size();
+        int cgcNum = rand.nextInt(upperbound);
         setNumPlayers(numPlayers);
         setMaxDistinctCategoryNumber(((Long)jsonObjects.get(cgcNum).get("maxDistinctCategoryNumber")).intValue());
         setExactCategoryNumber(((Long) jsonObjects.get(cgcNum).get("exactCategoryNumber")).intValue());
@@ -36,7 +40,7 @@ public class CommonGoalCardFactory {
             JSONObject obj = (JSONObject) item;
             this.schema.add(new Coordinates(((Long)obj.get("x")).intValue(), ((Long)obj.get("y")).intValue()));
         }
-        return buildCommonGoalCard();
+        return buildCommonGoalCard(cgcNum);
     }
 
     public void reloadJson(){
@@ -50,7 +54,7 @@ public class CommonGoalCardFactory {
             e.printStackTrace();
         }
     }
-    public CommonGoalCard buildCommonGoalCard() {
+    public CommonGoalCard buildCommonGoalCard(int cgcNum) {
         final Predicate<Bookshelf> controlFunction;
         Predicate<Bookshelf> controlFunction1 = new Predicate<Bookshelf>() {
             @Override
@@ -489,7 +493,7 @@ public class CommonGoalCardFactory {
             }
         }
         controlFunction = controlFunction1;
-        return new CommonGoalCard(controlFunction, numPlayers);
+        return new CommonGoalCard(controlFunction, numPlayers, cgcNum);
     }
 
     public void setSchema(List<Coordinates> schema){
