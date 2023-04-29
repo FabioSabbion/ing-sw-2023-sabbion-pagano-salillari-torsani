@@ -3,7 +3,6 @@ package it.polimi.ingsw.distributed.networking;
 import it.polimi.ingsw.controller.events.EventType;
 import it.polimi.ingsw.distributed.GameUpdate;
 import it.polimi.ingsw.models.Coordinates;
-import it.polimi.ingsw.models.Player;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -88,6 +87,9 @@ public class ServerStub implements Server{
                 case LOBBY_ERROR -> {
                     String msg = (String) message.data;
                     client.serverError(msg);
+                }
+                case KEEP_ALIVE -> {
+                    System.out.println("KEEP_ALIVE received");
                 }
             }
         } catch (IOException e) {

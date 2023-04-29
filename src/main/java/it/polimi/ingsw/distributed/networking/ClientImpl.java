@@ -50,6 +50,11 @@ public class ClientImpl extends UnicastRemoteObject implements Client, Runnable 
     }
 
     @Override
+    public void keepAlive() throws RemoteException {
+        System.out.println("Server asked for keepalive");
+    }
+
+    @Override
     public void run() {
         // TODO: run view
 

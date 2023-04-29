@@ -28,7 +28,7 @@ public class ClientSkeleton implements Client{
             oos.writeObject(new SocketMessage(EventType.LOBBY_UPDATE, (Serializable) players));
             oos.flush();
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new RemoteException();
         }
     }
 
@@ -38,7 +38,7 @@ public class ClientSkeleton implements Client{
             oos.writeObject(new SocketMessage(EventType.GAME_STATE, update));
             oos.flush();
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new RemoteException();
         }
     }
 
@@ -48,7 +48,7 @@ public class ClientSkeleton implements Client{
             oos.writeObject(new SocketMessage(EventType.LOBBY_ERROR, message));
             oos.flush();
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new RemoteException();
         }
     }
 
@@ -58,7 +58,17 @@ public class ClientSkeleton implements Client{
             oos.writeObject(new SocketMessage(EventType.NUM_PLAYERS, null));
             oos.flush();
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new RemoteException();
+        }
+    }
+
+    @Override
+    public void keepAlive() throws RemoteException {
+        try {
+            oos.writeObject(new SocketMessage(EventType.KEEP_ALIVE, null));
+            oos.flush();
+        } catch (IOException e) {
+            throw new RemoteException();
         }
     }
 
@@ -90,7 +100,7 @@ public class ClientSkeleton implements Client{
 
         } catch (IOException | ClassNotFoundException e) {
             // TODO: call method on Lobby to notify the client is disconnected
-            throw new RuntimeException(e);
+            //throw new RuntimeException(e);
         } catch (LobbyException e) {
             serverError(e.getMessage());
         }
