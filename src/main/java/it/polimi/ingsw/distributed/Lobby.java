@@ -10,6 +10,7 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import java.rmi.RemoteException;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -27,10 +28,32 @@ public class Lobby {
     static private Lobby instance;
 
     private Lobby() {
+        connectedClients = new HashSet<>();
 
+        (new Thread(() -> {
+            while (true) {
+                for (var client: connectedClients) {
+                    try {
+                        client.keepAlive();
+                    } catch (RemoteException e) {
+                        connectedClients.remove(client);
+
+
+                        System.out.println("Client disconnected");
+                    }
+                }
+
+                try {
+                    Thread.sleep(3000);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        })).start();
     }
     public synchronized void setNickname(String nickname, Client client) {
         System.out.println("New nickname from client " + nickname);
+        connectedClients.add(client);
 
         if (clientNicknameController == null) {
             this.clientNicknameController = new HashMap<>();

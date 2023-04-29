@@ -12,4 +12,5 @@ public enum EventType {
     GAME_STATE,
     CONNECT_ERROR,
     LOBBY_ERROR,
+    KEEP_ALIVE
 }
