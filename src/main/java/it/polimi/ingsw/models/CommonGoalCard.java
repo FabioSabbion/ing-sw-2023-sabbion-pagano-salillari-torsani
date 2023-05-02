@@ -19,10 +19,13 @@ public class CommonGoalCard implements GoalCard {
     private final List<Player> orderOfCompletionList;
     private final int numPlayers;
 
-    public CommonGoalCard(Predicate<Bookshelf> controlFunction, int numPlayers) {
+    private final int cgcNum;
+
+    public CommonGoalCard(Predicate<Bookshelf> controlFunction, int numPlayers, int cgcNum) {
         this.controlFunction = controlFunction;
         this.numPlayers = numPlayers;
         this.orderOfCompletionList = new ArrayList<>(numPlayers);
+        this.cgcNum = cgcNum;
     }
 
     public int checkGoal(Player player) {
@@ -46,6 +49,6 @@ public class CommonGoalCard implements GoalCard {
 
         return new CommonGoalCard[]{new CommonGoalCard((bookshelf) -> {
             return false;
-        }, numPlayers)};
+        }, numPlayers, 0)};
     }
 }

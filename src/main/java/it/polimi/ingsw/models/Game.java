@@ -2,6 +2,7 @@ package it.polimi.ingsw.models;
 
 import it.polimi.ingsw.controller.events.ViewEvent;
 import it.polimi.ingsw.distributed.GameUpdate;
+import it.polimi.ingsw.distributed.LivingRoomUpdate;
 import it.polimi.ingsw.distributed.PlayerUpdate;
 import it.polimi.ingsw.utils.Observable;
 import it.polimi.ingsw.utils.Observer;
@@ -36,9 +37,9 @@ public class Game extends Observable<GameUpdate, ViewEvent> {
             });
         }
 
-        this.livingRoom.addObserver(new Observer<LivingRoom, ViewEvent>() {
+        this.livingRoom.addObserver(new Observer<LivingRoomUpdate, ViewEvent>() {
             @Override
-            public void update(LivingRoom value, ViewEvent eventType) {
+            public void update(LivingRoomUpdate value, ViewEvent eventType) {
                 notifyObservers(new GameUpdate(value, null, null, null, null), eventType);
             }
         });
@@ -113,7 +114,7 @@ public class Game extends Observable<GameUpdate, ViewEvent> {
 
     public void emitGameState(String nickname) {
         GameUpdate gameUpdate = new GameUpdate(
-                this.livingRoom,
+                new LivingRoomUpdate(this.livingRoom.getBoard()),
                 Arrays.stream(this.players).map((p) -> PlayerUpdate.from(p, p.getNickname().equals(nickname))).toList(),
                 Arrays.asList(this.commonGoalCards),
                 PlayerUpdate.from(this.gameEnder, this.gameEnder.getNickname().equals(nickname)),
