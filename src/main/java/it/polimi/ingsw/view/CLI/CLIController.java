@@ -1,71 +1,117 @@
 package it.polimi.ingsw.view.CLI;
 
-import it.polimi.ingsw.models.*;
-import it.polimi.ingsw.models.exceptions.NotEnoughCellsException;
-import it.polimi.ingsw.models.exceptions.PickTilesException;
+import it.polimi.ingsw.distributed.GameUpdate;
+import it.polimi.ingsw.distributed.LivingRoomUpdate;
+import it.polimi.ingsw.distributed.PlayerUpdate;
+import it.polimi.ingsw.distributed.networking.Client;
+import it.polimi.ingsw.distributed.networking.Server;
+import it.polimi.ingsw.models.CommonGoalCard;
+import it.polimi.ingsw.models.Coordinates;
+import it.polimi.ingsw.view.CLI.utils.Color;
+import it.polimi.ingsw.view.ViewController;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 
+import java.rmi.RemoteException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Scanner;
 
-public class CLIController {
+import static java.lang.Integer.parseInt;
+
+public class CLIController implements ViewController {
+    List<PlayerUpdate> players;
+    LivingRoomUpdate livingRoom;
+    List<CommonGoalCard> commonGoalCards;
+    PlayerUpdate currentPlayer;
+    PlayerUpdate gameEnder;
+    Server server;
+    Client client;
     private CLI cli;
 
+    String viewingPlayerNickname;
 
-    public void start() throws PickTilesException, NotEnoughCellsException {
-
-
-        var livingRoom = new LivingRoom();
-        List<Tile> remainingTiles = new ArrayList<>();
-        for (Category c : Category.values()) {
-            for (int i = 0; i < 22; i++) {
-                remainingTiles.add(new Tile(c, Icon.VARIATION1, Orientation.UP));
-            }
+    @Override
+    public void setNickname(String nickname) {
+        try {
+            Scanner scanner = new Scanner(System.in);
+            server.setNickname(nickname, client);
+            this.viewingPlayerNickname = nickname;
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
         }
-        Collections.shuffle(remainingTiles);
-
-        livingRoom.fillBoardIfNeeded(4, remainingTiles);
-
-        List<PersonalGoalCard> personalGoalCardList = PersonalGoalCard.buildFromJson();
-
-        Player Andri = new Player("Andri", personalGoalCardList.get(0));
-        Player Fabio = new Player("Fabio", personalGoalCardList.get(1));
-        Player Lp = new Player("Lp", personalGoalCardList.get(2));
-        Player Lore = new Player("Lore", personalGoalCardList.get(3));
-
-        List<Player> players = new ArrayList<>();
-        players.add(Andri);
-        players.add(Fabio);
-        players.add(Lp);
-        players.add(Lore);
-
-        HashMap<Player, Integer> playerPoints = new HashMap<>();
-        playerPoints.put(Andri, 69);
-        playerPoints.put(Fabio, 42);
-        playerPoints.put(Lp, 666);
-        playerPoints.put(Lore, 420);
-
-        int[] commonGoalCardsValues = {0, 1};
-
-
-        CLI cli = new CLI(players, livingRoom, Lp, commonGoalCardsValues);
-
-        boolean choice = cli.initialScreen();
-
-        if(!choice) return;
-
-        cli.menuChoice(playerPoints, Lp);
-
-        List<Coordinates> c = new ArrayList<>();
-        c.add(cli.getPlayerTileCoordinate());
-        int col = cli.getPlayerColumn();
-
-        List<Tile> removenTile = livingRoom.chooseTiles(c);
-        livingRoom.removeTiles(c);
-        Lp.getBookshelf().insertTiles(col, removenTile);
-        cli.updateAll(livingRoom, Lp);
-        cli.showMain(Lp);
 
     }
+
+    @Override
+    public void getPlayerChoice(boolean yourTurn) {
+        cli.menuChoice(calculatePoints(), currentPlayer, yourTurn);
+    }
+
+    public Pair<List<Coordinates>, Integer> getTiles(){
+        List<Coordinates> chosenTiles = new ArrayList<>();
+        int numTiles = cli.getNumberTiles();
+
+        for (int i = 0; i < numTiles; i++) {
+            chosenTiles.add(cli.getPlayerTileCoordinate());
+        }
+        int column = cli.getPlayerColumn();
+        return new ImmutablePair<>(chosenTiles, column);
+    }
+
+
+    @Override
+    public void updatedPlayerList(List<String> players) {
+        players.stream().forEach(System.out::println);
+    }
+
+    @Override
+    public void updateGame(GameUpdate update){
+
+        this.livingRoom = update.livingRoomUpdate(); //Tile[][]
+        this.players = update.players();
+        this.commonGoalCards = update.commonGoalCards();
+        this.currentPlayer = update.currentPlayer();
+        this.gameEnder = update.gameEnder();
+
+
+
+        if (cli == null) {
+            PlayerUpdate viewingPlayer = players.stream().filter(p -> p.nickname().equals(viewingPlayerNickname))
+                    .findFirst().get();
+            cli = new CLI(this.livingRoom, this.players, this.commonGoalCards,
+                    this.currentPlayer, this.gameEnder, viewingPlayer);
+        }
+        cli.updateAll(this.livingRoom, this.players, this.currentPlayer, this.gameEnder);
+    }
+
+    @Override
+    public void serverError(String message){
+        System.out.println(Color.RED.escape() + message + Color.RESET);
+    }
+
+    @Override
+    public int setNumPlayers(int numPlayers){
+        try {
+            Scanner scanner = new Scanner(System.in);
+            server.setNumPlayers(parseInt(scanner.nextLine()), client);
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public HashMap<PlayerUpdate, Integer> calculatePoints(){
+        HashMap<PlayerUpdate, Integer> playerPoints = new HashMap<>();
+        for (PlayerUpdate player : this.players) {
+            // TODO: IT'S ALL FAKE
+            // CommmonGoal
+            playerPoints.put(player, 10);
+            // PersonalGoalCard
+            playerPoints.put(player, 5);
+        }
+    }
+
+
 }
+

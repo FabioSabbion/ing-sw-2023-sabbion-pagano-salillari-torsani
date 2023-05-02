@@ -19,7 +19,7 @@ public class CommonGoalCard implements GoalCard {
     private final List<Player> orderOfCompletionList;
     private final int numPlayers;
 
-    private final int cgcNum;
+    public final int cgcNum;
 
     public CommonGoalCard(Predicate<Bookshelf> controlFunction, int numPlayers, int cgcNum) {
         this.controlFunction = controlFunction;

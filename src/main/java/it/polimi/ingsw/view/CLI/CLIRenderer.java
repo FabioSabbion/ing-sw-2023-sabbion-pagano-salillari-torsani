@@ -1,5 +1,6 @@
 package it.polimi.ingsw.view.CLI;
 
+import it.polimi.ingsw.distributed.LivingRoomUpdate;
 import it.polimi.ingsw.models.*;
 import it.polimi.ingsw.view.CLI.utils.ASCIIArt;
 import it.polimi.ingsw.view.CLI.utils.Color;
@@ -97,11 +98,11 @@ public class CLIRenderer {
     }
 
 
-    public static String renderLivingRoom(LivingRoom livingRoom) {
+    public static String renderLivingRoom(LivingRoomUpdate livingRoom) {
         Formatter formatter = new Formatter();
         List<String> render = new ArrayList<>();
 
-        Tile[][] tiles = livingRoom.getBoard();
+        Tile[][] tiles = livingRoom.board();
         String matrix[][] = new String[9][9];
 
         for (int i = 0; i < 9; i++) {
@@ -120,8 +121,8 @@ public class CLIRenderer {
 
     }
 
-    public static String renderCommonGoalCard(int value){
-        return ASCIIArt.CommonGoalCards[value];
+    public static String renderCommonGoalCard(CommonGoalCard commonGoalCard){
+        return ASCIIArt.CommonGoalCards[commonGoalCard.cgcNum];
     }
 
 

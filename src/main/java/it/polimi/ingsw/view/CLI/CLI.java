@@ -1,8 +1,9 @@
 package it.polimi.ingsw.view.CLI;
 
+import it.polimi.ingsw.distributed.LivingRoomUpdate;
+import it.polimi.ingsw.distributed.PlayerUpdate;
+import it.polimi.ingsw.models.CommonGoalCard;
 import it.polimi.ingsw.models.Coordinates;
-import it.polimi.ingsw.models.LivingRoom;
-import it.polimi.ingsw.models.Player;
 import it.polimi.ingsw.view.CLI.utils.ASCIIArt;
 import it.polimi.ingsw.view.CLI.utils.Color;
 
@@ -14,21 +15,26 @@ import java.util.Scanner;
 public class CLI {
 
     private CLIRenderer render;
+    private CLIController controller;
     private Printer printer;
-    private HashMap<Player, String> renderPersonalGoalCards;
-    private HashMap<Player, String> renderBookshelves;
+    private HashMap<PlayerUpdate, String> renderPersonalGoalCards;
+    private HashMap<PlayerUpdate, String> renderBookshelves;
+    private HashMap<CommonGoalCard, String> renderCommonGoalCards;
     private String renderLivingRoom;
-    private Player viewingPlayer;
-    private String renderCommonGoalCards;
+    private PlayerUpdate viewingPlayer;
+    private PlayerUpdate currentPlayer;
+    private PlayerUpdate gameEnder;
 
-    public CLI(List<Player> players, LivingRoom livingRoom, Player viewingPlayer, int[] commonGoalCardsValues) {
-        this.render = new CLIRenderer();
+    public CLI (LivingRoomUpdate livingRoom, List<PlayerUpdate> players, List<CommonGoalCard> commonGoalCards,
+                PlayerUpdate currentPlayer, PlayerUpdate gameEnder, PlayerUpdate viewingPlayer){
+
         this.printer = new Printer();
-        setRenderPersonalGoalCards(players);
-        setRenderBookshelves(players);
-        setLivingRoom(livingRoom);
+        this.render = new CLIRenderer();
         this.viewingPlayer = viewingPlayer;
-        setRenderCommonGoalCards(commonGoalCardsValues);
+
+        setRenderBookshelves(players);
+        setRenderCommonGoalCards(commonGoalCards);
+        updateAll(livingRoom, players, currentPlayer, gameEnder);
     }
 
 
@@ -58,7 +64,7 @@ public class CLI {
         }
     }
 
-    public int showMenu(){
+    public int showMenu(boolean yourTurn){
         String choices = """
                 Menu:
                 1. 'help'/'menu -> show all commands
@@ -66,6 +72,9 @@ public class CLI {
                 3. 'showPlayers' -> shows players' bookshelf and respective points
                 4. 'CommonGoalCards' -> outputs the game commonGoalCards
                 5. 'scoreboard' -> view scoreboard""";
+
+        if (yourTurn)
+            choices += "\n6. 'play' -> 'play your turn";
         try {
             printer.print(Color.GREEN.escape() + choices + Color.RESET);
 
@@ -88,6 +97,11 @@ public class CLI {
                     case "scoreboard", "5" -> {
                         return 5;
                     }
+                    case "play", "6" ->{
+                        if(yourTurn)
+                            return 6;
+                        else System.out.println("That is not a valid option! Enter a valid one");
+                    }
                     default -> System.out.println("That is not a valid option! Enter a valid one");
                 }
             }
@@ -97,67 +111,68 @@ public class CLI {
         }
     }
 
-    private void setRenderPersonalGoalCards(List<Player> players){
+    private void setRenderPersonalGoalCards(List<PlayerUpdate> players){
 
         this.renderPersonalGoalCards = new HashMap<>();
 
-        for (Player player : players) {
-            this.renderPersonalGoalCards.put(player, render.renderPersonalGoalCard(player.getPersonalGoalCard()));
+        for (PlayerUpdate player : players) {
+            this.renderPersonalGoalCards.put(player, render.renderPersonalGoalCard(player.personalGoalCard()));
         }
     }
 
 
-    private void setRenderBookshelves(List<Player> players){
+    private void setRenderBookshelves(List<PlayerUpdate> players){
 
         this.renderBookshelves = new HashMap<>();
 
-        for (Player player : players) {
-            this.renderBookshelves.put(player, render.renderBookshelf(player.getBookshelf()));
+        for (PlayerUpdate player : players) {
+            this.renderBookshelves.put(player, render.renderBookshelf(player.bookshelf()));
         }
     }
 
-    public void updateBookshelf(Player player){
-        this.renderBookshelves.put(player, render.renderBookshelf(player.getBookshelf()));
+    public void updateBookshelf(PlayerUpdate player){
+        this.renderBookshelves.put(player, render.renderBookshelf(player.bookshelf()));
     }
 
-    public void setLivingRoom(LivingRoom livingRoom){
+    public void setLivingRoom(LivingRoomUpdate livingRoom){
         this.renderLivingRoom = render.renderLivingRoom(livingRoom);
     }
 
 
-    public void showPlayers(HashMap<Player, Integer> playerPoints){
+    public void showPlayers(HashMap<PlayerUpdate, Integer> playerPoints){
 
         String concatBookshelves = "";
 
-        List<Player> players = new ArrayList<>(playerPoints.keySet());
+        List<PlayerUpdate> players = new ArrayList<>(playerPoints.keySet());
 
-        for (Player player : players) {
+        for (PlayerUpdate player : players) {
             concatBookshelves = render.concatAsciiArt(concatBookshelves, this.renderBookshelves.get(player));
         }
         printer.print(concatBookshelves + "\n\n\n");
 
-        for (Player player : players) {
-            printer.print("- " + player.getNickname() + " points: " + playerPoints.get(player));
+        for (PlayerUpdate player : players) {
+            printer.print("- " + player.nickname() + " points: " + playerPoints.get(player));
         }
     }
 
 
-    public void setRenderCommonGoalCards(int[] CommonGoalCardsValues){
-        this.renderCommonGoalCards = "CommonGoalCard1: \n\n" + render.renderCommonGoalCard(CommonGoalCardsValues[0]) +
-                "\n\n\n CommonGoalCard2: \n\n" + render.renderCommonGoalCard(CommonGoalCardsValues[1]);
+    public void setRenderCommonGoalCards(List<CommonGoalCard> commonGoalCards){
+        for (CommonGoalCard commonGoalCard : commonGoalCards) {
+            this.renderCommonGoalCards.put(commonGoalCard, render.renderCommonGoalCard(commonGoalCard));
+        }
     }
 
-    public void showMain(Player currentPlayer){
+    public void showMain(PlayerUpdate currentPlayer){
         printer.clearScreen();
         String main = renderLivingRoom;
         main = render.concatAsciiArt(main, renderPersonalGoalCards.get(viewingPlayer));
         main = render.concatAsciiArt(main, renderBookshelves.get(viewingPlayer));
         printer.print(main);
 
-        List<Player> players = new ArrayList<>(renderPersonalGoalCards.keySet());
+        List<PlayerUpdate> players = new ArrayList<>(renderPersonalGoalCards.keySet());
 
         for (int i = 0; i < players.size(); i++) {
-            String toPrint = i +". " + players.get(i).getNickname();
+            String toPrint = i +". " + players.get(i).nickname();
 
             if(players.get(i).equals(currentPlayer)){
                 toPrint = Color.RED.escape() + toPrint + Color.RESET;
@@ -169,29 +184,35 @@ public class CLI {
 
     public void showCommonGoalCards(){
         printer.clearScreen();
-        printer.print(this.renderCommonGoalCards);
+
+        List<String> renders = renderCommonGoalCards.values().stream().toList();
+
+        for (int i = 0; i < renderCommonGoalCards.size(); i++) {
+            printer.print("CommonGoalCard" + i);
+            printer.print(renders.get(i));
+        }
     }
 
-    public void showScoreboard(HashMap<Player, Integer> playerPoints){
-        List<Player> players = new ArrayList<>(playerPoints.keySet());
+    public void showScoreboard(HashMap<PlayerUpdate, Integer> playerPoints){
+        List<PlayerUpdate> players = new ArrayList<>(playerPoints.keySet());
         printer.clearScreen();
         printer.print(Color.BLUE.escape() + "The current players' points are: " + Color.RESET);
 
         for (int i = 0; i < players.size(); i++) {
-            String toPrint = i +". " + players.get(i).getNickname() + " :" + playerPoints.get(players.get(i));
+            String toPrint = i +". " + players.get(i).nickname() + " :" + playerPoints.get(players.get(i));
 
             printer.print(toPrint);
         }
     }
 
-    public void menuChoice(HashMap<Player, Integer> playerPoints, Player currentPlayer){
+    public void menuChoice(HashMap<PlayerUpdate, Integer> playerPoints, PlayerUpdate currentPlayer, boolean yourTurn){
         printer.clearScreen();
-        int menuChoice = showMenu();
+        int menuChoice = showMenu(yourTurn);
 
 
         try {
                 switch (menuChoice) {
-                    case 1 -> this.menuChoice(playerPoints, currentPlayer);
+                    case 1 -> this.menuChoice(playerPoints, currentPlayer, yourTurn);
 
                     case 2 -> this.showMain(currentPlayer);
 
@@ -200,6 +221,8 @@ public class CLI {
                     case 4 -> this.showCommonGoalCards();
 
                     case 5 -> this.showScoreboard(playerPoints);
+
+                    case 6 -> controller.getTiles();
 
                 }
         } catch (Exception e) {
@@ -254,12 +277,16 @@ public class CLI {
     }
 
 
-    public void updateAll(LivingRoom livingRoom, Player currentPlayer){
+    public void updateAll(LivingRoomUpdate livingRoom, List<PlayerUpdate> players, PlayerUpdate currentPlayer, PlayerUpdate gameEnder){
+
         setLivingRoom(livingRoom);
-        updateBookshelf(currentPlayer);
+        setRenderBookshelves(players);
+        this.currentPlayer = currentPlayer;
+        this.gameEnder = gameEnder;
+        showPlayerTurn(currentPlayer);
     }
 
-    public void showPlayerTurn(Player currentPlayer){
+    public void showPlayerTurn(PlayerUpdate currentPlayer){
         printer.clearScreen();
         if(viewingPlayer != currentPlayer) {
             printer.print(currentPlayer + " is now playing his turn");
@@ -267,6 +294,17 @@ public class CLI {
         else{
             printer.print("Now is your turn");
         }
+    }
+
+    public int getNumberTiles(){
+        printer.print("Choose your number of tile! (1-3)");
+        Scanner scanner = new Scanner(System.in);
+        int num = Integer.parseInt(scanner.nextLine());
+        while(num < 1 || num > 3){
+            printer.print(Color.RED.escape() + "Wrong number of tiles! Try Again" + Color.RESET);
+            num = Integer.parseInt(scanner.nextLine());
+        }
+        return num;
     }
 
 
