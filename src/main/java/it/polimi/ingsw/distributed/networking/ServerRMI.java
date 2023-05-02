@@ -24,7 +24,11 @@ public class ServerRMI extends UnicastRemoteObject implements Server {
 
     @Override
     public synchronized void setNickname(String nickname, Client client) throws RemoteException {
-        Lobby.getInstance().setNickname(nickname, client);
+        try {
+            Lobby.getInstance().setNickname(nickname, client);
+        } catch (LobbyException e) {
+            client.serverError(e.getMessage());
+        }
     }
 
     @Override
@@ -32,7 +36,7 @@ public class ServerRMI extends UnicastRemoteObject implements Server {
         try {
             Lobby.getInstance().setNumPlayer(num);
         } catch (LobbyException e) {
-            throw new RuntimeException(e);
+            client.serverError(e.getMessage());
         }
     }
 
@@ -43,7 +47,7 @@ public class ServerRMI extends UnicastRemoteObject implements Server {
 
             gameData.getRight().update(coordinates, column, gameData.getLeft());
         } catch (LobbyException e) {
-            throw new RuntimeException(e);
+            client.serverError(e.getMessage());
         }
     }
 

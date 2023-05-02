@@ -1,5 +1,8 @@
 package it.polimi.ingsw.distributed;
 
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
+import com.google.common.collect.Maps;
 import it.polimi.ingsw.controller.GameController;
 import it.polimi.ingsw.controller.events.ViewEvent;
 import it.polimi.ingsw.distributed.exceptions.LobbyException;
@@ -9,15 +12,15 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 public class Lobby {
     Map<String, Client> waitingPlayers;
-    Map<Client, Pair<String, GameController>> clientNicknameController;
-    Set<Client> connectedClients;
+    final BiMap<Client, String> clientNickname;
+    Map<String, GameController> nicknameController;
     enum State {
         WAITING_FOR_GAME,
         CREATING_GAME
@@ -28,18 +31,35 @@ public class Lobby {
     static private Lobby instance;
 
     private Lobby() {
-        connectedClients = new HashSet<>();
+        clientNickname = Maps.synchronizedBiMap(HashBiMap.create());
 
         (new Thread(() -> {
             while (true) {
-                for (var client: connectedClients) {
-                    try {
-                        client.keepAlive();
-                    } catch (RemoteException e) {
-                        connectedClients.remove(client);
+                synchronized (clientNickname) {
+                    List<Client> removableClients = new ArrayList<>();
 
+                    for (var client: clientNickname.entrySet()) {
+                        try {
+                            client.getKey().keepAlive();
+                        } catch (RemoteException e) {
+                            removableClients.add(client.getKey());
 
-                        System.out.println("Client disconnected");
+                            System.out.println("Client disconnected");
+                        }
+                    }
+
+                    Client waitingClient = null;
+
+                    for (var client: removableClients) {
+                        var disconnected = clientNickname.remove(client);
+
+                        if (this.state == State.CREATING_GAME && waitingPlayers != null) {
+                            waitingClient = waitingPlayers.remove(disconnected);
+                        }
+                    }
+
+                    if (waitingClient != null) {
+                        this.updatedWaitingPlayers();
                     }
                 }
 
@@ -51,29 +71,35 @@ public class Lobby {
             }
         })).start();
     }
-    public synchronized void setNickname(String nickname, Client client) {
+    public synchronized void setNickname(String nickname, Client client) throws LobbyException {
         System.out.println("New nickname from client " + nickname);
-        connectedClients.add(client);
 
-        if (clientNicknameController == null) {
-            this.clientNicknameController = new HashMap<>();
+        if (nicknameController == null) {
+            this.nicknameController = new HashMap<>();
         }
 
-        if (clientNicknameController.containsKey(client)) {
-//           TODO WRITE WHAT TO DO WITH A DISCONNECTED PLAYER
-//            TEST DISCONNECTION WITH A BLOCKING PATTERN
-//            AND ADD TO CONNECTION A VALUE THAT WILL STORE THE WAIT OF THE CURRENT THREAD
+        if (clientNickname.containsKey(client)) {
+            throw new LobbyException("Client already present");
+        }
+
+
+        if (nicknameController.containsKey(nickname)) {
+            if(clientNickname.containsValue(nickname)) {
+                // Nickname already in use => send error
+                throw new LobbyException("Nickname already in use");
+            } else {
+                clientNickname.put(client, nickname);
+
+                this.setClientListener(client, nicknameController.get(nickname));
+            }
         } else if(this.state == State.CREATING_GAME) {
+            if (clientNickname.containsValue(nickname)) {
+                throw new LobbyException("Nickname already in lobby");
+            }
+            clientNickname.put(client, nickname);
             this.waitingPlayers.put(nickname, client);
 
-            for (var oldConnections: this.waitingPlayers.entrySet()) {
-                System.out.println("Sending nickname: " + nickname + " to " + oldConnections.getKey());
-                try {
-                    oldConnections.getValue().updatedPlayerList(this.waitingPlayers.keySet().stream().toList());
-                } catch (RemoteException e) {
-                    System.out.println("Error");
-                }
-            }
+            this.updatedWaitingPlayers();
 
             if (this.numPlayer == this.waitingPlayers.size()) {
                 this.state = State.WAITING_FOR_GAME;
@@ -82,30 +108,49 @@ public class Lobby {
                 var controller = new GameController(this.waitingPlayers.keySet().stream().toList());
 
                 for (var connection: this.waitingPlayers.entrySet()) {
-                    this.clientNicknameController.put(connection.getValue(), new ImmutablePair<>(connection.getKey(), controller));
+                    this.nicknameController.put(connection.getKey(), controller);
 
-                    controller.game.addObserver(new Observer<GameUpdate, ViewEvent>() {
-                        @Override
-                        public void update(GameUpdate value, ViewEvent eventType) {
-//                            TODO update client state if not reachable!
-
-                            System.out.println("Implement in the client the connection details, if the connection is down we should change the client state");
-                            try {
-                                connection.getValue().updateGame(value);
-                            } catch (RemoteException e) {
-                                throw new RuntimeException(e);
-                            }
-                        }
-                    });
+                    this.setClientListener(connection.getValue(), controller);
                 }
 
                 this.waitingPlayers = null;
             }
         } else {
+            clientNickname.put(client, nickname);
             this.waitingPlayers = new HashMap<>();
             this.waitingPlayers.put(nickname, client);
             this.state = State.CREATING_GAME;
         }
+    }
+
+    private void updatedWaitingPlayers() {
+        for (var oldConnections: this.waitingPlayers.entrySet()) {
+            try {
+                oldConnections.getValue().updatedPlayerList(this.waitingPlayers.keySet().stream().toList());
+            } catch (RemoteException e) {
+                System.out.println("Error");
+            }
+        }
+    }
+
+    private void setClientListener(Client client, GameController controller) {
+        controller.game.addObserver(new Observer<GameUpdate, ViewEvent>() {
+            @Override
+            public void update(GameUpdate value, ViewEvent eventType) {
+//                Weird cases in which the client is still subscribed even if already disconnected
+
+                if (!clientNickname.containsKey(client)) {
+                    controller.game.deleteObserver(this);
+                    return;
+                }
+
+                try {
+                    client.updateGame(value);
+                } catch (RemoteException e) {
+                    controller.game.deleteObserver(this);
+                }
+            }
+        });
     }
 
     public void setNumPlayer(int numPlayer) throws LobbyException {
@@ -117,12 +162,13 @@ public class Lobby {
     }
 
     public Pair<String, GameController> getNicknameController(Client client) throws LobbyException {
-        if (!this.clientNicknameController.containsKey(client)) {
+        if (!this.clientNickname.containsKey(client)
+                || !this.nicknameController.containsKey(this.clientNickname.get(client))) {
             throw new LobbyException("Client not found in any controller");
         }
 
-
-        return this.clientNicknameController.get(client);
+        var nickname = this.clientNickname.get(client);
+        return new ImmutablePair<>(nickname, this.nicknameController.get(nickname));
     }
 
    public static Lobby getInstance() {
