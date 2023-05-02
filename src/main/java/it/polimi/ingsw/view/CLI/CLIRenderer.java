@@ -42,9 +42,9 @@ public class CLIRenderer {
         List<String> render = new ArrayList<>();
 
         List<Pair<Category, Coordinates>> positions = personalGoalCard.getPositions();
-        String matrix[][] = new String[6][5];
-        for (int i = 0; i < 6; i++) {
-            for (int j = 0; j < 5; j++) {
+        String matrix[][] = new String[Bookshelf.ROWS][Bookshelf.COLUMNS];
+        for (int i = 0; i < Bookshelf.ROWS; i++) {
+            for (int j = 0; j < Bookshelf.COLUMNS; j++) {
                 matrix[i][j] = "  ";
             }
         }
@@ -56,7 +56,10 @@ public class CLIRenderer {
             matrix[coordinate.x][coordinate.y] = color.escape() + square + " " + Color.RESET;
         }
 
-        Arrays.stream(matrix).forEach(row -> Arrays.stream(row).forEach(render::add));
+        for (int i = Bookshelf.ROWS-1; i >= 0; i--) {
+
+            render.addAll(Arrays.asList(matrix[i]));
+        }
 
         return String.valueOf(formatter.format(ASCIIArt.personalGoalCard, render.toArray()));
     }
@@ -72,7 +75,7 @@ public class CLIRenderer {
         List<String> render = new ArrayList<>();
 
         Tile[][] tiles = bookshelf.getBookshelf();
-        String matrix[][] = new String[6][5];
+        String matrix[][] = new String[Bookshelf.ROWS][Bookshelf.COLUMNS];
 
         for (int i = 0; i < 6; i++) {
             for (int j = 0; j < 5; j++) {
@@ -85,7 +88,10 @@ public class CLIRenderer {
             }
         }
 
-        Arrays.stream(matrix).forEach(row -> Arrays.stream(row).forEach(render::add));
+        for (int i = Bookshelf.ROWS-1; i >= 0; i--) {
+
+            render.addAll(Arrays.asList(matrix[i]));
+        }
 
         return String.valueOf(formatter.format(ASCIIArt.bookshelf, render.toArray()));
     }

@@ -64,8 +64,7 @@ public class CLIController {
         List<Tile> removenTile = livingRoom.chooseTiles(c);
         livingRoom.removeTiles(c);
         Lp.getBookshelf().insertTiles(col, removenTile);
-        cli.updateBookshelf(Lp);
-        cli.setLivingRoom(livingRoom);
+        cli.updateAll(livingRoom, Lp);
         cli.showMain(Lp);
 
     }
