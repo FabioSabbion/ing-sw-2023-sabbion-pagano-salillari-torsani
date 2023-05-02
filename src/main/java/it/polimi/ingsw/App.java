@@ -12,7 +12,14 @@ public class App
 {
     public static void main( String[] args ) throws PickTilesException, NotEnoughCellsException {
 
-            var contr = new CLIController();
-            contr.start();
+        controller.game.addObserver(new Observer<GameUpdate, ViewEvent>() {
+            @Override
+            public void update(GameUpdate value, ViewEvent eventType) {
+                System.out.println("NEW UPDATE");
+                System.out.println(value);
+            }
+        });
+
+        controller.update(Arrays.asList(new Coordinates(1, 4), new Coordinates(1, 5)), 3);
     }
 }

@@ -6,11 +6,19 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 
-public class AppServerRMI {
-    public static void main(String[] args) throws RemoteException {
-        ServerRMI server = new ServerRMI();
+public class AppServerRMI extends Thread {
 
-        Registry registry = LocateRegistry.getRegistry();
-        registry.rebind("server", server);
+    @Override
+    public void run() {
+        try {
+            ServerRMI server = new ServerRMI();
+            Registry registry = LocateRegistry.getRegistry();
+            registry.rebind("server", server);
+            System.out.println("RMI Server started");
+        } catch (RemoteException e) {
+            System.out.println("Couldn't start RMI server");
+            e.printStackTrace();
+        }
+
     }
 }

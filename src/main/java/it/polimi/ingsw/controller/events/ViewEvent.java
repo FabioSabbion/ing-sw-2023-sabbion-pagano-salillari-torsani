@@ -5,5 +5,6 @@ public enum ViewEvent {
     GAME_END,
     ACTION_UPDATE,
     GAME_STATE,
-    CONNECT_ERROR
+    CONNECT_ERROR,
+    NUM_PLAYERS,
 }

@@ -60,10 +60,9 @@ public class GameController {
         return results;
     }
 
-    public void update(List<Coordinates> coordinatesList, int column) {
-        System.out.println("WARNING, fake, super fake");
-        //TODO JUST FOR TEST
-
-        this.gameTurn(coordinatesList, column);
+    public void update(List<Coordinates> coordinatesList, int column, String player) {
+        if (player.equals(game.getCurrentPlayer().getNickname())) {
+            this.gameTurn(coordinatesList, column);
+        }
     }
 }
