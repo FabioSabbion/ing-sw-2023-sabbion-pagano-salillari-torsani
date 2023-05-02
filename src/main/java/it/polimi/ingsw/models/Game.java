@@ -112,13 +112,13 @@ public class Game extends Observable<GameUpdate, ViewEvent> {
         );
     }
 
-    public void emitGameState(String nickname) {
+    public void emitGameState() {
         GameUpdate gameUpdate = new GameUpdate(
                 new LivingRoomUpdate(this.livingRoom.getBoard()),
-                Arrays.stream(this.players).map((p) -> PlayerUpdate.from(p, p.getNickname().equals(nickname))).toList(),
+                Arrays.stream(this.players).map((p) -> PlayerUpdate.from(p, true)).toList(),
                 Arrays.asList(this.commonGoalCards),
-                PlayerUpdate.from(this.gameEnder, this.gameEnder.getNickname().equals(nickname)),
-                PlayerUpdate.from(this.currentPlayer, this.currentPlayer.getNickname().equals(nickname))
+                PlayerUpdate.from(this.gameEnder, true),
+                PlayerUpdate.from(this.currentPlayer, true)
         );
 
         notifyObservers(gameUpdate, ViewEvent.GAME_STATE);

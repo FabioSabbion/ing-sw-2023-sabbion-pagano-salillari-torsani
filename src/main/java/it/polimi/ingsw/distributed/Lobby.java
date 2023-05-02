@@ -122,6 +122,8 @@ public class Lobby {
                     this.setClientListener(connection.getValue(), controller);
                 }
 
+                controller.game.emitGameState();
+
                 this.waitingPlayers = null;
             }
         } else {
@@ -161,8 +163,10 @@ public class Lobby {
                     return;
                 }
 
+                var filteredGameUpdate = GameUpdate.filterPersonalGoalCards(value, clientNickname.get(client));
+
                 try {
-                    client.updateGame(value);
+                    client.updateGame(filteredGameUpdate);
                 } catch (RemoteException e) {
                     controller.game.deleteObserver(this);
                 }
