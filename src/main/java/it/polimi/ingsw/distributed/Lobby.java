@@ -35,7 +35,7 @@ public class Lobby {
 
         (new Thread(() -> {
             while (true) {
-                synchronized (clientNickname) {
+                synchronized (this) {
                     List<Client> removableClients = new ArrayList<>();
 
                     for (var client: clientNickname.entrySet()) {
@@ -60,6 +60,10 @@ public class Lobby {
 
                     if (waitingClient != null) {
                         this.updatedWaitingPlayers();
+                        if (waitingPlayers.isEmpty()) {
+                            this.waitingPlayers = null;
+                            this.state = State.WAITING_FOR_GAME;
+                        }
                     }
                 }
 
@@ -96,6 +100,11 @@ public class Lobby {
             if (clientNickname.containsValue(nickname)) {
                 throw new LobbyException("Nickname already in lobby");
             }
+
+            if (this.numPlayer == -1) {
+                throw new LobbyException("Number of players still not known");
+            }
+
             clientNickname.put(client, nickname);
             this.waitingPlayers.put(nickname, client);
 
@@ -116,10 +125,18 @@ public class Lobby {
                 this.waitingPlayers = null;
             }
         } else {
-            clientNickname.put(client, nickname);
-            this.waitingPlayers = new HashMap<>();
-            this.waitingPlayers.put(nickname, client);
-            this.state = State.CREATING_GAME;
+            try {
+                client.askNumPlayers();
+                clientNickname.put(client, nickname);
+                this.waitingPlayers = new HashMap<>();
+                this.waitingPlayers.put(nickname, client);
+
+                this.numPlayer = -1;
+
+                this.state = State.CREATING_GAME;
+            } catch (RemoteException e) {
+                System.out.println("Client not reachable");
+            }
         }
     }
 
@@ -154,8 +171,14 @@ public class Lobby {
     }
 
     public void setNumPlayer(int numPlayer) throws LobbyException {
+        System.out.println("New number of players " + numPlayer);
         if (this.waitingPlayers.size() == 1) {
-            this.numPlayer = numPlayer;
+            if (numPlayer >= 2 && numPlayer <= 4) {
+                this.numPlayer = numPlayer;
+            } else {
+                throw new LobbyException("Wrong number of players");
+            }
+
         } else {
             throw new LobbyException("Not first player, impossible to set number of players");
         }

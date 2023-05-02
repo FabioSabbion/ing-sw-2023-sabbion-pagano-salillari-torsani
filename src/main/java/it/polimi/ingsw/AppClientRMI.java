@@ -20,7 +20,7 @@ public class AppClientRMI {
         String s = sc.nextLine();
         server.setNickname(s, client);
 
-        s = sc.nextLine();
+        server.setNumPlayers(sc.nextInt(), client);
 
         // TODO: run view with client.run
     }

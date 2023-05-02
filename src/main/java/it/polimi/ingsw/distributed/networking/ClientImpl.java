@@ -15,14 +15,14 @@ public class ClientImpl extends UnicastRemoteObject implements Client, Runnable 
         initialize(server);
     }
 
-    public ClientImpl(Server sever, int port) throws RemoteException {
+    public ClientImpl(Server server, int port) throws RemoteException {
         super(port);
-        initialize(sever);
+        initialize(server);
     }
 
-    public ClientImpl(Server sever, int port, RMIClientSocketFactory csf, RMIServerSocketFactory ssf) throws RemoteException {
+    public ClientImpl(Server server, int port, RMIClientSocketFactory csf, RMIServerSocketFactory ssf) throws RemoteException {
         super(port, csf, ssf);
-        initialize(sever);
+        initialize(server);
     }
 
     public void initialize(Server server) throws RemoteException {
@@ -47,11 +47,13 @@ public class ClientImpl extends UnicastRemoteObject implements Client, Runnable 
     @Override
     public void askNumPlayers() throws RemoteException {
         System.out.println("Server asked for the number of players");
+
+
     }
 
     @Override
     public void keepAlive() throws RemoteException {
-        System.out.println("Server asked for keepalive");
+        //System.out.println("Server asked for keepalive");
     }
 
     @Override
