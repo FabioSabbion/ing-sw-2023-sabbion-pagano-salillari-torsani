@@ -59,6 +59,11 @@ public class Player extends Observable<PlayerUpdate, ViewEvent> {
     }
 
     @Override
+    public String toString() {
+        return this.nickname;
+    }
+
+    @Override
     public int hashCode() {
         return nickname.hashCode();
     }
