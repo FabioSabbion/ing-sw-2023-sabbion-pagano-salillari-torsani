@@ -148,6 +148,7 @@ public class CLI {
     }
 
     public void showMain(Player currentPlayer){
+        printer.clearScreen();
         String main = renderLivingRoom;
         main = render.concatAsciiArt(main, renderPersonalGoalCards.get(viewingPlayer));
         main = render.concatAsciiArt(main, renderBookshelves.get(viewingPlayer));
@@ -167,12 +168,13 @@ public class CLI {
     }
 
     public void showCommonGoalCards(){
+        printer.clearScreen();
         printer.print(this.renderCommonGoalCards);
     }
 
     public void showScoreboard(HashMap<Player, Integer> playerPoints){
         List<Player> players = new ArrayList<>(playerPoints.keySet());
-
+        printer.clearScreen();
         printer.print(Color.BLUE.escape() + "The current players' points are: " + Color.RESET);
 
         for (int i = 0; i < players.size(); i++) {
@@ -183,6 +185,7 @@ public class CLI {
     }
 
     public void menuChoice(HashMap<Player, Integer> playerPoints, Player currentPlayer){
+        printer.clearScreen();
         int menuChoice = showMenu();
 
 
@@ -236,6 +239,8 @@ public class CLI {
 
         Scanner scanner = new Scanner(System.in);
 
+        this.showMain(this.viewingPlayer);
+
         printer.print("\n\nWhere you want to place those tiles in your bookshelf? ");
 
         int col = -1;
@@ -253,5 +258,16 @@ public class CLI {
         setLivingRoom(livingRoom);
         updateBookshelf(currentPlayer);
     }
+
+    public void showPlayerTurn(Player currentPlayer){
+        printer.clearScreen();
+        if(viewingPlayer != currentPlayer) {
+            printer.print(currentPlayer + " is now playing his turn");
+        }
+        else{
+            printer.print("Now is your turn");
+        }
+    }
+
 
 }
