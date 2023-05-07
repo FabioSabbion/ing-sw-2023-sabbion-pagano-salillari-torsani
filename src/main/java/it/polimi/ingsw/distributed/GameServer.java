@@ -1,18 +1,18 @@
 package it.polimi.ingsw.distributed;
 
-import it.polimi.ingsw.controller.events.ControllerEvent;
+import it.polimi.ingsw.controller.GameController;
+import it.polimi.ingsw.distributed.networking.Server;
 
-public interface GameServer {
-    /**
-     * Register a client to the server
-     * @param client the client to register
-     */
-    void register(Client client);
+import java.util.Arrays;
+import java.util.Map;
 
-    /**
-     * Notify the server that a client has made a choice
-     * @param client  the client that generated the event
-     * @param arg     the choice made by the client
-     */
-    void update(Client client, ControllerEvent arg);
+public class GameServer {
+    private Map<String, Server> nicknameConnection;
+    private GameController gameController;
+
+    GameServer(Map<String, Server> nicknameConnection) {
+        this.nicknameConnection = nicknameConnection;
+
+        this.gameController = new GameController(Arrays.asList(Arrays.toString(nicknameConnection.values().toArray())));
+    }
 }

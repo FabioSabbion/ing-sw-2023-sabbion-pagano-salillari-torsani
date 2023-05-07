@@ -11,12 +11,14 @@ public class Observable<U, T extends Enum<T>> {
         obs = new Vector<>();
     }
 
-    public synchronized void addObserver(Observer<U, T> o) {
+    public synchronized Observer<U, T> addObserver(Observer<U, T> o) {
         if (o == null)
             throw new NullPointerException();
         if (!obs.contains(o)) {
             obs.addElement(o);
         }
+
+        return o;
     }
 
     public synchronized void deleteObserver(Observer<U, T> o) {

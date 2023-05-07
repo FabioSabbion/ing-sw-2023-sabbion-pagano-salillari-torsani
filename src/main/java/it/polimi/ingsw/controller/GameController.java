@@ -3,26 +3,16 @@ package it.polimi.ingsw.controller;
 import it.polimi.ingsw.models.*;
 import it.polimi.ingsw.models.exceptions.NotEnoughCellsException;
 import it.polimi.ingsw.models.exceptions.PickTilesException;
-import org.apache.commons.lang.NotImplementedException;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class GameController {
-    private Game game;
+    public Game game;
 
-    public GameController(Player[] players) {
-        this.game = createEmptyGame(players, selectCommonGoalCards());
-        this.play();
-    }
-
-    private void play() {
-        while (true) {
-            throw new NotImplementedException();
-            /**
-             * gets from the socket the coordinate list and a column number, than if that socked mached the current
-             * player, calls gameTurn(...)
-             */
-        }
+    public GameController(List<String> nicknames) {
+        this.game = Game.createEmptyGame(nicknames);
     }
 
     private void gameTurn(List<Coordinates> coordinatesList, int column) {
@@ -35,11 +25,6 @@ public class GameController {
 
 
         this.game.nextPlayer();
-        if (this.game.isEnded()) {
-            // TODO CHANGE STATE TO "GAME FINISHED"
-            throw new NotImplementedException();
-        }
-
     }
 
     private void playerAction(List<Coordinates> coordinatesList, int column) {
@@ -75,20 +60,9 @@ public class GameController {
         return results;
     }
 
-    private Game createEmptyGame(Player[] players, CommonGoalCard[] commonGoalCards) {
-        // Create tiles
-        Random rand = new Random();
-        List<Tile> tiles = new ArrayList<>();
-        for (Category c: Category.values()) {
-            for (int i = 0; i < 22; i++) {
-                tiles.add(new Tile(c, Icon.values()[rand.nextInt()%Icon.values().length], Orientation.values()[rand.nextInt()%Icon.values().length]));
-            }
+    public void update(List<Coordinates> coordinatesList, int column, String player) {
+        if (player.equals(game.getCurrentPlayer().getNickname())) {
+            this.gameTurn(coordinatesList, column);
         }
-        Collections.shuffle(tiles);
-        return new Game(players, commonGoalCards, tiles, new LivingRoom());
-    }
-
-    private CommonGoalCard[] selectCommonGoalCards() {
-        throw new NotImplementedException();
     }
 }
