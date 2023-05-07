@@ -3,7 +3,7 @@ package it.polimi.ingsw.view.CLI;
 import it.polimi.ingsw.distributed.GameUpdate;
 import it.polimi.ingsw.distributed.LivingRoomUpdate;
 import it.polimi.ingsw.distributed.PlayerUpdate;
-import it.polimi.ingsw.distributed.networking.Client;
+import it.polimi.ingsw.distributed.networking.ClientImpl;
 import it.polimi.ingsw.distributed.networking.Server;
 import it.polimi.ingsw.models.CommonGoalCard;
 import it.polimi.ingsw.models.Coordinates;
@@ -27,15 +27,30 @@ public class CLIController implements ViewController {
     PlayerUpdate currentPlayer;
     PlayerUpdate gameEnder;
     Server server;
-    Client client;
+    ClientImpl client;
     private CLI cli;
 
     String viewingPlayerNickname;
 
+    public CLIController(ClientImpl client, Server server) {
+        this.client = client;
+        this.server = server;
+
+        client.run(this);
+
+        this.setNickname();
+    }
+
     @Override
-    public void setNickname(String nickname) {
+    public void setNickname() {
         try {
+            System.out.println("Enter a nickname");
+
             Scanner scanner = new Scanner(System.in);
+            String nickname = scanner.nextLine();
+
+//            TODO filter weird nicks
+
             server.setNickname(nickname, client);
             this.viewingPlayerNickname = nickname;
         } catch (RemoteException e) {
@@ -92,9 +107,13 @@ public class CLIController implements ViewController {
     }
 
     @Override
-    public void setNumPlayers(int numPlayers){
+    public void askNumPlayers(){
         try {
+            System.out.println("How many players will join your game? (2 - 4)");
             Scanner scanner = new Scanner(System.in);
+
+//            TODO filter weird things
+
             server.setNumPlayers(parseInt(scanner.nextLine()), client);
         } catch (RemoteException e) {
             throw new RuntimeException(e);

@@ -1,6 +1,7 @@
 package it.polimi.ingsw.distributed.networking;
 
 import it.polimi.ingsw.distributed.GameUpdate;
+import it.polimi.ingsw.view.ViewController;
 
 import java.rmi.RemoteException;
 import java.rmi.server.RMIClientSocketFactory;
@@ -8,47 +9,41 @@ import java.rmi.server.RMIServerSocketFactory;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.List;
 
-public class ClientImpl extends UnicastRemoteObject implements Client, Runnable {
+public class ClientImpl extends UnicastRemoteObject implements Client {
+    ViewController view;
 
-    public ClientImpl(Server server) throws RemoteException {
+    public ClientImpl() throws RemoteException {
         super();
-        initialize(server);
     }
 
-    public ClientImpl(Server server, int port) throws RemoteException {
+    public ClientImpl(int port) throws RemoteException {
         super(port);
-        initialize(server);
     }
 
-    public ClientImpl(Server server, int port, RMIClientSocketFactory csf, RMIServerSocketFactory ssf) throws RemoteException {
+    public ClientImpl(int port, RMIClientSocketFactory csf, RMIServerSocketFactory ssf) throws RemoteException {
         super(port, csf, ssf);
-        initialize(server);
-    }
-
-    public void initialize(Server server) throws RemoteException {
-        // TODO: observe view events and call methods on server
     }
 
     @Override
     public void updatedPlayerList(List<String> players) throws RemoteException {
-        System.out.println("Updating players: " + players.toString());
+        System.err.println("Updated player list");
+        view.updatedPlayerList(players);
     }
 
     @Override
     public void updateGame(GameUpdate update) throws RemoteException {
-        System.out.println("Received game update");
+        view.updateGame(update);
     }
 
     @Override
     public void serverError(String message) throws RemoteException {
-        System.out.println("Error: " + message);
+        view.serverError(message);
     }
 
     @Override
     public void askNumPlayers() throws RemoteException {
-        System.out.println("Server asked for the number of players");
-
-
+        System.err.println("Asked number of players");
+        view.askNumPlayers();
     }
 
     @Override
@@ -56,9 +51,7 @@ public class ClientImpl extends UnicastRemoteObject implements Client, Runnable 
         //System.out.println("Server asked for keepalive");
     }
 
-    @Override
-    public void run() {
-        // TODO: run view
-
+    public void run(ViewController view) {
+        this.view = view;
     }
 }

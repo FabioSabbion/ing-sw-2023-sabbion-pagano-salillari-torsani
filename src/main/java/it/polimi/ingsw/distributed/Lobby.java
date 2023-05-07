@@ -128,15 +128,22 @@ public class Lobby {
             }
         } else {
             try {
-                client.askNumPlayers();
+                System.out.println("Asking num players to " + nickname);
                 clientNickname.put(client, nickname);
                 this.waitingPlayers = new HashMap<>();
                 this.waitingPlayers.put(nickname, client);
 
+                this.state = State.CREATING_GAME;
+
+                client.askNumPlayers();
+//                asdasdasdasdasdsa
+
                 this.numPlayer = -1;
 
-                this.state = State.CREATING_GAME;
+                System.out.println("Creating game");
             } catch (RemoteException e) {
+                this.waitingPlayers = null;
+                this.state = State.WAITING_FOR_GAME;
                 System.out.println("Client not reachable");
             }
         }
@@ -176,7 +183,7 @@ public class Lobby {
 
     public void setNumPlayer(int numPlayer) throws LobbyException {
         System.out.println("New number of players " + numPlayer);
-        if (this.waitingPlayers.size() == 1) {
+        if (this.waitingPlayers != null && this.waitingPlayers.size() == 1) {
             if (numPlayer >= 2 && numPlayer <= 4) {
                 this.numPlayer = numPlayer;
             } else {

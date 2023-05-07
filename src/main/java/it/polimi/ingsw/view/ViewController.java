@@ -6,10 +6,9 @@ import java.util.List;
 
 public interface ViewController {
     void getPlayerChoice(boolean yourTurn);
-
     void updatedPlayerList(List<String> players);
     void updateGame(GameUpdate update);
     void serverError(String message);
-    void setNumPlayers(int numPlayers); //It calls setNumPlayers;
-    void setNickname(String nickname);
+    void askNumPlayers(); //It calls setNumPlayers;
+    void setNickname();
 }

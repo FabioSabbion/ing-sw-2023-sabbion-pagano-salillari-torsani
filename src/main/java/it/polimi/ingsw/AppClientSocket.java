@@ -10,7 +10,7 @@ import java.util.Scanner;
 public class AppClientSocket {
     public static void main(String[] args) throws RemoteException {
         ServerStub serverStub = new ServerStub("localhost", 4445);
-        Client client = new ClientImpl(serverStub);
+        Client client = new ClientImpl();
         new Thread() {
             @Override
             public void run() {
