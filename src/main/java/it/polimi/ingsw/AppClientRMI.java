@@ -17,5 +17,6 @@ public class AppClientRMI {
         ClientImpl client = new ClientImpl();
 
         CLIController cliController = new CLIController(client, server);
+        cliController.start();
     }
 }

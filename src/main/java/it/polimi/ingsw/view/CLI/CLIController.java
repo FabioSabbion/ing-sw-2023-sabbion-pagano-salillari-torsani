@@ -29,16 +29,37 @@ public class CLIController implements ViewController {
     Server server;
     ClientImpl client;
     private CLI cli;
+    private State state;
 
     String viewingPlayerNickname;
 
-    public CLIController(ClientImpl client, Server server) {
+    public CLIController(ClientImpl  client, Server server) {
         this.client = client;
         this.server = server;
+        this.state = State.START;
 
         client.run(this);
+    }
 
+    enum State {
+        START,
+        GET_TILES,
+        ASK_NUM_PLAYERS,
+        GET_PLAYER_CHOICE;
+
+    }
+
+    public void start() {
+        this.changeState(State.START);
         this.setNickname();
+
+        Scanner scanner = new Scanner(System.in);
+
+        while(true) {
+            scanner.nextLine();
+
+            // TODO refactor
+        }
     }
 
     @Override
@@ -61,6 +82,7 @@ public class CLIController implements ViewController {
 
     @Override
     public void getPlayerChoice(boolean yourTurn) {
+        this.changeState(State.GET_PLAYER_CHOICE);
         cli.menuChoice(calculatePoints(), currentPlayer, yourTurn);
     }
 
@@ -108,6 +130,8 @@ public class CLIController implements ViewController {
 
     @Override
     public void askNumPlayers(){
+        this.changeState(State.ASK_NUM_PLAYERS);
+
         try {
             System.out.println("How many players will join your game? (2 - 4)");
             Scanner scanner = new Scanner(System.in);
@@ -133,6 +157,9 @@ public class CLIController implements ViewController {
         return playerPoints;
     }
 
+    private synchronized void changeState(State state){
+        this.state = state;
+    }
 
 }
 
