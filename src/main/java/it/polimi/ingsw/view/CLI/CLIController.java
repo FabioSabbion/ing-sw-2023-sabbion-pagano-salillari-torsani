@@ -92,7 +92,7 @@ public class CLIController implements ViewController {
     }
 
     @Override
-    public int setNumPlayers(int numPlayers){
+    public void setNumPlayers(int numPlayers){
         try {
             Scanner scanner = new Scanner(System.in);
             server.setNumPlayers(parseInt(scanner.nextLine()), client);
@@ -110,6 +110,8 @@ public class CLIController implements ViewController {
             // PersonalGoalCard
             playerPoints.put(player, 5);
         }
+
+        return playerPoints;
     }
 
 
