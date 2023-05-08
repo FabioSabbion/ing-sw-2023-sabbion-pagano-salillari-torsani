@@ -91,8 +91,9 @@ public class CLIController implements ViewController {
                 return;
             }
 
-            server.setNickname(nickname, client);
             this.viewingPlayerNickname = nickname;
+            server.setNickname(nickname, client);
+
         } catch (RemoteException e) {
             throw new RuntimeException(e);
         }
@@ -136,7 +137,6 @@ public class CLIController implements ViewController {
 
     @Override
     public void updateGame(GameUpdate update) {
-
         this.livingRoom = update.livingRoomUpdate(); //Tile[][]
         this.players = update.players();
         this.commonGoalCards = update.commonGoalCards();
@@ -154,7 +154,6 @@ public class CLIController implements ViewController {
 
         cli.showPlayerTurn(currentPlayer);
         this.changeState(State.GET_PLAYER_CHOICE);
-
     }
 
     @Override
@@ -198,8 +197,10 @@ public class CLIController implements ViewController {
         this.state = state;
     }
 
-    public void returnCoordinates(List<Coordinates> coordinatses) {
+    public void returnTiles(List<Coordinates> coordinates, int column) {
         // TODO Server si prende le coordinate e ci fa schifo
+        System.err.println("Sent coordinate to server");
+        this.changeState(State.GET_PLAYER_CHOICE);
         throw new NotImplementedException();
     }
 
@@ -210,18 +211,17 @@ public class CLIController implements ViewController {
         TurnState state;
 
         enum TurnState {
-            WAITING,
             NUM_TILES,
             ROW_LIVING_ROOM,
             ADD_COORDINATE,
             COL_LIVING_ROOM,
-            COL_BOOKSHELF,
-            END;
+            COL_BOOKSHELF;
 
         }
 
         public PlayerTurn() {
-            this.state = TurnState.WAITING;
+            System.out.println("How many tiles do you want? (1 - 3)");
+            this.state = TurnState.NUM_TILES;
             this.rowLivingRoom = -1;
             this.colLivingRoom = -1;
             this.columnBookShelf = -1;
@@ -246,8 +246,6 @@ public class CLIController implements ViewController {
                     case COL_LIVING_ROOM -> this.setColLivingRoom(inputInt);
 
                     case COL_BOOKSHELF -> this.setColBookShelf(inputInt);
-
-                    case END -> returnCoordinates(this.coordinates);
                 }
             } catch (Exception e) {
                 serverError("You must enter a number!");
@@ -260,7 +258,7 @@ public class CLIController implements ViewController {
                 serverError("You must pick a number between 0 and 4");
             else {
                 this.columnBookShelf = inputInt;
-                this.changeState(TurnState.END);
+                returnTiles(this.coordinates, this.columnBookShelf);
             }
         }
 
@@ -284,14 +282,13 @@ public class CLIController implements ViewController {
 
 
         void getNumTiles() {
-            System.out.println("How many tiles do you want? (1 - 3)");
             this.changeState(TurnState.NUM_TILES);
         }
 
         void getRowLivingRoom() {
             cli.showMain(currentPlayer);
             System.out.println("\nChoose Row");
-            this.changeState(TurnState.COL_LIVING_ROOM);
+            this.changeState(TurnState.ROW_LIVING_ROOM);
         }
 
         void getColumnLivingRoom() {
@@ -314,7 +311,7 @@ public class CLIController implements ViewController {
 
         private void getColumnBookshelf() {
             cli.showMain(currentPlayer);
-            System.out.printf("Choose your column (0-%d)", Bookshelf.COLUMNS - 1);
+            System.out.printf("Choose your column (0-%d)\n", Bookshelf.COLUMNS - 1);
             this.changeState(TurnState.COL_BOOKSHELF);
         }
 

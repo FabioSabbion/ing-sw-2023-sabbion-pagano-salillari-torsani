@@ -174,12 +174,10 @@ public class Lobby {
                 var filteredGameUpdate = GameUpdate.filterPersonalGoalCards(value, clientNickname.get(client));
 
                 try {
-                    System.err.println("Qualcosa a caso" + (client == null));
+
                     client.updateGame(filteredGameUpdate);
                 } catch (RemoteException e) {
-                    System.err.println("MEGA ERRORONE");
                     controller.game.deleteObserver(this);
-                    System.err.println(e.getMessage() + " " + e.getCause());
                 }
             }
         });

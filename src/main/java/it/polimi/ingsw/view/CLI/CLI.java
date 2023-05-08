@@ -15,7 +15,7 @@ public class CLI {
     private CLIRenderer render;
     private CLIController controller;
     private static Printer printer = new Printer();
-    private HashMap<PlayerUpdate, String> renderPersonalGoalCards;
+    private String renderPersonalGoalCard;
     private HashMap<PlayerUpdate, String> renderBookshelves;
     private HashMap<CommonGoalCardUpdate, String> renderCommonGoalCards;
     private String renderLivingRoom;
@@ -28,7 +28,10 @@ public class CLI {
 
         this.render = new CLIRenderer();
         this.viewingPlayer = viewingPlayer;
+        this.renderCommonGoalCards = new HashMap<>();
+        this.renderBookshelves = new HashMap<>();
 
+        setRenderPersonalGoalCard();
         setRenderBookshelves(players);
         setRenderCommonGoalCards(commonGoalCards);
         updateAll(livingRoom, players, currentPlayer, gameEnder);
@@ -56,13 +59,8 @@ public class CLI {
         printer.print(Color.GREEN.escape() + choices + Color.RESET);
     }
 
-    private void setRenderPersonalGoalCards(List<PlayerUpdate> players){
-
-        this.renderPersonalGoalCards = new HashMap<>();
-
-        for (PlayerUpdate player : players) {
-            this.renderPersonalGoalCards.put(player, render.renderPersonalGoalCard(player.personalGoalCard()));
-        }
+    private void setRenderPersonalGoalCard(){
+        renderPersonalGoalCard = render.renderPersonalGoalCard(viewingPlayer.personalGoalCard());
     }
 
 
@@ -110,11 +108,11 @@ public class CLI {
     public void showMain(PlayerUpdate currentPlayer){
         printer.clearScreen();
         String main = renderLivingRoom;
-        main = render.concatAsciiArt(main, renderPersonalGoalCards.get(viewingPlayer));
+        main = render.concatAsciiArt(main, renderPersonalGoalCard);
         main = render.concatAsciiArt(main, renderBookshelves.get(viewingPlayer));
         printer.print(main);
 
-        List<PlayerUpdate> players = new ArrayList<>(renderPersonalGoalCards.keySet());
+        List<PlayerUpdate> players = new ArrayList<>(renderBookshelves.keySet());
 
         for (int i = 0; i < players.size(); i++) {
             String toPrint = i +". " + players.get(i).nickname();
@@ -163,7 +161,7 @@ public class CLI {
     public void showPlayerTurn(PlayerUpdate currentPlayer){
         printer.clearScreen();
         if(viewingPlayer != currentPlayer) {
-            printer.print(currentPlayer + " is now playing his turn");
+            printer.print(currentPlayer.nickname() + " is now playing his turn");
         }
         else{
             printer.print("Now is your turn");
