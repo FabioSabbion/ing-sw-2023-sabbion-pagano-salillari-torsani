@@ -7,6 +7,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
 import java.io.FileReader;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,7 +15,7 @@ import java.util.List;
 /**
  * Represents the personal goal card of a Player
  */
-public class PersonalGoalCard implements GoalCard {
+public class PersonalGoalCard implements GoalCard, Serializable {
     private final int[] points = {0, 1, 2, 4, 6, 9, 12};
     private final List<Pair<Category, Coordinates>> positions;
     private static JSONObject jsonFile;
@@ -28,7 +29,7 @@ public class PersonalGoalCard implements GoalCard {
 
         for (Pair<Category, Coordinates> position :
                 this.positions) {
-            if (player.getBookshelf().getBookshelf()[position.getRight().y][position.getRight().x].getCategory() == position.getLeft()) {
+            if (player.getBookshelf().getBookshelf()[position.getRight().y][position.getRight().x].category() == position.getLeft()) {
                 counterCorrect++;
             }
         }

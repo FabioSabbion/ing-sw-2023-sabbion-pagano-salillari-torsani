@@ -179,6 +179,7 @@ public class Lobby {
                 } catch (RemoteException e) {
                     System.err.println("MEGA ERRORONE");
                     controller.game.deleteObserver(this);
+                    System.err.println(e.getMessage() + " " + e.getCause());
                 }
             }
         });

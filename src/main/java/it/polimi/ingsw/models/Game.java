@@ -1,6 +1,7 @@
 package it.polimi.ingsw.models;
 
 import it.polimi.ingsw.controller.events.ViewEvent;
+import it.polimi.ingsw.distributed.CommonGoalCardUpdate;
 import it.polimi.ingsw.distributed.GameUpdate;
 import it.polimi.ingsw.distributed.LivingRoomUpdate;
 import it.polimi.ingsw.distributed.PlayerUpdate;
@@ -116,7 +117,7 @@ public class Game extends Observable<GameUpdate, ViewEvent> {
         GameUpdate gameUpdate = new GameUpdate(
                 new LivingRoomUpdate(this.livingRoom.getBoard()),
                 Arrays.stream(this.players).map((p) -> PlayerUpdate.from(p, true)).toList(),
-                Arrays.asList(this.commonGoalCards),
+                Arrays.stream(this.commonGoalCards).map(CommonGoalCardUpdate::from).toList(),
                 this.gameEnder == null ? null : PlayerUpdate.from(this.gameEnder, true),
                 PlayerUpdate.from(this.currentPlayer, true)
         );

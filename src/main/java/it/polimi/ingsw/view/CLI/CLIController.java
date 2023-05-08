@@ -1,16 +1,16 @@
 package it.polimi.ingsw.view.CLI;
 
+import it.polimi.ingsw.distributed.CommonGoalCardUpdate;
 import it.polimi.ingsw.distributed.GameUpdate;
 import it.polimi.ingsw.distributed.LivingRoomUpdate;
 import it.polimi.ingsw.distributed.PlayerUpdate;
 import it.polimi.ingsw.distributed.networking.ClientImpl;
 import it.polimi.ingsw.distributed.networking.Server;
 import it.polimi.ingsw.models.Bookshelf;
-import it.polimi.ingsw.models.CommonGoalCard;
 import it.polimi.ingsw.models.Coordinates;
 import it.polimi.ingsw.view.CLI.utils.Color;
 import it.polimi.ingsw.view.ViewController;
-import org.apache.commons.lang.NotImplementedException;
+import org.apache.commons.lang3.NotImplementedException;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
@@ -23,7 +23,7 @@ import static java.lang.Integer.parseInt;
 public class CLIController implements ViewController {
     List<PlayerUpdate> players;
     LivingRoomUpdate livingRoom;
-    List<CommonGoalCard> commonGoalCards;
+    List<CommonGoalCardUpdate> commonGoalCards;
     PlayerUpdate currentPlayer;
     PlayerUpdate gameEnder;
     Server server;

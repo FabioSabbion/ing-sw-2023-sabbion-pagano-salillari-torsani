@@ -5,6 +5,7 @@ import it.polimi.ingsw.models.exceptions.NotEnoughCellsException;
 import it.polimi.ingsw.models.exceptions.PickTilesException;
 import it.polimi.ingsw.utils.Observable;
 
+import java.io.Serializable;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -14,7 +15,7 @@ import static java.lang.Math.abs;
 /**
  * Representation of the current state of the bookshelf of the player that keeps it
  */
-public class Bookshelf extends Observable<Bookshelf, ViewEvent> {
+public class Bookshelf extends Observable<Bookshelf, ViewEvent> implements Serializable {
     public static final int ROWS = 6;
     public static final int COLUMNS = 5;
     private final Tile[][] bookshelf;
@@ -79,11 +80,11 @@ public class Bookshelf extends Observable<Bookshelf, ViewEvent> {
         for (int i = 0; i < ROWS; i++) {
             for (int j = 0; j < COLUMNS; j++) {
                 if(this.bookshelf[i][j] == null) continue;
-                if(!groups.containsKey(this.bookshelf[i][j].getCategory())){
-                    groups.put(this.bookshelf[i][j].getCategory(), new ArrayList<>(List.of(new ArrayList<>(List.of(new Coordinates(i,j))))));
+                if(!groups.containsKey(this.bookshelf[i][j].category())){
+                    groups.put(this.bookshelf[i][j].category(), new ArrayList<>(List.of(new ArrayList<>(List.of(new Coordinates(i,j))))));
                 }
                 else{
-                    List<List<Coordinates>> temp = groups.get(this.bookshelf[i][j].getCategory());
+                    List<List<Coordinates>> temp = groups.get(this.bookshelf[i][j].category());
                     for (List<Coordinates> l: temp) {
                         for (Coordinates c: l) {
                             if(abs(c.x - j) <= 1 || abs(c.y - i) <= 1){

@@ -1,8 +1,8 @@
 package it.polimi.ingsw.view.CLI;
 
+import it.polimi.ingsw.distributed.CommonGoalCardUpdate;
 import it.polimi.ingsw.distributed.LivingRoomUpdate;
 import it.polimi.ingsw.distributed.PlayerUpdate;
-import it.polimi.ingsw.models.CommonGoalCard;
 import it.polimi.ingsw.view.CLI.utils.ASCIIArt;
 import it.polimi.ingsw.view.CLI.utils.Color;
 
@@ -17,13 +17,13 @@ public class CLI {
     private static Printer printer = new Printer();
     private HashMap<PlayerUpdate, String> renderPersonalGoalCards;
     private HashMap<PlayerUpdate, String> renderBookshelves;
-    private HashMap<CommonGoalCard, String> renderCommonGoalCards;
+    private HashMap<CommonGoalCardUpdate, String> renderCommonGoalCards;
     private String renderLivingRoom;
     public PlayerUpdate viewingPlayer;
     private PlayerUpdate currentPlayer;
     private PlayerUpdate gameEnder;
 
-    public CLI (LivingRoomUpdate livingRoom, List<PlayerUpdate> players, List<CommonGoalCard> commonGoalCards,
+    public CLI (LivingRoomUpdate livingRoom, List<PlayerUpdate> players, List<CommonGoalCardUpdate> commonGoalCards,
                 PlayerUpdate currentPlayer, PlayerUpdate gameEnder, PlayerUpdate viewingPlayer){
 
         this.render = new CLIRenderer();
@@ -101,8 +101,8 @@ public class CLI {
     }
 
 
-    public void setRenderCommonGoalCards(List<CommonGoalCard> commonGoalCards){
-        for (CommonGoalCard commonGoalCard : commonGoalCards) {
+    public void setRenderCommonGoalCards(List<CommonGoalCardUpdate> commonGoalCards){
+        for (var commonGoalCard : commonGoalCards) {
             this.renderCommonGoalCards.put(commonGoalCard, render.renderCommonGoalCard(commonGoalCard));
         }
     }

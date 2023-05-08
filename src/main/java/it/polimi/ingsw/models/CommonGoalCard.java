@@ -16,16 +16,16 @@ public class CommonGoalCard implements GoalCard {
             {8, 6, 4, 2}
     };
     private final Predicate<Bookshelf> controlFunction;
-    private final List<Player> orderOfCompletionList;
+    public final List<Player> orderOfCompletionList;
     private final int numPlayers;
 
-    public final int cgcNum;
+    public final int cardID;
 
-    public CommonGoalCard(Predicate<Bookshelf> controlFunction, int numPlayers, int cgcNum) {
+    public CommonGoalCard(Predicate<Bookshelf> controlFunction, int numPlayers, int cardID) {
         this.controlFunction = controlFunction;
         this.numPlayers = numPlayers;
         this.orderOfCompletionList = new ArrayList<>(numPlayers);
-        this.cgcNum = cgcNum;
+        this.cardID = cardID;
     }
 
     public int checkGoal(Player player) {

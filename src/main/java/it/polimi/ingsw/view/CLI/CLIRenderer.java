@@ -1,5 +1,6 @@
 package it.polimi.ingsw.view.CLI;
 
+import it.polimi.ingsw.distributed.CommonGoalCardUpdate;
 import it.polimi.ingsw.distributed.LivingRoomUpdate;
 import it.polimi.ingsw.models.*;
 import it.polimi.ingsw.view.CLI.utils.ASCIIArt;
@@ -83,7 +84,7 @@ public class CLIRenderer {
                 if (tiles[i][j] == null) {
                     matrix[i][j] = "  ";
                 } else {
-                    Color color = CategoryToColor(tiles[i][j].getCategory());
+                    Color color = CategoryToColor(tiles[i][j].category());
                     matrix[i][j] = color.escape() + square + " " + Color.RESET;
                 }
             }
@@ -110,7 +111,7 @@ public class CLIRenderer {
                 if (tiles[i][j] == null) {
                     matrix[i][j] = "  ";
                 } else {
-                    Color color = CategoryToColor(tiles[i][j].getCategory());
+                    Color color = CategoryToColor(tiles[i][j].category());
                     matrix[i][j] = color.escape() + square + " " + Color.RESET;
                 }
             }
@@ -121,8 +122,8 @@ public class CLIRenderer {
 
     }
 
-    public static String renderCommonGoalCard(CommonGoalCard commonGoalCard){
-        return ASCIIArt.CommonGoalCards[commonGoalCard.cgcNum];
+    public static String renderCommonGoalCard(CommonGoalCardUpdate commonGoalCard){
+        return ASCIIArt.CommonGoalCards[commonGoalCard.commonGoalCardID()];
     }
 
 

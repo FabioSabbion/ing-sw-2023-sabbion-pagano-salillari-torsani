@@ -120,8 +120,8 @@ public class CommonGoalCardFactory {
                                                 for (int j = 0; j < Bookshelf.COLUMNS; j++) {
                                                     if ((bookshelf.getBookshelf()[i][j] != null
                                                     && bookshelf.getBookshelf()[i + 1][j] != null
-                                                    && bookshelf.getBookshelf()[i][j].getCategory().
-                                                            equals(bookshelf.getBookshelf()[i + 1][j].getCategory()))
+                                                    && bookshelf.getBookshelf()[i][j].category().
+                                                            equals(bookshelf.getBookshelf()[i + 1][j].category()))
                                                             && (flags[i][j] == 0 && flags[i + 1][j] == 0)) {
                                                         repetition++;
                                                         flags[i][j] = 1;
@@ -136,8 +136,8 @@ public class CommonGoalCardFactory {
                                                 for (int j = 0; j < Bookshelf.COLUMNS - 1; j++) {
                                                     if ((bookshelf.getBookshelf()[i][j] != null
                                                             && bookshelf.getBookshelf()[i + 1][j] != null
-                                                            && bookshelf.getBookshelf()[i][j].getCategory().
-                                                            equals(bookshelf.getBookshelf()[i][j + 1].getCategory()))
+                                                            && bookshelf.getBookshelf()[i][j].category().
+                                                            equals(bookshelf.getBookshelf()[i][j + 1].category()))
                                                             && (flags[i][j] == 0 && flags[i][j + 1] == 0)) {
                                                         repetition++;
                                                         flags[i][j] = 1;
@@ -163,14 +163,14 @@ public class CommonGoalCardFactory {
                                                         && bookshelf.getBookshelf()[i][j+2] != null
                                                         && bookshelf.getBookshelf()[i+1][j+1] != null
                                                         &&bookshelf.getBookshelf()[i+2][j+2] != null
-                                                    && bookshelf.getBookshelf()[i][j].getCategory().
-                                                            equals(bookshelf.getBookshelf()[i + 2][j].getCategory())
-                                                            && bookshelf.getBookshelf()[i][j].getCategory().
-                                                            equals(bookshelf.getBookshelf()[i][j + 2].getCategory())
-                                                            && bookshelf.getBookshelf()[i][j].getCategory().
-                                                            equals(bookshelf.getBookshelf()[i + 1][j + 1].getCategory())
-                                                            && bookshelf.getBookshelf()[i][j].getCategory().
-                                                            equals(bookshelf.getBookshelf()[i + 2][j + 2].getCategory())) {
+                                                    && bookshelf.getBookshelf()[i][j].category().
+                                                            equals(bookshelf.getBookshelf()[i + 2][j].category())
+                                                            && bookshelf.getBookshelf()[i][j].category().
+                                                            equals(bookshelf.getBookshelf()[i][j + 2].category())
+                                                            && bookshelf.getBookshelf()[i][j].category().
+                                                            equals(bookshelf.getBookshelf()[i + 1][j + 1].category())
+                                                            && bookshelf.getBookshelf()[i][j].category().
+                                                            equals(bookshelf.getBookshelf()[i + 2][j + 2].category())) {
                                                         return true;
                                                     }
                                                 }
@@ -188,16 +188,16 @@ public class CommonGoalCardFactory {
                                                         && bookshelf.getBookshelf()[0][Bookshelf.COLUMNS - 1] != null
                                                         && bookshelf.getBookshelf()[Bookshelf.ROWS - 1][0] != null
                                                         && bookshelf.getBookshelf()[Bookshelf.ROWS - 1][Bookshelf.COLUMNS - 1] != null &&
-                                                        bookshelf.getBookshelf()[0][0].getCategory().
+                                                        bookshelf.getBookshelf()[0][0].category().
                                                         equals(bookshelf.getBookshelf()[0][Bookshelf.COLUMNS - 1].
-                                                                getCategory())
-                                                        && bookshelf.getBookshelf()[0][0].getCategory().
+                                                                category())
+                                                        && bookshelf.getBookshelf()[0][0].category().
                                                         equals(bookshelf.getBookshelf()[Bookshelf.ROWS - 1][0].
-                                                                getCategory())
-                                                        && bookshelf.getBookshelf()[0][0].getCategory().
+                                                                category())
+                                                        && bookshelf.getBookshelf()[0][0].category().
                                                         equals(bookshelf.
                                                                 getBookshelf()[Bookshelf.ROWS - 1][Bookshelf.COLUMNS - 1].
-                                                                getCategory());
+                                                                category());
                                             }
                                         };
                                     } else {
@@ -212,12 +212,12 @@ public class CommonGoalCardFactory {
                                                                 && bookshelf.getBookshelf()[i+1][j] != null
                                                                 && bookshelf.getBookshelf()[i][j+1] != null
                                                                 && bookshelf.getBookshelf()[i+1][j+1] != null
-                                                                && bookshelf.getBookshelf()[i][j].getCategory().
-                                                                equals(bookshelf.getBookshelf()[i + 1][j].getCategory()))
-                                                                && (bookshelf.getBookshelf()[i][j].getCategory().
-                                                                equals(bookshelf.getBookshelf()[i + 1][j + 1].getCategory()))
-                                                                && (bookshelf.getBookshelf()[i][j].getCategory().
-                                                                equals(bookshelf.getBookshelf()[i][j + 1].getCategory()))
+                                                                && bookshelf.getBookshelf()[i][j].category().
+                                                                equals(bookshelf.getBookshelf()[i + 1][j].category()))
+                                                                && (bookshelf.getBookshelf()[i][j].category().
+                                                                equals(bookshelf.getBookshelf()[i + 1][j + 1].category()))
+                                                                && (bookshelf.getBookshelf()[i][j].category().
+                                                                equals(bookshelf.getBookshelf()[i][j + 1].category()))
                                                                 && (flags[i][j] == 0 && flags[i + 1][j] == 0 &&
                                                                 flags[i + 1][j + 1] == 0 && flags[i][j + 1] == 0)) {
                                                             repetition++;
@@ -285,12 +285,12 @@ public class CommonGoalCardFactory {
                                                     && bookshelf.getBookshelf()[i+1][j] != null
                                                     && bookshelf.getBookshelf()[i+2][j] != null
                                                     && bookshelf.getBookshelf()[i+3][j] != null
-                                                    && bookshelf.getBookshelf()[i][j].getCategory().
-                                                    equals(bookshelf.getBookshelf()[i + 1][j].getCategory()))
-                                                    && (bookshelf.getBookshelf()[i][j].getCategory().
-                                                    equals(bookshelf.getBookshelf()[i + 2][j].getCategory()))
-                                                    && (bookshelf.getBookshelf()[i][j].getCategory().
-                                                    equals(bookshelf.getBookshelf()[i + 3][j].getCategory()))
+                                                    && bookshelf.getBookshelf()[i][j].category().
+                                                    equals(bookshelf.getBookshelf()[i + 1][j].category()))
+                                                    && (bookshelf.getBookshelf()[i][j].category().
+                                                    equals(bookshelf.getBookshelf()[i + 2][j].category()))
+                                                    && (bookshelf.getBookshelf()[i][j].category().
+                                                    equals(bookshelf.getBookshelf()[i + 3][j].category()))
                                                     && (flags[i][j] == 0 && flags[i + 1][j] == 0
                                                     && flags[i + 2][j] == 0 && flags[i + 3][j] == 0)) {
                                                 repetition++;
@@ -310,12 +310,12 @@ public class CommonGoalCardFactory {
                                                     && bookshelf.getBookshelf()[i][j+1] != null
                                                     && bookshelf.getBookshelf()[i][j+2] != null
                                                     && bookshelf.getBookshelf()[i][j+3] != null
-                                                    && bookshelf.getBookshelf()[i][j].getCategory().
-                                                    equals(bookshelf.getBookshelf()[i][j + 1].getCategory()))
-                                                    && (bookshelf.getBookshelf()[i][j].getCategory().
-                                                    equals(bookshelf.getBookshelf()[i][j + 2].getCategory()))
-                                                    && (bookshelf.getBookshelf()[i][j].getCategory().
-                                                    equals(bookshelf.getBookshelf()[i][j + 3].getCategory()))
+                                                    && bookshelf.getBookshelf()[i][j].category().
+                                                    equals(bookshelf.getBookshelf()[i][j + 1].category()))
+                                                    && (bookshelf.getBookshelf()[i][j].category().
+                                                    equals(bookshelf.getBookshelf()[i][j + 2].category()))
+                                                    && (bookshelf.getBookshelf()[i][j].category().
+                                                    equals(bookshelf.getBookshelf()[i][j + 3].category()))
                                                     && (flags[i][j] == 0 && flags[i][j + 1] == 0
                                                     && flags[i][j + 2] == 0 && flags[i][j + 3] == 0)) {
                                                 repetition++;
@@ -344,7 +344,7 @@ public class CommonGoalCardFactory {
                                         numCategories = 0;
                                         for (int j = 0; j < Bookshelf.ROWS; j++) {
                                             if(bookshelf.getBookshelf()[j][i] != null){
-                                                switch (bookshelf.getBookshelf()[j][i].getCategory()) {
+                                                switch (bookshelf.getBookshelf()[j][i].category()) {
                                                     case CATS -> countCategories[0]++;
                                                     case BOOKS -> countCategories[1]++;
                                                     case FRAMES -> countCategories[2]++;
@@ -378,7 +378,7 @@ public class CommonGoalCardFactory {
                                         numCategories = 0;
                                         for (int i = 0; i < Bookshelf.COLUMNS; i++) {
                                             if(bookshelf.getBookshelf()[j][i] != null){
-                                                switch (bookshelf.getBookshelf()[j][i].getCategory()) {
+                                                switch (bookshelf.getBookshelf()[j][i].category()) {
                                                     case CATS -> countCategories[0]++;
                                                     case BOOKS -> countCategories[1]++;
                                                     case FRAMES -> countCategories[2]++;
@@ -415,7 +415,7 @@ public class CommonGoalCardFactory {
                                             for (int i = 0; i < Bookshelf.ROWS; i++) {
                                                 for (int j = 0; j < Bookshelf.COLUMNS; j++) {
                                                     if(bookshelf.getBookshelf()[j][i] != null){
-                                                        switch (bookshelf.getBookshelf()[j][i].getCategory()) {
+                                                        switch (bookshelf.getBookshelf()[j][i].category()) {
                                                             case CATS -> countCategories[0]++;
                                                             case BOOKS -> countCategories[1]++;
                                                             case FRAMES -> countCategories[2]++;
@@ -444,14 +444,14 @@ public class CommonGoalCardFactory {
                                                     && bookshelf.getBookshelf()[2][2] != null
                                                     && bookshelf.getBookshelf()[3][3] != null
                                                     && bookshelf.getBookshelf()[4][4] != null
-                                                    && bookshelf.getBookshelf()[0][0].getCategory().
-                                                    equals(bookshelf.getBookshelf()[1][1].getCategory())
-                                                    && bookshelf.getBookshelf()[0][0].getCategory().
-                                                    equals(bookshelf.getBookshelf()[2][2].getCategory())
-                                                    && bookshelf.getBookshelf()[0][0].getCategory().
-                                                    equals(bookshelf.getBookshelf()[3][3].getCategory())
-                                                    && bookshelf.getBookshelf()[0][0].getCategory().
-                                                    equals(bookshelf.getBookshelf()[4][4].getCategory());
+                                                    && bookshelf.getBookshelf()[0][0].category().
+                                                    equals(bookshelf.getBookshelf()[1][1].category())
+                                                    && bookshelf.getBookshelf()[0][0].category().
+                                                    equals(bookshelf.getBookshelf()[2][2].category())
+                                                    && bookshelf.getBookshelf()[0][0].category().
+                                                    equals(bookshelf.getBookshelf()[3][3].category())
+                                                    && bookshelf.getBookshelf()[0][0].category().
+                                                    equals(bookshelf.getBookshelf()[4][4].category());
                                         }
                                     };
                                 }
