@@ -117,7 +117,7 @@ public class Game extends Observable<GameUpdate, ViewEvent> {
                 new LivingRoomUpdate(this.livingRoom.getBoard()),
                 Arrays.stream(this.players).map((p) -> PlayerUpdate.from(p, true)).toList(),
                 Arrays.asList(this.commonGoalCards),
-                PlayerUpdate.from(this.gameEnder, true),
+                this.gameEnder == null ? null : PlayerUpdate.from(this.gameEnder, true),
                 PlayerUpdate.from(this.currentPlayer, true)
         );
 

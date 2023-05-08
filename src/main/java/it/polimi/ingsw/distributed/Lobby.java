@@ -111,6 +111,7 @@ public class Lobby {
             this.updatedWaitingPlayers();
 
             if (this.numPlayer == this.waitingPlayers.size()) {
+                System.err.println("Same number of player");
                 this.state = State.WAITING_FOR_GAME;
                 this.numPlayer = -1;
 
@@ -173,8 +174,10 @@ public class Lobby {
                 var filteredGameUpdate = GameUpdate.filterPersonalGoalCards(value, clientNickname.get(client));
 
                 try {
+                    System.err.println("Qualcosa a caso" + (client == null));
                     client.updateGame(filteredGameUpdate);
                 } catch (RemoteException e) {
+                    System.err.println("MEGA ERRORONE");
                     controller.game.deleteObserver(this);
                 }
             }
