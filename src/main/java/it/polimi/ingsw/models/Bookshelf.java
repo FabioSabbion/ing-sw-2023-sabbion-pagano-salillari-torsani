@@ -24,6 +24,21 @@ public class Bookshelf extends Observable<Bookshelf, ViewEvent> implements Seria
         this.bookshelf = new Tile[ROWS][COLUMNS];
     }
 
+    public int pickFirstFreeIndex(int column, List<Tile> pickedTiles) throws  NotEnoughCellsException {
+        int firstEmptyIndex = 0;
+        for (int i = 0; i < ROWS; i++) {
+            if(this.bookshelf[i][column] == null){
+                firstEmptyIndex = i;
+                break;
+            }
+        }
+        if (firstEmptyIndex + pickedTiles.size() > ROWS){
+            throw new NotEnoughCellsException("Not enough free cells available in this column");
+        }
+
+        return firstEmptyIndex;
+    }
+
     /**
      * Try to insert a list of tiles into a <b>single</b> column, one after the other in the order in which they are
      * given
@@ -38,16 +53,9 @@ public class Bookshelf extends Observable<Bookshelf, ViewEvent> implements Seria
         if (pickedTiles.size() > 3 || pickedTiles.isEmpty()){
             throw new PickTilesException("You can't insert " + pickedTiles.size() + " tiles");
         }
-        int firstEmptyIndex = 0;
-        for (int i = 0; i < ROWS; i++) {
-            if(this.bookshelf[i][column] == null){
-                firstEmptyIndex = i;
-                break;
-            }
-        }
-        if (firstEmptyIndex + pickedTiles.size() > ROWS){
-            throw new NotEnoughCellsException("Not enough free cells available in this column");
-        }
+
+        int firstEmptyIndex = this.pickFirstFreeIndex(column, pickedTiles);
+
         for (int i = firstEmptyIndex; i < firstEmptyIndex + pickedTiles.size(); i++) {
             this.bookshelf[i][column] = pickedTiles.get(i - firstEmptyIndex);
         }

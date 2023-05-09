@@ -1,8 +1,8 @@
 package it.polimi.ingsw.view.CLI;
 
 import it.polimi.ingsw.distributed.CommonGoalCardUpdate;
-import it.polimi.ingsw.distributed.LivingRoomUpdate;
 import it.polimi.ingsw.distributed.PlayerUpdate;
+import it.polimi.ingsw.models.LivingRoom;
 import it.polimi.ingsw.view.CLI.utils.ASCIIArt;
 import it.polimi.ingsw.view.CLI.utils.Color;
 
@@ -16,14 +16,14 @@ public class CLI {
     private CLIController controller;
     private static Printer printer = new Printer();
     private String renderPersonalGoalCard;
-    private HashMap<PlayerUpdate, String> renderBookshelves;
+    private HashMap<String, String> renderBookshelves;
     private HashMap<CommonGoalCardUpdate, String> renderCommonGoalCards;
     private String renderLivingRoom;
     public PlayerUpdate viewingPlayer;
     private PlayerUpdate currentPlayer;
     private PlayerUpdate gameEnder;
 
-    public CLI (LivingRoomUpdate livingRoom, List<PlayerUpdate> players, List<CommonGoalCardUpdate> commonGoalCards,
+    public CLI (LivingRoom livingRoom, List<PlayerUpdate> players, List<CommonGoalCardUpdate> commonGoalCards,
                 PlayerUpdate currentPlayer, PlayerUpdate gameEnder, PlayerUpdate viewingPlayer){
 
         this.render = new CLIRenderer();
@@ -65,19 +65,16 @@ public class CLI {
 
 
     private void setRenderBookshelves(List<PlayerUpdate> players){
-
-        this.renderBookshelves = new HashMap<>();
-
         for (PlayerUpdate player : players) {
-            this.renderBookshelves.put(player, render.renderBookshelf(player.bookshelf()));
+            this.renderBookshelves.put(player.nickname(), render.renderBookshelf(player.bookshelf()));
         }
     }
 
     public void updateBookshelf(PlayerUpdate player){
-        this.renderBookshelves.put(player, render.renderBookshelf(player.bookshelf()));
+        this.renderBookshelves.put(player.nickname(), render.renderBookshelf(player.bookshelf()));
     }
 
-    public void setLivingRoom(LivingRoomUpdate livingRoom){
+    public void setLivingRoom(LivingRoom livingRoom){
         this.renderLivingRoom = render.renderLivingRoom(livingRoom);
     }
 
@@ -89,7 +86,7 @@ public class CLI {
         List<PlayerUpdate> players = new ArrayList<>(playerPoints.keySet());
 
         for (PlayerUpdate player : players) {
-            concatBookshelves = render.concatAsciiArt(concatBookshelves, this.renderBookshelves.get(player));
+            concatBookshelves = render.concatAsciiArt(concatBookshelves, this.renderBookshelves.get(player.nickname()));
         }
         printer.print(concatBookshelves + "\n\n\n");
 
@@ -109,15 +106,15 @@ public class CLI {
         printer.clearScreen();
         String main = renderLivingRoom;
         main = render.concatAsciiArt(main, renderPersonalGoalCard);
-        main = render.concatAsciiArt(main, renderBookshelves.get(viewingPlayer));
+        main = render.concatAsciiArt(main, renderBookshelves.get(viewingPlayer.nickname()));
         printer.print(main);
 
-        List<PlayerUpdate> players = new ArrayList<>(renderBookshelves.keySet());
+        var players = new ArrayList<>(renderBookshelves.keySet());
 
         for (int i = 0; i < players.size(); i++) {
-            String toPrint = i +". " + players.get(i).nickname();
+            String toPrint = i +". " + players.get(i);
 
-            if(players.get(i).equals(currentPlayer)){
+            if(players.get(i).equals(currentPlayer.nickname())){
                 toPrint = Color.RED.escape() + toPrint + Color.RESET;
             }
 
@@ -149,7 +146,7 @@ public class CLI {
     }
 
 
-    public void updateAll(LivingRoomUpdate livingRoom, List<PlayerUpdate> players, PlayerUpdate currentPlayer, PlayerUpdate gameEnder){
+    public void updateAll(LivingRoom livingRoom, List<PlayerUpdate> players, PlayerUpdate currentPlayer, PlayerUpdate gameEnder){
 
         setLivingRoom(livingRoom);
         setRenderBookshelves(players);

@@ -95,6 +95,7 @@ public class Lobby {
                 clientNickname.put(client, nickname);
 
                 this.setClientListener(client, nicknameController.get(nickname));
+                nicknameController.get(nickname).game.emitGameState();
             }
         } else if(this.state == State.CREATING_GAME) {
             if (clientNickname.containsValue(nickname)) {
@@ -137,7 +138,6 @@ public class Lobby {
                 this.state = State.CREATING_GAME;
 
                 client.askNumPlayers();
-//                asdasdasdasdasdsa
 
                 this.numPlayer = -1;
 

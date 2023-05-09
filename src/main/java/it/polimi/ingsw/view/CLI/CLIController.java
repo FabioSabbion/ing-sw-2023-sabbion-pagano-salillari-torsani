@@ -2,15 +2,16 @@ package it.polimi.ingsw.view.CLI;
 
 import it.polimi.ingsw.distributed.CommonGoalCardUpdate;
 import it.polimi.ingsw.distributed.GameUpdate;
-import it.polimi.ingsw.distributed.LivingRoomUpdate;
 import it.polimi.ingsw.distributed.PlayerUpdate;
 import it.polimi.ingsw.distributed.networking.ClientImpl;
 import it.polimi.ingsw.distributed.networking.Server;
 import it.polimi.ingsw.models.Bookshelf;
 import it.polimi.ingsw.models.Coordinates;
+import it.polimi.ingsw.models.LivingRoom;
+import it.polimi.ingsw.models.exceptions.NotEnoughCellsException;
+import it.polimi.ingsw.models.exceptions.PickTilesException;
 import it.polimi.ingsw.view.CLI.utils.Color;
 import it.polimi.ingsw.view.ViewController;
-import org.apache.commons.lang3.NotImplementedException;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
@@ -22,7 +23,7 @@ import static java.lang.Integer.parseInt;
 
 public class CLIController implements ViewController {
     List<PlayerUpdate> players;
-    LivingRoomUpdate livingRoom;
+    LivingRoom livingRoom;
     List<CommonGoalCardUpdate> commonGoalCards;
     PlayerUpdate currentPlayer;
     PlayerUpdate gameEnder;
@@ -135,13 +136,33 @@ public class CLIController implements ViewController {
         players.stream().forEach(System.out::println);
     }
 
+
     @Override
     public void updateGame(GameUpdate update) {
-        this.livingRoom = update.livingRoomUpdate(); //Tile[][]
-        this.players = update.players();
-        this.commonGoalCards = update.commonGoalCards();
-        this.currentPlayer = update.currentPlayer();
-        this.gameEnder = update.gameEnder();
+        this.livingRoom = update.livingRoom() == null ? this.livingRoom : update.livingRoom();
+        if (update.players() != null) {
+            if (this.players == null) {
+                this.players = new ArrayList<>(update.players());
+            } else {
+                for (int i = 0; i < update.players().size(); i++) {
+                    for (int j = 0; j < this.players.size(); j++) {
+                        if (this.players.get(j).nickname().equals(update.players().get(i).nickname())) {
+                            this.players.set(j, update.players().get(i));
+                        }
+                    }
+                }
+            }
+        }
+        this.commonGoalCards = update.commonGoalCards() == null ? this.commonGoalCards : update.commonGoalCards();
+
+        boolean updatedCurrent = false;
+
+        if (update.currentPlayer() != null) {
+            this.currentPlayer = update.currentPlayer();
+            updatedCurrent = true;
+        }
+
+        this.gameEnder = update.gameEnder() == null ? this.gameEnder : update.gameEnder();
 
         if (cli == null) {
             PlayerUpdate viewingPlayer = players.stream().filter(p -> p.nickname().equals(viewingPlayerNickname))
@@ -150,10 +171,16 @@ public class CLIController implements ViewController {
                     this.currentPlayer, this.gameEnder, viewingPlayer);
         }
 
+
+        System.err.println("Livingroom " + this.livingRoom);
         cli.updateAll(this.livingRoom, this.players, this.currentPlayer, this.gameEnder);
 
-        cli.showPlayerTurn(currentPlayer);
-        this.changeState(State.GET_PLAYER_CHOICE);
+
+
+        if (updatedCurrent) {
+            cli.showPlayerTurn(currentPlayer);
+            this.changeState(State.GET_PLAYER_CHOICE);
+        }
     }
 
     @Override
@@ -198,10 +225,32 @@ public class CLIController implements ViewController {
     }
 
     public void returnTiles(List<Coordinates> coordinates, int column) {
-        // TODO Server si prende le coordinate e ci fa schifo
-        System.err.println("Sent coordinate to server");
-        this.changeState(State.GET_PLAYER_CHOICE);
-        throw new NotImplementedException();
+        System.err.println("Players " + this.players);
+        var yourself = this.players.stream().filter(player -> player.nickname().equals(this.viewingPlayerNickname)).findFirst().get();
+
+        try {
+            var tempTiles = this.livingRoom.chooseTiles(coordinates);
+
+            yourself.bookshelf().pickFirstFreeIndex(column, tempTiles);
+
+            this.changeState(State.GET_PLAYER_CHOICE);
+
+            this.server.playerMove(coordinates, column, client);
+        } catch (PickTilesException ignored) {
+            this.serverError("You cannot choose this tiles");
+
+            this.playerTurn = new PlayerTurn();
+            this.changeState(State.YOUR_TURN);
+        } catch (NotEnoughCellsException e) {
+            this.serverError("This column is already full");
+
+            this.playerTurn = new PlayerTurn();
+            this.changeState(State.YOUR_TURN);
+        } catch (RemoteException e) {
+            this.changeState(State.GET_PLAYER_CHOICE);
+
+            this.serverError("Connection problem");
+        }
     }
 
 
@@ -236,6 +285,7 @@ public class CLIController implements ViewController {
         public void inputHandler(String input) {
 
             try {
+                System.err.println("TEST " + input + " " + input.length());
                 int inputInt = Integer.parseInt(input);
 
                 switch (this.state) {
@@ -247,7 +297,7 @@ public class CLIController implements ViewController {
 
                     case COL_BOOKSHELF -> this.setColBookShelf(inputInt);
                 }
-            } catch (Exception e) {
+            } catch (NumberFormatException e) {
                 serverError("You must enter a number!");
             }
 
