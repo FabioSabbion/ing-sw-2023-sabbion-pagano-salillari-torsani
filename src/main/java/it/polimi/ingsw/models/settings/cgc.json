@@ -13,7 +13,11 @@
                     "x": 0,
                     "y": 1
                 }
-            ]
+            ],
+            "graphics" : {
+                "ascii" : "+---+\n| = |\n|---| x 6\n| = |\n+---+",
+                "gui" : "NotAvailable"
+            }
         },
         {
             "maxDistinctCategoryNumber": 5,
@@ -37,7 +41,11 @@
                     "x": 5,
                     "y": 4
                 }
-            ]
+            ],
+            "graphics" : {
+            "ascii" : "+---+---+---+---+---+\n| = |   |   |   | = |\n|---|---|---|---|---|\n|   |   |   |   |   |\n|---|---|---|---|---|\n|   |   |   |   |   |\n|---|---|---|---|---|\n|   |   |   |   |   |\n|---|---|---|---|---|\n|   |   |   |   |   |\n|---|---|---|---|---|\n| = |   |   |   | = |\n+---+---+---+---+---+",
+            "gui" : "NotAvailable"
+            }
         },
         {
             "maxDistinctCategoryNumber": 3,
@@ -61,7 +69,11 @@
                     "x": 0,
                     "y": 3
                 }
-            ]
+            ],
+            "graphics" : {
+            "ascii" : "+---+\n| = |\n|---|\n| = |\n|---| x 4\n| = |\n|---|\n| = |\n+---+",
+            "gui" : "NotAvailable"
+            }
         },
         {
             "maxDistinctCategoryNumber": 5,
@@ -85,7 +97,11 @@
                     "x": 1,
                     "y": 1
                 }
-            ]
+            ],
+            "graphics" : {
+            "ascii" : "+---+---+\n| = | = |\n|---|---| x 2\n| = | = |\n+---+---+",
+            "gui" : "NotAvailable"
+            }
         },
         {
             "maxDistinctCategoryNumber": 3,
@@ -117,7 +133,11 @@
                     "x": 5,
                     "y": 0
                 }
-            ]
+            ],
+            "graphics" : {
+            "ascii" : "+---+\n|   |\n|---|\n|   |\n|---| max 3 !=\n|   |\n|---|\n|   | x 3\n|---|\n|   |\n|---| \n|   |\n+---+",
+            "gui" : "NotAvailable"
+            }
         },
         {
             "maxDistinctCategoryNumber": 6,
@@ -129,7 +149,11 @@
                     "x": 0,
                     "y": 0
                 }
-            ]
+            ],
+            "graphics" : {
+            "ascii" : "+---+\n| = | x 8\n+---+",
+            "gui" : "NotAvailable"
+            }
         },
         {
             "maxDistinctCategoryNumber": 6,
@@ -157,7 +181,11 @@
                     "x": 4,
                     "y": 4
                 }
-            ]
+            ],
+            "graphics" : {
+                "ascii" : "+---+\n| = |\n+---|---+\n    | = |\n    +---+---+\n        | = |\n        +---|---+\n            | = |\n            +---|---+\n                | = |\n                +---+",
+                "gui" : "NotAvailable"
+            }
         },
         {
             "maxDistinctCategoryNumber": 3,
@@ -185,7 +213,11 @@
                     "x": 0,
                     "y": 4
                 }
-            ]
+            ],
+            "graphics" : {
+                "ascii" : "+---+---+---+---+---+\n| %s| %s| %s| %s| %s|\n+---+---+---+---+---+\n       max 3 !=\n          x4",
+                "gui" : "NotAvailable"
+            }
         },
         {
             "maxDistinctCategoryNumber": 6,
@@ -217,7 +249,11 @@
                     "x": 5,
                     "y": 0
                 }
-            ]
+            ],
+            "graphics" : {
+                "ascii" : "+---+\n|=/=|\n|---|\n|=/=|\n|---|\n|=/=|\n|---| x 2\n|=/=|\n|---|\n|=/=|\n|---| \n|=/=|\n+---+",
+                "gui" : "NotAvailable"
+            }
         },
         {
             "maxDistinctCategoryNumber": 5,
@@ -245,7 +281,11 @@
                     "x": 0,
                     "y": 4
                 }
-            ]
+            ],
+            "graphics" : {
+                "ascii" : "+---+---+---+---+---+\n|=/=|=/=|=/=|=/=|=/=|\n+---+---+---+---+---+\n          x3",
+                "gui" : "NotAvailable"
+            }
         },
         {
             "maxDistinctCategoryNumber": 5,
@@ -273,7 +313,11 @@
                     "x": 2,
                     "y": 2
                 }
-            ]
+            ],
+            "graphics" : {
+                "ascii" : "+---+   +---+\n| = |   | = |\n+---+---+---+\n    | = |\n+---+---+---+\n| = |   | = |\n+---+   +---+",
+                "gui" : "NotAvailable"
+            }
         },
         {
             "maxDistinctCategoryNumber": 6,
@@ -285,6 +329,10 @@
                     "x": 0,
                     "y": 0
                 }
-            ]
+            ],
+            "graphics" : {
+                "ascii" : "+---+\n|   |\n|---|---+\n|   |   |\n|---|---|---+\n|   |   |   |\n|---|---|---|---+\n|   |   |   |   |\n|---|---|---|---|---+\n|   |   |   |   |   |\n+---+---+---+---+---+",
+                "gui" : "NotAvailable"
+            }
         }
     ]

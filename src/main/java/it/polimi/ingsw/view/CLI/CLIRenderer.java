@@ -11,6 +11,7 @@ import java.util.*;
 public class CLIRenderer {
     private static final Map<Category, Color> categoryColorMap = new HashMap<>();
 
+
     static {
         categoryColorMap.put(Category.CATS, Color.GREEN);
         categoryColorMap.put(Category.BOOKS, Color.WHITE);
@@ -124,8 +125,10 @@ public class CLIRenderer {
     }
 
     public static String renderCommonGoalCard(CommonGoalCardUpdate commonGoalCard){
-        return ASCIIArt.CommonGoalCards[commonGoalCard.commonGoalCardID()];
+        return CommonGoalCardFactory.getASCIIForCard(commonGoalCard.commonGoalCardID());
     }
+
+
 
 
     public static String concatAsciiArt(String multilineString1, String multilineString2) {

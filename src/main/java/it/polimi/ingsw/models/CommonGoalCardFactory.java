@@ -13,7 +13,7 @@ import java.util.function.Predicate;
 import java.util.Random;
 
 public class CommonGoalCardFactory {
-    private final List<JSONObject> jsonObjects = new ArrayList<JSONObject>();
+    private static final List<JSONObject> jsonObjects = new ArrayList<JSONObject>();
     private List<Coordinates> schema = new ArrayList<>();
     private int maxDistinctCategoryNumber;
     private int exactCategoryNumber;
@@ -21,29 +21,55 @@ public class CommonGoalCardFactory {
     private int numPlayers;
     private boolean othersEmpty;
 
-    private final JSONParser parser = new JSONParser();
+    private static final JSONParser parser = new JSONParser();
 
-    public CommonGoalCard buildFromJson(int numPlayers) {
+    public static String getASCIIForCard(int cardID) {
+        if(jsonObjects.size() == 0) {
+            reloadJson();
+        }
+        JSONObject graphic = (JSONObject) jsonObjects.get(cardID).get("graphics");
+        return graphic.get("ascii").toString();
+    }
+
+    public static CommonGoalCard buildFromJson(int numPlayers, int cgcNum) {
         if(jsonObjects.size() == 0) {
             reloadJson();
         }
         Random rand = new Random();
-        int upperbound = jsonObjects.size();
-        int cgcNum = rand.nextInt(upperbound);
-        setNumPlayers(numPlayers);
-        setMaxDistinctCategoryNumber(((Long)jsonObjects.get(cgcNum).get("maxDistinctCategoryNumber")).intValue());
-        setExactCategoryNumber(((Long) jsonObjects.get(cgcNum).get("exactCategoryNumber")).intValue());
-        setRepetitionNumber(((Long) jsonObjects.get(cgcNum).get("repetitionNumber")).intValue());
-        setOthersEmpty((boolean) jsonObjects.get(cgcNum).get("othersEmpty"));
+
+        CommonGoalCardFactory factory = new CommonGoalCardFactory();
+
+        factory.setNumPlayers(numPlayers);
+        factory.setMaxDistinctCategoryNumber(((Long)jsonObjects.get(cgcNum).get("maxDistinctCategoryNumber")).intValue());
+        factory.setExactCategoryNumber(((Long) jsonObjects.get(cgcNum).get("exactCategoryNumber")).intValue());
+        factory.setRepetitionNumber(((Long) jsonObjects.get(cgcNum).get("repetitionNumber")).intValue());
+        factory.setOthersEmpty((boolean) jsonObjects.get(cgcNum).get("othersEmpty"));
         JSONArray tempArray = (JSONArray) jsonObjects.get(cgcNum).get("schema");
         for(Object item : tempArray){
             JSONObject obj = (JSONObject) item;
-            this.schema.add(new Coordinates(((Long)obj.get("x")).intValue(), ((Long)obj.get("y")).intValue()));
+            factory.schema.add(new Coordinates(((Long)obj.get("x")).intValue(), ((Long)obj.get("y")).intValue()));
         }
-        return buildCommonGoalCard(cgcNum);
+        try{
+            return factory.buildCommonGoalCard(cgcNum);
+        } catch(IndexOutOfBoundsException e){
+            // TODO to fix outofboundsexception
+            e.printStackTrace();
+        }
+        return CommonGoalCard.createCommonGoalCards(4)[0];
     }
 
-    public void reloadJson(){
+    public CommonGoalCard[] getCommonGoalCard(int numPlayers){
+        Random rand = new Random();
+
+        int upperbound = jsonObjects.size();
+
+        int first = rand.nextInt(upperbound);
+        int second = rand.nextInt(2) == 0 ? rand.nextInt(first) : first + 1 + rand.nextInt(upperbound - first - 1);
+
+        return new CommonGoalCard[]{buildFromJson(numPlayers, first), buildFromJson(numPlayers, second)};
+    }
+
+    public static void reloadJson(){
         try{
             Object obj = parser.parse(new FileReader("src/main/java/it/polimi/ingsw/models/settings/cgc.json"));
             JSONArray jsonArray = (JSONArray) obj;
