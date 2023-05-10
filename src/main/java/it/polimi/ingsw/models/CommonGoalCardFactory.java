@@ -7,14 +7,14 @@ import org.json.simple.parser.ParseException;
 
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.function.Predicate;
-import java.util.Random;
+
+import it.polimi.ingsw.models.Category;
 
 public class CommonGoalCardFactory {
     private final List<JSONObject> jsonObjects = new ArrayList<JSONObject>();
-    private List<Coordinates> schema = new ArrayList<>();
+    private List<List<Coordinates>> schemas = new ArrayList<>();
     private int maxDistinctCategoryNumber;
     private int exactCategoryNumber;
     private int repetitionNumber;
@@ -35,10 +35,21 @@ public class CommonGoalCardFactory {
         setExactCategoryNumber(((Long) jsonObjects.get(cgcNum).get("exactCategoryNumber")).intValue());
         setRepetitionNumber(((Long) jsonObjects.get(cgcNum).get("repetitionNumber")).intValue());
         setOthersEmpty((boolean) jsonObjects.get(cgcNum).get("othersEmpty"));
-        JSONArray tempArray = (JSONArray) jsonObjects.get(cgcNum).get("schema");
+        JSONArray tempArray = (JSONArray) jsonObjects.get(cgcNum).get("schemas");
+        List<Coordinates> schema = new ArrayList<>();
         for(Object item : tempArray){
-            JSONObject obj = (JSONObject) item;
+            JSONArray tempArray2 = (JSONArray) item;
+            for(Object item2 : tempArray2){
+                JSONObject obj = (JSONObject) item2;
+                schema.add(new Coordinates(((Long)obj.get("x")).intValue(), ((Long)obj.get("y")).intValue()));
+            }
+            for(Coordinates c : schema){
+            }
+            schemas.add(schema);
+            schema.clear();
+            /*JSONObject obj = (JSONObject) item;
             this.schema.add(new Coordinates(((Long)obj.get("x")).intValue(), ((Long)obj.get("y")).intValue()));
+            */
         }
         return buildCommonGoalCard(cgcNum);
     }
@@ -54,7 +65,134 @@ public class CommonGoalCardFactory {
             e.printStackTrace();
         }
     }
-    public CommonGoalCard buildCommonGoalCard(int cgcNum) {
+    public CommonGoalCard buildCommonGoalCard(int cgcNum){
+        Predicate<Bookshelf> controlFunction = new Predicate<Bookshelf>() {
+            @Override
+            public boolean test(Bookshelf bookshelf) {
+                return false;
+            }
+        };
+        if(othersEmpty){
+            if(repetitionNumber == 8){
+                controlFunction = new Predicate<Bookshelf>() {
+                    @Override
+                    public boolean test(Bookshelf bookshelf) {
+                        int[] catCount = new int[6];
+                        for(int i = 0; i < Bookshelf.ROWS; i++){
+                            for(int j = 0; j < Bookshelf.COLUMNS; j++){
+                                if(bookshelf.getBookshelf()[i][j] != null){
+                                    switch(bookshelf.getBookshelf()[i][j].getCategory()){
+                                        case CATS -> catCount[0]++;
+                                        case BOOKS -> catCount[1]++;
+                                        case GAMES -> catCount[2]++;
+                                        case FRAMES -> catCount[3]++;
+                                        case TROPHIES -> catCount[4]++;
+                                        case PLANTS -> catCount[5]++;
+                                    }
+                                }
+                            }
+                        }
+                        for(int i = 0; i < 6; i++){
+                            if(catCount[i] >= 8){
+                                return true;
+                            }
+                        }
+                        return false;
+                    }
+                };
+            } else if (repetitionNumber == 1) {
+                controlFunction = new Predicate<Bookshelf>() {
+                    @Override
+                    public boolean test(Bookshelf bookshelf) {
+                        boolean flag = false;
+                        for (int j = 0; j < Bookshelf.COLUMNS; j++) {
+                            for (int i = Bookshelf.ROWS - 1; i > Bookshelf.COLUMNS - j - 1; i--) {
+                                if (bookshelf.getBookshelf()[i][j] != null) {
+                                    flag = true;
+                                }
+                            }
+                            if (!flag) {
+                                for (int i = Bookshelf.ROWS - j - 2; i >= 0; i--) {
+                                    if (bookshelf.getBookshelf()[i][j] == null) {
+                                        flag = true;
+                                    }
+                                }
+                            }
+                        }
+                        if (!flag) {
+                            return true;
+                        } else {
+                            flag = false;
+                            for (int j = Bookshelf.COLUMNS - 1; j >= 0; j--) {
+                                for (int i = Bookshelf.ROWS - 1; i >= j + 1; i--) {
+                                    if (bookshelf.getBookshelf()[i][j] != null) {
+                                        flag = true;
+                                    }
+                                }
+                                if (!flag) {
+                                    for (int i = j; i >= 0; i--) {
+                                        if (bookshelf.getBookshelf()[i][j] == null) {
+                                            flag = true;
+                                        }
+                                    }
+                                }
+                            }
+                            return !flag;
+                        }
+                    }
+                };
+            }
+            else{
+                controlFunction = new Predicate<Bookshelf>() {
+                    @Override
+                    public boolean test(Bookshelf bookshelf) {
+                        boolean result = false;
+                        for(List<Coordinates> schema : schemas) {
+                            int maxLeft = 0;
+                            for (Coordinates value : schema) {
+                                if (value.y > maxLeft) {
+                                    maxLeft = value.y;
+                                }
+                            }
+                            int maxHeight = 0;
+                            for (Coordinates coordinates : schema) {
+                                if (coordinates.x > maxHeight) {
+                                    maxHeight = coordinates.x;
+                                }
+                            }
+                            int repetition = 0;
+                            for (int i = 0; i <= Bookshelf.ROWS - 1 - maxHeight; i++) {
+                                for (int j = 0; j <= Bookshelf.COLUMNS - 1 - maxLeft; j++) {
+                                    Set<Category> uniqueCat = new HashSet<>();
+                                    for (Coordinates c : schema) {
+                                        if(bookshelf.getBookshelf()[c.x + i][c.y + j] != null){
+                                            uniqueCat.add(bookshelf.getBookshelf()[c.x + i][c.y + j].getCategory());
+                                        }
+                                    }
+                                    if (uniqueCat.size() <= maxDistinctCategoryNumber) {
+                                        if (exactCategoryNumber != 0) {
+                                            if (uniqueCat.size() == exactCategoryNumber) {
+                                                repetition++;
+                                            }
+                                        } else {
+                                            repetition++;
+                                        }
+                                    }
+                                    uniqueCat.clear();
+                                }
+                            }
+                            if(repetition >= repetitionNumber) {
+                                result = true;
+                            }
+                        }
+                        return result;
+                    }
+                };
+            }
+        }
+        return new CommonGoalCard(controlFunction, numPlayers, cgcNum);
+    }
+    /*public CommonGoalCard buildCommonGoalCard(int cgcNum) {
         final Predicate<Bookshelf> controlFunction;
         Predicate<Bookshelf> controlFunction1 = new Predicate<Bookshelf>() {
             @Override
@@ -495,10 +633,8 @@ public class CommonGoalCardFactory {
         controlFunction = controlFunction1;
         return new CommonGoalCard(controlFunction, numPlayers, cgcNum);
     }
+     */
 
-    public void setSchema(List<Coordinates> schema){
-        this.schema = schema;
-    }
 
     public void setMaxDistinctCategoryNumber(int maxDistinctCategoryNumber){
         this.maxDistinctCategoryNumber = maxDistinctCategoryNumber;
