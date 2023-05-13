@@ -157,12 +157,14 @@ public class CLI {
 
     public void showPlayerTurn(PlayerUpdate currentPlayer){
         printer.clearScreen();
-        if(viewingPlayer != currentPlayer) {
-            printer.print(currentPlayer.nickname() + " is now playing his turn");
+        boolean yourTurn = viewingPlayer.nickname().equals(currentPlayer.nickname());
+        if(!yourTurn) {
+            printer.print(Color.BLUE.escape() + currentPlayer.nickname() + " is now playing his turn" + Color.RESET);
         }
         else{
-            printer.print("Now is your turn");
+            printer.print(Color.BLUE.escape() + "Now is your turn" + Color.RESET);
         }
+        this.showMenu(yourTurn);
     }
 
 
