@@ -28,7 +28,7 @@ public class CommonGoalCardFactory {
             reloadJson();
         }
         JSONObject graphic = (JSONObject) jsonObjects.get(cardID).get("graphics");
-        return graphic.get("ascii").toString();
+        return graphic.get("ascii").toString() + "\n" + graphic.get("description").toString();
     }
 
     public static CommonGoalCard buildFromJson(int numPlayers, int cgcNum) {

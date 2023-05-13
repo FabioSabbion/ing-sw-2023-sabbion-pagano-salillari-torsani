@@ -16,7 +16,8 @@
             ],
             "graphics" : {
                 "ascii" : "+---+\n| = |\n|---| x 6\n| = |\n+---+",
-                "gui" : "NotAvailable"
+                "gui" : "NotAvailable",
+                "description" : "Six groups each containing at least\n2 tiles of the same type (not necessarily\nin the depicted shape).\nThe tiles of one group can be different\nfrom those of another group."
             }
         },
         {
@@ -44,7 +45,8 @@
             ],
             "graphics" : {
             "ascii" : "+---+---+---+---+---+\n| = |   |   |   | = |\n|---|---|---|---|---|\n|   |   |   |   |   |\n|---|---|---|---|---|\n|   |   |   |   |   |\n|---|---|---|---|---|\n|   |   |   |   |   |\n|---|---|---|---|---|\n|   |   |   |   |   |\n|---|---|---|---|---|\n| = |   |   |   | = |\n+---+---+---+---+---+",
-            "gui" : "NotAvailable"
+            "gui" : "NotAvailable",
+            "description" : "Four tiles of the same type in the four\ncorners of the bookshelf. "
             }
         },
         {
@@ -72,7 +74,8 @@
             ],
             "graphics" : {
             "ascii" : "+---+\n| = |\n|---|\n| = |\n|---| x 4\n| = |\n|---|\n| = |\n+---+",
-            "gui" : "NotAvailable"
+            "gui" : "NotAvailable",
+            "description" : "Four groups each containing at least\n4 tiles of the same type (not necessarily\nin the depicted shape).\nThe tiles of one group can be different\nfrom those of another group."
             }
         },
         {
@@ -100,7 +103,8 @@
             ],
             "graphics" : {
             "ascii" : "+---+---+\n| = | = |\n|---|---| x 2\n| = | = |\n+---+---+",
-            "gui" : "NotAvailable"
+            "gui" : "NotAvailable",
+            "description" : "Two groups each containing 4 tiles of\nthe same type in a 2x2 square. The tiles\nof one square can be different from\nthose of the other square."
             }
         },
         {
@@ -136,7 +140,8 @@
             ],
             "graphics" : {
             "ascii" : "+---+\n|   |\n|---|\n|   |\n|---| max 3 !=\n|   |\n|---|\n|   | x 3\n|---|\n|   |\n|---| \n|   |\n+---+",
-            "gui" : "NotAvailable"
+            "gui" : "NotAvailable",
+            "description" : "Three columns each formed by 6 tiles Five tiles of the same type forming an X.\nof maximum three different types. One\ncolumn can show the same or a different\ncombination of another column."
             }
         },
         {
@@ -152,7 +157,8 @@
             ],
             "graphics" : {
             "ascii" : "+---+\n| = | x 8\n+---+",
-            "gui" : "NotAvailable"
+            "gui" : "NotAvailable",
+            "description" : "Eight tiles of the same type. There’s no\nrestriction about the position of these\ntiles."
             }
         },
         {
@@ -184,7 +190,8 @@
             ],
             "graphics" : {
                 "ascii" : "+---+\n| = |\n+---|---+\n    | = |\n    +---+---+\n        | = |\n        +---|---+\n            | = |\n            +---|---+\n                | = |\n                +---+",
-                "gui" : "NotAvailable"
+                "gui" : "NotAvailable",
+                "description" : "Five tiles of the same type forming a\ndiagonal.."
             }
         },
         {
@@ -216,7 +223,8 @@
             ],
             "graphics" : {
                 "ascii" : "+---+---+---+---+---+\n| %s| %s| %s| %s| %s|\n+---+---+---+---+---+\n       max 3 !=\n          x4",
-                "gui" : "NotAvailable"
+                "gui" : "NotAvailable",
+                "description" : "Four lines each formed by 5 tiles of\nmaximum three different types. One\nline can show the same or a different\ncombination of another line."
             }
         },
         {
@@ -252,7 +260,8 @@
             ],
             "graphics" : {
                 "ascii" : "+---+\n|=/=|\n|---|\n|=/=|\n|---|\n|=/=|\n|---| x 2\n|=/=|\n|---|\n|=/=|\n|---| \n|=/=|\n+---+",
-                "gui" : "NotAvailable"
+                "gui" : "NotAvailable",
+                "description" : "Two columns each formed by 6\ndifferent types of tiles. "
             }
         },
         {
@@ -284,7 +293,8 @@
             ],
             "graphics" : {
                 "ascii" : "+---+---+---+---+---+\n|=/=|=/=|=/=|=/=|=/=|\n+---+---+---+---+---+\n          x3",
-                "gui" : "NotAvailable"
+                "gui" : "NotAvailable",
+                "description" : "Three columns each formed by 6 tiles Five tiles of the same type forming an X.\nof maximum three different types. One\ncolumn can show the same or a different\ncombination of another column."
             }
         },
         {
@@ -316,7 +326,8 @@
             ],
             "graphics" : {
                 "ascii" : "+---+   +---+\n| = |   | = |\n+---+---+---+\n    | = |\n+---+---+---+\n| = |   | = |\n+---+   +---+",
-                "gui" : "NotAvailable"
+                "gui" : "NotAvailable",
+                "description" : "Five tiles of the same type forming an X."
             }
         },
         {
@@ -332,7 +343,8 @@
             ],
             "graphics" : {
                 "ascii" : "+---+\n|   |\n|---|---+\n|   |   |\n|---|---|---+\n|   |   |   |\n|---|---|---|---+\n|   |   |   |   |\n|---|---|---|---|---+\n|   |   |   |   |   |\n+---+---+---+---+---+",
-                "gui" : "NotAvailable"
+                "gui" : "NotAvailable",
+                "description" : "Five columns of increasing or decreasing\nheight. Starting from the first column on\nthe left or on the right, each next column\nmust be made of exactly one more tile.\nTiles can be of any type. "
             }
         }
     ]
