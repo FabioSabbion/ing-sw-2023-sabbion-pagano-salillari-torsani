@@ -172,7 +172,6 @@ public class CLIController implements ViewController {
         }
 
 
-        System.err.println("Livingroom " + this.livingRoom);
         cli.updateAll(this.livingRoom, this.players, this.currentPlayer, this.gameEnder);
 
 
@@ -225,7 +224,7 @@ public class CLIController implements ViewController {
     }
 
     public void returnTiles(List<Coordinates> coordinates, int column) {
-        System.err.println("Players " + this.players);
+
         var yourself = this.players.stream().filter(player -> player.nickname().equals(this.viewingPlayerNickname)).findFirst().get();
 
         try {
@@ -285,7 +284,7 @@ public class CLIController implements ViewController {
         public void inputHandler(String input) {
 
             try {
-                System.err.println("TEST " + input + " " + input.length());
+
                 int inputInt = Integer.parseInt(input);
 
                 switch (this.state) {
