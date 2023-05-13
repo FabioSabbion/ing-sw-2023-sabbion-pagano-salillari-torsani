@@ -79,8 +79,8 @@
             }
         },
         {
-            "maxDistinctCategoryNumber": 5,
-            "exactCategoryNumber": 0,
+            "maxDistinctCategoryNumber": 1,
+            "exactCategoryNumber": 1,
             "repetitionNumber": 2,
             "othersEmpty": false,
             "schema": [
@@ -141,7 +141,7 @@
             "graphics" : {
             "ascii" : "+---+\n|   |\n|---|\n|   |\n|---| max 3 !=\n|   |\n|---|\n|   | x 3\n|---|\n|   |\n|---| \n|   |\n+---+",
             "gui" : "NotAvailable",
-            "description" : "Three columns each formed by 6 tiles Five tiles of the same type forming an X.\nof maximum three different types. One\ncolumn can show the same or a different\ncombination of another column."
+            "description" : "Three columns each formed by 6 tiles\nof maximum three different types. One column can show the same or a different combination of another column."
             }
         },
         {
