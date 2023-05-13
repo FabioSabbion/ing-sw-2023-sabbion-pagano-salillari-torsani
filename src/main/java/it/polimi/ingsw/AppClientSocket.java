@@ -1,16 +1,15 @@
 package it.polimi.ingsw;
 
-import it.polimi.ingsw.distributed.networking.Client;
 import it.polimi.ingsw.distributed.networking.ClientImpl;
 import it.polimi.ingsw.distributed.networking.ServerStub;
+import it.polimi.ingsw.view.CLI.CLIController;
 
 import java.rmi.RemoteException;
-import java.util.Scanner;
 
 public class AppClientSocket {
-    public static void main(String[] args) throws RemoteException {
+    public static void start() throws RemoteException {
         ServerStub serverStub = new ServerStub("localhost", 4445);
-        Client client = new ClientImpl();
+        ClientImpl client = new ClientImpl();
         new Thread() {
             @Override
             public void run() {
@@ -30,14 +29,10 @@ public class AppClientSocket {
             }
         }.start();
 
-        Scanner sc = new Scanner(System.in);
-        String s = sc.nextLine();
-        serverStub.setNickname(s, client);
 
-        sc.nextLine();
+        CLIController cliController = new CLIController(client, serverStub);
+        cliController.start();
 
         System.out.println("Terminating client");
-
-        // TODO: run view with client.run
     }
 }

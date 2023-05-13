@@ -89,7 +89,7 @@ public class ServerStub implements Server{
                     client.serverError(msg);
                 }
                 case KEEP_ALIVE -> {
-                    System.out.println("KEEP_ALIVE received");
+                    //System.out.println("KEEP_ALIVE received");
                 }
             }
         } catch (IOException e) {
