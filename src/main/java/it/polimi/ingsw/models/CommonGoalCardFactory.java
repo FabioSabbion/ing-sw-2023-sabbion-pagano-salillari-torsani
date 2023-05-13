@@ -74,20 +74,15 @@ public class CommonGoalCardFactory {
     public CommonGoalCard buildCommonGoalCard(int cardID) {
         final Predicate<Bookshelf> controlFunction = new Predicate<Bookshelf>() {
             public int checkFrom(int i, int j, Set<Coordinates> blocked, Tile[][] bookshelfMat) {
-                System.err.println("index tested INI: " + (i) + " " + (j));
-
                 Set<Category> categories = new HashSet<>();
 
                 for(Coordinates c: schema) {
-                    System.err.println("index tested: " + (i + c.x) + " " + (j + c.y));
-
                     if (i + c.x < bookshelfMat.length
                             && j + c.y < bookshelfMat[i + c.x].length
                             && bookshelfMat[i + c.x][j + c.y] != null
                             && !blocked.contains(new Coordinates(i + c.x, j + c.y))) {
                         categories.add(bookshelfMat[i + c.x][j + c.y].category());
                     } else {
-                        System.err.println("Annullata categories");
                         categories = null;
 
                         break;
@@ -99,11 +94,18 @@ public class CommonGoalCardFactory {
 
                     for (int i_else = 0; i_else < bookshelfMat.length && allMatch; i_else++) {
                         for (int j_else = 0; j_else < bookshelfMat[i_else].length && allMatch; j_else++) {
+                            boolean containedSchema = false;
+
                             for (Coordinates c: schema) {
-                                if (i + c.x != i_else && j + c.y != j_else && bookshelfMat[i_else][j_else] != null) {
-                                    allMatch= false;
+                                if ((i + c.x == i_else && j + c.y == j_else)) {
+                                    containedSchema = true;
                                     break;
                                 }
+                            }
+
+                            if (!containedSchema && bookshelfMat[i_else][j_else] != null) {
+                                allMatch = false;
+                                break;
                             }
                         }
                     }
@@ -128,12 +130,8 @@ public class CommonGoalCardFactory {
 
 
 
-                System.err.println("Categories NULL" + categories);
-
                 if (categories != null && (categories.size() <= maxDistinctCategoryNumber) &&
                         (exactCategoryNumber == 0 || exactCategoryNumber == categories.size())) {
-                    System.err.println("QUA");
-
                     var newBlocked = new HashSet<>(blocked);
 
                     for (Coordinates c: schema) {
@@ -145,9 +143,6 @@ public class CommonGoalCardFactory {
 
                     return Math.max(tempResGood, tempResBad);
                 }
-
-                System.err.println("-------------------------------------------------------------------------");
-
                 return checkFrom(i_next, j_next, blocked, bookshelfMat);
             }
 
@@ -159,13 +154,10 @@ public class CommonGoalCardFactory {
 
                 for (int i = 0; i < bookshelfMat.length; i++) {
                     for (int j = 0; j < bookshelfMat[i].length; j++) {
-                        System.err.println("Chekcing " + i + " " + j);
-
                         matching = Math.max(matching, checkFrom(i, j, new HashSet<>(), bookshelfMat));
                     }
                 }
 
-                System.err.println("Matching: " + matching);
                 return matching >= repetitionNumber;
             }
         };
