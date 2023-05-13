@@ -36,19 +36,9 @@ public class CommonGoalCard implements GoalCard {
 
         if(controlFunction.test(player.getBookshelf())) {
             orderOfCompletionList.add(player);
-
             return points[numPlayers][orderOfCompletionList.size() - 1];
         }
 
         return 0;
-    }
-
-    static CommonGoalCard[] createCommonGoalCards(int numPlayers) {
-        //TODO to implement
-        System.out.println("WARNING, this is fake");
-
-        return new CommonGoalCard[]{new CommonGoalCard((bookshelf) -> {
-            return false;
-        }, numPlayers, 0)};
     }
 }

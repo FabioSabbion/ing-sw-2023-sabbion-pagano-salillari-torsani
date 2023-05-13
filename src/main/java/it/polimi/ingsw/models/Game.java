@@ -72,7 +72,7 @@ public class Game extends Observable<GameUpdate, ViewEvent> {
 
         var livingRoom = new LivingRoom();
         livingRoom.fillBoard(players.size(), tiles);
-        return new Game(players.toArray(new Player[0]), CommonGoalCard.createCommonGoalCards(players.size()), tiles, livingRoom);
+        return new Game(players.toArray(new Player[0]), CommonGoalCardFactory.getCommonGoalCard(players.size()), tiles, livingRoom);
     }
 
     public @Nullable Player getGameEnder() {
