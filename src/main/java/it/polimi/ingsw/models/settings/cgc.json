@@ -10,8 +10,8 @@
                     "y": 0
                 },
                 {
-                    "x": 0,
-                    "y": 1
+                    "x": 1,
+                    "y": 0
                 }
             ],
             "graphics" : {
@@ -60,16 +60,16 @@
                     "y": 0
                 },
                 {
-                    "x": 0,
-                    "y": 1
+                    "x": 1,
+                    "y": 0
                 },
                 {
-                    "x": 0,
-                    "y": 2
+                    "x": 2,
+                    "y": 0
                 },
                 {
-                    "x": 0,
-                    "y": 3
+                    "x": 3,
+                    "y": 0
                 }
             ],
             "graphics" : {
@@ -275,26 +275,26 @@
                     "y": 0
                 },
                 {
-                    "x": 0,
-                    "y": 1
+                    "x": 1,
+                    "y": 0
                 },
                 {
-                    "x": 0,
-                    "y": 2
+                    "x": 2,
+                    "y": 0
                 },
                 {
-                    "x": 0,
-                    "y": 3
+                    "x": 3,
+                    "y": 0
                 },
                 {
-                    "x": 0,
-                    "y": 4
+                    "x": 4,
+                    "y": 0
                 }
             ],
             "graphics" : {
                 "ascii" : "+---+---+---+---+---+\n|=/=|=/=|=/=|=/=|=/=|\n+---+---+---+---+---+\n          x3",
                 "gui" : "NotAvailable",
-                "description" : "Three columns each formed by 6 tiles Five tiles of the same type forming an X.\nof maximum three different types. One\ncolumn can show the same or a different\ncombination of another column."
+                "description" : "Three columns each formed by 6 tiles\nof maximum three different types. One column can show the same or a different combination of another column."
             }
         },
         {
@@ -344,7 +344,7 @@
             "graphics" : {
                 "ascii" : "+---+\n|   |\n|---|---+\n|   |   |\n|---|---|---+\n|   |   |   |\n|---|---|---|---+\n|   |   |   |   |\n|---|---|---|---|---+\n|   |   |   |   |   |\n+---+---+---+---+---+",
                 "gui" : "NotAvailable",
-                "description" : "Five columns of increasing or decreasing\nheight. Starting from the first column on\nthe left or on the right, each next column\nmust be made of exactly one more tile.\nTiles can be of any type. "
+                "description" : "Five columns of increasing or decreasing\nheight. Starting from the first column on\nthe left or on the right, each next column\nmust be made of exactly one more tile.\nTiles can be of any type.     "
             }
         }
     ]
