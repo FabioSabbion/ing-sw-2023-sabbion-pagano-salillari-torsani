@@ -23,6 +23,7 @@ public class GameController {
             this.game.setGameEnder(this.game.getCurrentPlayer());
         }
 
+        this.game.getLivingRoom().fillBoardIfNeeded(this.game.getPlayers().length, this.game.getRemainingTiles());
 
         this.game.nextPlayer();
     }

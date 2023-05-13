@@ -7,7 +7,6 @@ import java.util.List;
 
 public record CommonGoalCardUpdate(int commonGoalCardID, List<PlayerUpdate> playerUpdateList) implements Serializable {
     public static CommonGoalCardUpdate from(CommonGoalCard card) {
-        return new CommonGoalCardUpdate(card.cardID,
-                card.orderOfCompletionList.stream().map((player -> PlayerUpdate.from(player, false))).toList());
+        return CommonGoalCard.from(card);
     }
 }

@@ -1,5 +1,8 @@
 package it.polimi.ingsw.models;
 
+import it.polimi.ingsw.distributed.CommonGoalCardUpdate;
+import it.polimi.ingsw.distributed.PlayerUpdate;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
@@ -8,7 +11,7 @@ import java.util.function.Predicate;
  * Representation in java of a single generic Common Goal
  */
 public class CommonGoalCard implements GoalCard {
-    private final int[][] points = {
+    public static final int[][] points = {
             {},
             {},
             {8, 4},
@@ -40,5 +43,10 @@ public class CommonGoalCard implements GoalCard {
         }
 
         return 0;
+    }
+
+    static public CommonGoalCardUpdate from(CommonGoalCard card) {
+        return new CommonGoalCardUpdate(card.cardID,
+                card.orderOfCompletionList.stream().map((player -> PlayerUpdate.from(player, false))).toList());
     }
 }
