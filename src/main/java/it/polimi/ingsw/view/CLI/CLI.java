@@ -9,6 +9,7 @@ import it.polimi.ingsw.view.CLI.utils.Color;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class CLI {
 
@@ -79,19 +80,22 @@ public class CLI {
     }
 
 
-    public void showPlayers(HashMap<PlayerUpdate, Integer> playerPoints){
+    public void showPlayers(Map<String, Integer> playerPoints){
 
         String concatBookshelves = "";
 
-        List<PlayerUpdate> players = new ArrayList<>(playerPoints.keySet());
+        List<String> players = new ArrayList<>(playerPoints.keySet());
 
-        for (PlayerUpdate player : players) {
-            concatBookshelves = render.concatAsciiArt(concatBookshelves, this.renderBookshelves.get(player.nickname()));
+        for (String player : players) {
+            concatBookshelves = render.concatAsciiArt(concatBookshelves, this.renderBookshelves.get(player));
         }
         printer.print(concatBookshelves + "\n\n\n");
 
-        for (PlayerUpdate player : players) {
-            printer.print("- " + player.nickname() + " points: " + playerPoints.get(player));
+        for (String player : players) {
+            if (player.equals(viewingPlayer)){
+                printer.print("- " + player + " points: " + playerPoints.get(player));
+            }
+            printer.print("- " + player + " points: " + playerPoints.get(player));
         }
     }
 
@@ -133,13 +137,13 @@ public class CLI {
         }
     }
 
-    public void showScoreboard(HashMap<PlayerUpdate, Integer> playerPoints){
-        List<PlayerUpdate> players = new ArrayList<>(playerPoints.keySet());
+    public void showScoreboard(Map<String, Integer> playerPoints){
+        List<String> players = new ArrayList<>(playerPoints.keySet());
         printer.clearScreen();
         printer.print(Color.BLUE.escape() + "The current players' points are: " + Color.RESET);
 
         for (int i = 0; i < players.size(); i++) {
-            String toPrint = i +". " + players.get(i).nickname() + " :" + playerPoints.get(players.get(i));
+            String toPrint = i +". " + players.get(i) + " :" + playerPoints.get(players.get(i));
 
             printer.print(toPrint);
         }

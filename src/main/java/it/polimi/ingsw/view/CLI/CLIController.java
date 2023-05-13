@@ -6,6 +6,7 @@ import it.polimi.ingsw.distributed.PlayerUpdate;
 import it.polimi.ingsw.distributed.networking.ClientImpl;
 import it.polimi.ingsw.distributed.networking.Server;
 import it.polimi.ingsw.models.Bookshelf;
+import it.polimi.ingsw.models.CommonGoalCard;
 import it.polimi.ingsw.models.Coordinates;
 import it.polimi.ingsw.models.LivingRoom;
 import it.polimi.ingsw.models.exceptions.NotEnoughCellsException;
@@ -14,15 +15,12 @@ import it.polimi.ingsw.view.CLI.utils.Color;
 import it.polimi.ingsw.view.ViewController;
 
 import java.rmi.RemoteException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 import static java.lang.Integer.parseInt;
 
 public class CLIController implements ViewController {
-    List<PlayerUpdate> players;
+    Map<String, PlayerUpdate> players;
     LivingRoom livingRoom;
     List<CommonGoalCardUpdate> commonGoalCards;
     PlayerUpdate currentPlayer;
@@ -142,14 +140,13 @@ public class CLIController implements ViewController {
         this.livingRoom = update.livingRoom() == null ? this.livingRoom : update.livingRoom();
         if (update.players() != null) {
             if (this.players == null) {
-                this.players = new ArrayList<>(update.players());
+                this.players = new HashMap<>();
+                for (PlayerUpdate playerUpdate : update.players()) {
+                    this.players.put(playerUpdate.nickname(), playerUpdate);
+                }
             } else {
-                for (int i = 0; i < update.players().size(); i++) {
-                    for (int j = 0; j < this.players.size(); j++) {
-                        if (this.players.get(j).nickname().equals(update.players().get(i).nickname())) {
-                            this.players.set(j, update.players().get(i));
-                        }
-                    }
+                for (PlayerUpdate playerUpdate : update.players()) {
+                    this.players.put(playerUpdate.nickname(), playerUpdate);
                 }
             }
         }
@@ -165,15 +162,14 @@ public class CLIController implements ViewController {
         this.gameEnder = update.gameEnder() == null ? this.gameEnder : update.gameEnder();
 
         if (cli == null) {
-            PlayerUpdate viewingPlayer = players.stream().filter(p -> p.nickname().equals(viewingPlayerNickname))
+            PlayerUpdate viewingPlayer = players.values().stream().filter(p -> p.nickname().equals(viewingPlayerNickname))
                     .findFirst().get();
-            cli = new CLI(this.livingRoom, this.players, this.commonGoalCards,
+            cli = new CLI(this.livingRoom, this.players.values().stream().toList(), this.commonGoalCards,
                     this.currentPlayer, this.gameEnder, viewingPlayer);
         }
 
 
-        cli.updateAll(this.livingRoom, this.players, this.currentPlayer, this.gameEnder);
-
+        cli.updateAll(this.livingRoom, this.players.values().stream().toList(), this.currentPlayer, this.gameEnder);
 
 
         if (updatedCurrent) {
@@ -208,14 +204,23 @@ public class CLIController implements ViewController {
 
     }
 
-    public HashMap<PlayerUpdate, Integer> calculatePoints() {
-        HashMap<PlayerUpdate, Integer> playerPoints = new HashMap<>();
-        for (PlayerUpdate player : this.players) {
-            // TODO: IT'S ALL FAKE
-
-            playerPoints.put(player, 10);
+    private Map<String, Integer> calculateCommonGoalCardPoints() {
+        Map<String, Integer> playerPoints = new HashMap<>();
+        for (PlayerUpdate player : this.players.values()) {
+            playerPoints.put(player.nickname(), this.commonGoalCards.stream()
+                    .filter(card -> card.playerUpdateList().contains(player.nickname()))
+                    .map(card -> CommonGoalCard.points[this.players.size()][card.playerUpdateList().indexOf(player.nickname())])
+                    .mapToInt(i -> i).sum());
         }
 
+        return playerPoints;
+    }
+
+
+    public Map<String, Integer> calculatePoints(){
+        var playerPoints = calculateCommonGoalCardPoints();
+        int point = this.players.get(viewingPlayerNickname).personalGoalCard().point();
+        playerPoints.put(viewingPlayerNickname, point);
         return playerPoints;
     }
 
@@ -225,7 +230,7 @@ public class CLIController implements ViewController {
 
     public void returnTiles(List<Coordinates> coordinates, int column) {
 
-        var yourself = this.players.stream().filter(player -> player.nickname().equals(this.viewingPlayerNickname)).findFirst().get();
+        var yourself = this.players.values().stream().filter(player -> player.nickname().equals(this.viewingPlayerNickname)).findFirst().get();
 
         try {
             var tempTiles = this.livingRoom.chooseTiles(coordinates);

@@ -1,7 +1,6 @@
 package it.polimi.ingsw.models;
 
 import it.polimi.ingsw.distributed.CommonGoalCardUpdate;
-import it.polimi.ingsw.distributed.PlayerUpdate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,6 +46,6 @@ public class CommonGoalCard implements GoalCard {
 
     static public CommonGoalCardUpdate from(CommonGoalCard card) {
         return new CommonGoalCardUpdate(card.cardID,
-                card.orderOfCompletionList.stream().map((player -> PlayerUpdate.from(player, false))).toList());
+                card.orderOfCompletionList.stream().map(Player::getNickname).toList());
     }
 }
