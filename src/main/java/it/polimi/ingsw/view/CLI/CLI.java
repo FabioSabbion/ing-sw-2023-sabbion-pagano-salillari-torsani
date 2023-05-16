@@ -6,10 +6,7 @@ import it.polimi.ingsw.models.LivingRoom;
 import it.polimi.ingsw.view.CLI.utils.ASCIIArt;
 import it.polimi.ingsw.view.CLI.utils.Color;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class CLI {
 
@@ -25,12 +22,13 @@ public class CLI {
     private PlayerUpdate gameEnder;
 
     public CLI (LivingRoom livingRoom, List<PlayerUpdate> players, List<CommonGoalCardUpdate> commonGoalCards,
-                PlayerUpdate currentPlayer, PlayerUpdate gameEnder, PlayerUpdate viewingPlayer){
+                PlayerUpdate currentPlayer, PlayerUpdate gameEnder, PlayerUpdate viewingPlayer, CLIController controller){
 
         this.render = new CLIRenderer();
         this.viewingPlayer = viewingPlayer;
         this.renderCommonGoalCards = new HashMap<>();
         this.renderBookshelves = new HashMap<>();
+        this.controller = controller;
 
         setRenderPersonalGoalCard();
         setRenderBookshelves(players);
@@ -80,11 +78,11 @@ public class CLI {
     }
 
 
-    public void showPlayers(Map<String, Integer> playerPoints){
+    public void showPlayers(Map<String, PlayerUpdate> playerMap){
 
         String concatBookshelves = "";
 
-        List<String> players = new ArrayList<>(playerPoints.keySet());
+        List<String> players = new ArrayList<>(playerMap.keySet());
 
         for (String player : players) {
             concatBookshelves = render.concatAsciiArt(concatBookshelves, this.renderBookshelves.get(player));
@@ -92,10 +90,9 @@ public class CLI {
         printer.print(concatBookshelves + "\n\n\n");
 
         for (String player : players) {
-            if (player.equals(viewingPlayer)){
-                printer.print("- " + player + " points: " + playerPoints.get(player));
+            if (player.equals(viewingPlayer.nickname())){
+                printer.print("- " + player);
             }
-            printer.print("- " + player + " points: " + playerPoints.get(player));
         }
     }
 
@@ -133,20 +130,31 @@ public class CLI {
 
         for (int i = 0; i < renderCommonGoalCards.size(); i++) {
             printer.print("CommonGoalCard" + i);
+            printer.print("\n\n");
             printer.print(renders.get(i));
         }
     }
 
-    public void showScoreboard(Map<String, Integer> playerPoints){
-        List<String> players = new ArrayList<>(playerPoints.keySet());
+    public void showScoreboard(){
+        List<String> players = new ArrayList<>(controller.players.keySet());
         printer.clearScreen();
-        printer.print(Color.BLUE.escape() + "The current players' points are: " + Color.RESET);
+        printer.print(Color.BLUE.escape() + ASCIIArt.scoreBoard + Color.RESET);
+        var commonGoalCards = controller.commonGoalCards;
 
-        for (int i = 0; i < players.size(); i++) {
-            String toPrint = i +". " + players.get(i) + " :" + playerPoints.get(players.get(i));
+        for (int i = 0; i < commonGoalCards.size(); i++) {
+            printer.print(Color.BLUE.escape() + "The current players' CommonGoalCard " + i + " points are: " + Color.RESET);
+            var playerPoints = controller.calculateCommonGoalCardPoints(i);
 
-            printer.print(toPrint);
+            for (int j = 0; j < players.size(); j++) {
+                String toPrint = j +". " + players.get(j) + " : " + playerPoints.get(players.get(j));
+                printer.print(toPrint);
+            }
         }
+
+        int yourPersonalGoalCardPoint = controller.calculatePersonalGoalCardPoints();
+
+        printer.print(Color.BLUE.escape() + "Your PersonalGoalCard points:" + Color.RESET);
+        printer.print(String.valueOf(yourPersonalGoalCardPoint));
     }
 
 

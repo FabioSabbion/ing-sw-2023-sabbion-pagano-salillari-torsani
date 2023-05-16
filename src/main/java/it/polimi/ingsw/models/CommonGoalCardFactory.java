@@ -51,6 +51,9 @@ public class CommonGoalCardFactory {
 
     public static CommonGoalCard[] getCommonGoalCard(int numPlayers){
         Random rand = new Random();
+        if(jsonObjects.size() == 0) {
+            reloadJson();
+        }
 
         int upperbound = jsonObjects.size();
 

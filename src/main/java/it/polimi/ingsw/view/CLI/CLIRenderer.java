@@ -64,7 +64,11 @@ public class CLIRenderer {
             render.addAll(Arrays.asList(matrix[i]));
         }
 
-        return String.valueOf(formatter.format(ASCIIArt.personalGoalCard, render.toArray()));
+        String renderPersonalGoalCard = String.valueOf(formatter.format(ASCIIArt.personalGoalCard, render.toArray()));
+        if (personalGoalCard.point() != 0){
+            renderPersonalGoalCard = renderPersonalGoalCard + "\n Has been completed";
+        }
+        return renderPersonalGoalCard;
     }
 
     /**

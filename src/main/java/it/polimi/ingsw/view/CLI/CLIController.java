@@ -110,13 +110,13 @@ public class CLIController implements ViewController {
                 cli.showMain(currentPlayer);
             }
             case "showPlayers", "3" -> {
-                cli.showPlayers(this.calculatePoints());
+                cli.showPlayers(this.players);
             }
             case "CommonGoalCards", "4" -> {
                 cli.showCommonGoalCards();
             }
             case "scoreboard", "5" -> {
-                cli.showScoreboard(this.calculatePoints());
+                cli.showScoreboard();
             }
             case "play", "6" -> {
                 if (yourTurn) {
@@ -150,7 +150,21 @@ public class CLIController implements ViewController {
                 }
             }
         }
-        this.commonGoalCards = update.commonGoalCards() == null ? this.commonGoalCards : update.commonGoalCards();
+
+
+        if (update.commonGoalCards() != null) {
+            if (this.commonGoalCards != null) {
+                for (CommonGoalCardUpdate card : update.commonGoalCards()) {
+                    var matchingCard = this.commonGoalCards.stream().filter(c -> c.commonGoalCardID() == card.commonGoalCardID()).findFirst();
+                    if (matchingCard.isPresent() && !matchingCard.get().playerUpdateList().equals(card.playerUpdateList())) {
+                        card.playerUpdateList().stream().filter(player -> !matchingCard.get().playerUpdateList().contains(player)).forEach(player -> {
+                            System.out.println((player.equals(viewingPlayerNickname) ? "You have" : (player + "has")) + " completed " + card.commonGoalCardID() + " card");
+                        });
+                    }
+                }
+            }
+            this.commonGoalCards = update.commonGoalCards();
+        }
 
         boolean updatedCurrent = false;
 
@@ -165,7 +179,7 @@ public class CLIController implements ViewController {
             PlayerUpdate viewingPlayer = players.values().stream().filter(p -> p.nickname().equals(viewingPlayerNickname))
                     .findFirst().get();
             cli = new CLI(this.livingRoom, this.players.values().stream().toList(), this.commonGoalCards,
-                    this.currentPlayer, this.gameEnder, viewingPlayer);
+                    this.currentPlayer, this.gameEnder, viewingPlayer, this);
         }
 
 
@@ -204,24 +218,27 @@ public class CLIController implements ViewController {
 
     }
 
-    private Map<String, Integer> calculateCommonGoalCardPoints() {
+    public Map<String, Integer> calculateCommonGoalCardPoints(int cardID) {
         Map<String, Integer> playerPoints = new HashMap<>();
         for (PlayerUpdate player : this.players.values()) {
-            playerPoints.put(player.nickname(), this.commonGoalCards.stream()
-                    .filter(card -> card.playerUpdateList().contains(player.nickname()))
-                    .map(card -> CommonGoalCard.points[this.players.size()][card.playerUpdateList().indexOf(player.nickname())])
-                    .mapToInt(i -> i).sum());
+            if (this.commonGoalCards.get(cardID).playerUpdateList().contains(player)){
+                playerPoints.put(player.nickname(), CommonGoalCard.points[this.players.size()][this.commonGoalCards.get(cardID).playerUpdateList().indexOf(player.nickname())]);
+            }
+            else {
+                playerPoints.put(player.nickname(), 0);
+            }
         }
 
         return playerPoints;
     }
 
-
-    public Map<String, Integer> calculatePoints(){
-        var playerPoints = calculateCommonGoalCardPoints();
-        int point = this.players.get(viewingPlayerNickname).personalGoalCard().point();
-        playerPoints.put(viewingPlayerNickname, point);
-        return playerPoints;
+    /**
+     * Calculates viewingPlayer's PersonalGoalCard points
+     *
+     * @return
+     */
+    public int calculatePersonalGoalCardPoints() {
+        return this.players.get(viewingPlayerNickname).personalGoalCard().point();
     }
 
     private synchronized void changeState(State state) {

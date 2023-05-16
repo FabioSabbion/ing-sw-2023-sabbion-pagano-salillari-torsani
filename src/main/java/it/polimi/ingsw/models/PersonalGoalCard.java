@@ -29,7 +29,8 @@ public class PersonalGoalCard implements GoalCard, Serializable {
 
         for (Pair<Category, Coordinates> position :
                 this.positions) {
-            if (player.getBookshelf().getBookshelf()[position.getRight().y][position.getRight().x].category() == position.getLeft()) {
+            Tile checkTile = player.getBookshelf().getBookshelf()[position.getRight().x][position.getRight().y];
+            if (checkTile != null && checkTile.category() == position.getLeft()) {
                 counterCorrect++;
             }
         }
