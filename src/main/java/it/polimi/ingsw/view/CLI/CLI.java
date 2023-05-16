@@ -91,6 +91,9 @@ public class CLI {
 
         for (String player : players) {
             if (player.equals(viewingPlayer.nickname())){
+                printer.print("- You ");
+            }
+            else {
                 printer.print("- " + player);
             }
         }

@@ -58,7 +58,7 @@ public class CommonGoalCardFactory {
         int upperbound = jsonObjects.size();
 
         int first = rand.nextInt(upperbound);
-        int second = rand.nextInt(2) == 0 ? rand.nextInt(first) : first + 1 + rand.nextInt(upperbound - first - 1);
+        int second = rand.nextInt(2) == 0 ? rand.nextInt(first) : first + 1 + rand.nextInt(upperbound - first);
 
         return new CommonGoalCard[]{buildFromJson(numPlayers, first), buildFromJson(numPlayers, second)};
     }

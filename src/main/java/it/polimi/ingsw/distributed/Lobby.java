@@ -165,16 +165,17 @@ public class Lobby {
             @Override
             public void update(GameUpdate value, ViewEvent eventType) {
 //                Weird cases in which the client is still subscribed even if already disconnected
-
+                System.err.println("called update");
                 if (!clientNickname.containsKey(client)) {
                     controller.game.deleteObserver(this);
                     return;
                 }
 
+                System.err.println("DEBUG NELL'UPDATE" + value + " AIJHOIUH " + clientNickname.get(client));
+
                 var filteredGameUpdate = GameUpdate.filterPersonalGoalCards(value, clientNickname.get(client));
-
+                System.err.println("FILTRATE MANNAGGIA " + filteredGameUpdate);
                 try {
-
                     client.updateGame(filteredGameUpdate);
                 } catch (RemoteException e) {
                     controller.game.deleteObserver(this);

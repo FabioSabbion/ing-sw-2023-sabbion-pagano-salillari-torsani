@@ -7,7 +7,7 @@ import java.io.Serializable;
 import java.util.List;
 
 @Nullable
-public record GameUpdate(LivingRoom livingRoom, List<PlayerUpdate> players, List<CommonGoalCardUpdate> commonGoalCards, PlayerUpdate gameEnder, PlayerUpdate currentPlayer) implements Serializable {
+public record GameUpdate(LivingRoom livingRoom, List<PlayerUpdate> players, List<CommonGoalCardUpdate> commonGoalCards, PlayerUpdate gameEnder, PlayerUpdate currentPlayer, int ID) implements Serializable {
     public static GameUpdate filterPersonalGoalCards(GameUpdate gameUpdate, String nickname) {
         return new GameUpdate(
             gameUpdate.livingRoom,
@@ -16,7 +16,14 @@ public record GameUpdate(LivingRoom livingRoom, List<PlayerUpdate> players, List
                         p : new PlayerUpdate(p.nickname(), p.bookshelf(), null)).toList(),
             gameUpdate.commonGoalCards,
             gameUpdate.gameEnder,
-            gameUpdate.currentPlayer
+            gameUpdate.currentPlayer,
+            gameUpdate.ID
         );
     }
+
+    public GameUpdate(LivingRoom livingRoom, List<PlayerUpdate> players, List<CommonGoalCardUpdate> commonGoalCards, PlayerUpdate gameEnder, PlayerUpdate currentPlayer) {
+        this(livingRoom, players, commonGoalCards, gameEnder, currentPlayer, id++);
+    }
+
+    private static int id = 0;
 }

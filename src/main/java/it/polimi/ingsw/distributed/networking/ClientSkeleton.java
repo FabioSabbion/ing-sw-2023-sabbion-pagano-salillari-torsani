@@ -26,6 +26,7 @@ public class ClientSkeleton implements Client{
     public void updatedPlayerList(List<String> players) throws RemoteException {
         try {
             oos.writeObject(new SocketMessage(EventType.LOBBY_UPDATE, (Serializable) players));
+            oos.reset();
             oos.flush();
         } catch (IOException e) {
             throw new RemoteException();
@@ -36,6 +37,7 @@ public class ClientSkeleton implements Client{
     public void updateGame(GameUpdate update) throws RemoteException {
         try {
             oos.writeObject(new SocketMessage(EventType.GAME_STATE, update));
+            oos.reset();
             oos.flush();
         } catch (IOException e) {
             throw new RemoteException();
@@ -46,6 +48,7 @@ public class ClientSkeleton implements Client{
     public void serverError(String message) throws RemoteException {
         try {
             oos.writeObject(new SocketMessage(EventType.LOBBY_ERROR, message));
+            oos.reset();
             oos.flush();
         } catch (IOException e) {
             throw new RemoteException();
@@ -56,6 +59,7 @@ public class ClientSkeleton implements Client{
     public void askNumPlayers() throws RemoteException {
         try {
             oos.writeObject(new SocketMessage(EventType.NUM_PLAYERS, null));
+            oos.reset();
             oos.flush();
         } catch (IOException e) {
             throw new RemoteException();
@@ -66,6 +70,7 @@ public class ClientSkeleton implements Client{
     public void keepAlive() throws RemoteException {
         try {
             oos.writeObject(new SocketMessage(EventType.KEEP_ALIVE, null));
+            oos.reset();
             oos.flush();
         } catch (IOException e) {
             throw new RemoteException();

@@ -137,6 +137,7 @@ public class CLIController implements ViewController {
 
     @Override
     public void updateGame(GameUpdate update) {
+        System.err.println("This is the update" + update);
         this.livingRoom = update.livingRoom() == null ? this.livingRoom : update.livingRoom();
         if (update.players() != null) {
             if (this.players == null) {
@@ -146,7 +147,12 @@ public class CLIController implements ViewController {
                 }
             } else {
                 for (PlayerUpdate playerUpdate : update.players()) {
-                    this.players.put(playerUpdate.nickname(), playerUpdate);
+                    var prev = this.players.get(playerUpdate.nickname());
+
+                    this.players.put(playerUpdate.nickname(),
+                            new PlayerUpdate(prev.nickname(),
+                                    Optional.ofNullable(playerUpdate.bookshelf()).orElse(prev.bookshelf()),
+                                    Optional.ofNullable(playerUpdate.personalGoalCard()).orElse(prev.personalGoalCard())));
                 }
             }
         }
@@ -173,7 +179,13 @@ public class CLIController implements ViewController {
             updatedCurrent = true;
         }
 
-        this.gameEnder = update.gameEnder() == null ? this.gameEnder : update.gameEnder();
+
+
+        if (update.gameEnder() != null) {
+            System.out.println(Color.RED.escape() + (gameEnder.nickname().equals(viewingPlayerNickname) ? "You have" : (gameEnder.nickname() + "has")) + " filled his bookshelf. The game is ending" + Color.RESET);
+            this.gameEnder = update.gameEnder();
+
+        }
 
         if (cli == null) {
             PlayerUpdate viewingPlayer = players.values().stream().filter(p -> p.nickname().equals(viewingPlayerNickname))
@@ -190,6 +202,9 @@ public class CLIController implements ViewController {
             cli.showPlayerTurn(currentPlayer);
             this.changeState(State.GET_PLAYER_CHOICE);
         }
+
+        System.err.println("ANDRI ZITTTOOOOOOO");
+        System.err.println(this.players);
     }
 
     @Override

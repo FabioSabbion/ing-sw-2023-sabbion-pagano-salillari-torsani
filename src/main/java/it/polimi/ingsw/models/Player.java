@@ -2,6 +2,7 @@ package it.polimi.ingsw.models;
 
 
 import it.polimi.ingsw.controller.events.ViewEvent;
+import it.polimi.ingsw.distributed.PersonalGoalCardUpdate;
 import it.polimi.ingsw.distributed.PlayerUpdate;
 import it.polimi.ingsw.utils.Observable;
 import it.polimi.ingsw.utils.Observer;
@@ -19,10 +20,11 @@ public class Player extends Observable<PlayerUpdate, ViewEvent> {
         this.personalGoalCard = personalGoalCard;
         this.bookshelf = new Bookshelf();
 
+        Player temp = this;
         this.bookshelf.addObserver(new Observer<Bookshelf, ViewEvent>() {
             @Override
             public void update(Bookshelf value, ViewEvent eventType) {
-                notifyObservers(new PlayerUpdate(nickname, value, null), eventType);
+                notifyObservers(new PlayerUpdate(nickname, value, PersonalGoalCardUpdate.from(personalGoalCard, temp)), eventType);
             }
         });
     }

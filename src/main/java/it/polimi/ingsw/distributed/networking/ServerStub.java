@@ -40,6 +40,7 @@ public class ServerStub implements Server{
     public void setNickname(String nickname, Client client) throws RemoteException {
         try {
             oos.writeObject(new SocketMessage(EventType.CONNECT, nickname));
+            oos.reset();
             oos.flush();
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -50,6 +51,7 @@ public class ServerStub implements Server{
     public void setNumPlayers(int num, Client client) throws RemoteException {
         try {
             oos.writeObject(new SocketMessage(EventType.NUM_PLAYERS, num));
+            oos.reset();
             oos.flush();
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -60,8 +62,10 @@ public class ServerStub implements Server{
     public void playerMove(List<Coordinates> coordinates, int column, Client client) throws RemoteException {
         try {
             oos.writeObject(new SocketMessage(EventType.PICK_TILES, (Serializable) coordinates));
+            oos.reset();
             oos.flush();
             oos.writeObject(new SocketMessage(EventType.CHOOSE_COLUMN, column));
+            oos.reset();
             oos.flush();
         } catch (IOException e) {
             throw new RuntimeException(e);
