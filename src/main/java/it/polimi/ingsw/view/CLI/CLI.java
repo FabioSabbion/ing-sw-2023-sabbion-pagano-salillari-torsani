@@ -6,25 +6,23 @@ import it.polimi.ingsw.models.LivingRoom;
 import it.polimi.ingsw.view.CLI.utils.ASCIIArt;
 import it.polimi.ingsw.view.CLI.utils.Color;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class CLI {
-
-    private CLIRenderer render;
-    private CLIController controller;
-    private static Printer printer = new Printer();
+    private final CLIController controller;
+    private static final Printer printer = new Printer();
     private String renderPersonalGoalCard;
-    private HashMap<String, String> renderBookshelves;
-    private HashMap<CommonGoalCardUpdate, String> renderCommonGoalCards;
+    private final HashMap<String, String> renderBookshelves;
+    private final HashMap<CommonGoalCardUpdate, String> renderCommonGoalCards;
     private String renderLivingRoom;
     public PlayerUpdate viewingPlayer;
-    private PlayerUpdate currentPlayer;
-    private PlayerUpdate gameEnder;
 
     public CLI (LivingRoom livingRoom, List<PlayerUpdate> players, List<CommonGoalCardUpdate> commonGoalCards,
-                PlayerUpdate currentPlayer, PlayerUpdate gameEnder, PlayerUpdate viewingPlayer, CLIController controller){
+                PlayerUpdate currentPlayer, PlayerUpdate viewingPlayer, CLIController controller){
 
-        this.render = new CLIRenderer();
         this.viewingPlayer = viewingPlayer;
         this.renderCommonGoalCards = new HashMap<>();
         this.renderBookshelves = new HashMap<>();
@@ -33,14 +31,14 @@ public class CLI {
         setRenderPersonalGoalCard();
         setRenderBookshelves(players);
         setRenderCommonGoalCards(commonGoalCards);
-        updateAll(livingRoom, players, currentPlayer, gameEnder);
+        updateAll(livingRoom, players, currentPlayer);
     }
 
 
     public static void initialScreen() {
         printer.clearScreen();
         printer.print(Color.YELLOW.escape() + ASCIIArt.myShelfieLogo + Color.RESET);
-        printer.print("\n\nWelcome to Myshelfie!");
+        printer.print("\n\nWelcome to MyShelfie!");
     }
 
     public void showMenu(boolean yourTurn){
@@ -59,22 +57,19 @@ public class CLI {
     }
 
     private void setRenderPersonalGoalCard(){
-        renderPersonalGoalCard = render.renderPersonalGoalCard(viewingPlayer.personalGoalCard());
+        renderPersonalGoalCard = CLIRenderer.renderPersonalGoalCard(viewingPlayer.personalGoalCard());
     }
 
 
     private void setRenderBookshelves(List<PlayerUpdate> players){
         for (PlayerUpdate player : players) {
-            this.renderBookshelves.put(player.nickname(), render.renderBookshelf(player.bookshelf()));
+            this.renderBookshelves.put(player.nickname(), CLIRenderer.renderBookshelf(player.bookshelf()));
         }
     }
 
-    public void updateBookshelf(PlayerUpdate player){
-        this.renderBookshelves.put(player.nickname(), render.renderBookshelf(player.bookshelf()));
-    }
 
     public void setLivingRoom(LivingRoom livingRoom){
-        this.renderLivingRoom = render.renderLivingRoom(livingRoom);
+        this.renderLivingRoom = CLIRenderer.renderLivingRoom(livingRoom);
     }
 
 
@@ -85,13 +80,13 @@ public class CLI {
         List<String> players = new ArrayList<>(playerMap.keySet());
 
         for (String player : players) {
-            concatBookshelves = render.concatAsciiArt(concatBookshelves, this.renderBookshelves.get(player));
+            concatBookshelves = CLIRenderer.concatAsciiArt(concatBookshelves, this.renderBookshelves.get(player));
         }
         printer.print(concatBookshelves + "\n\n\n");
 
         for (String player : players) {
             if (player.equals(viewingPlayer.nickname())){
-                printer.print("- You ");
+                printer.print("- You ( " + player + " )");
             }
             else {
                 printer.print("- " + player);
@@ -102,15 +97,15 @@ public class CLI {
 
     public void setRenderCommonGoalCards(List<CommonGoalCardUpdate> commonGoalCards){
         for (var commonGoalCard : commonGoalCards) {
-            this.renderCommonGoalCards.put(commonGoalCard, render.renderCommonGoalCard(commonGoalCard));
+            this.renderCommonGoalCards.put(commonGoalCard, CLIRenderer.renderCommonGoalCard(commonGoalCard));
         }
     }
 
     public void showMain(PlayerUpdate currentPlayer){
         printer.clearScreen();
         String main = renderLivingRoom;
-        main = render.concatAsciiArt(main, renderPersonalGoalCard);
-        main = render.concatAsciiArt(main, renderBookshelves.get(viewingPlayer.nickname()));
+        main = CLIRenderer.concatAsciiArt(main, renderPersonalGoalCard);
+        main = CLIRenderer.concatAsciiArt(main, renderBookshelves.get(viewingPlayer.nickname()));
         printer.print(main);
 
         var players = new ArrayList<>(renderBookshelves.keySet());
@@ -161,12 +156,10 @@ public class CLI {
     }
 
 
-    public void updateAll(LivingRoom livingRoom, List<PlayerUpdate> players, PlayerUpdate currentPlayer, PlayerUpdate gameEnder){
+    public void updateAll(LivingRoom livingRoom, List<PlayerUpdate> players, PlayerUpdate currentPlayer){
 
         setLivingRoom(livingRoom);
         setRenderBookshelves(players);
-        this.currentPlayer = currentPlayer;
-        this.gameEnder = gameEnder;
         showPlayerTurn(currentPlayer);
     }
 
@@ -182,7 +175,15 @@ public class CLI {
         this.showMenu(yourTurn);
     }
 
+    public void showEndScreen(PlayerUpdate gameEnder){
+        printer.clearScreen();
 
+        if (gameEnder.nickname().equals(viewingPlayer.nickname())){
+            printer.print(Color.GREEN.escape() + ASCIIArt.youWon + Color.RESET);
+        } else {
+            printer.print(Color.RED.escape() + ASCIIArt.gameOver + Color.RESET);
+        }
+    }
 
 
 }

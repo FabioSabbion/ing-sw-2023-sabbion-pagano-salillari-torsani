@@ -191,11 +191,11 @@ public class CLIController implements ViewController {
             PlayerUpdate viewingPlayer = players.values().stream().filter(p -> p.nickname().equals(viewingPlayerNickname))
                     .findFirst().get();
             cli = new CLI(this.livingRoom, this.players.values().stream().toList(), this.commonGoalCards,
-                    this.currentPlayer, this.gameEnder, viewingPlayer, this);
+                    this.currentPlayer, viewingPlayer, this);
         }
 
 
-        cli.updateAll(this.livingRoom, this.players.values().stream().toList(), this.currentPlayer, this.gameEnder);
+        cli.updateAll(this.livingRoom, this.players.values().stream().toList(), this.currentPlayer);
 
 
         if (updatedCurrent) {
