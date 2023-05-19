@@ -1,5 +1,6 @@
 package it.polimi.ingsw.models;
 
+import it.polimi.ingsw.GameUpdateToFile;
 import it.polimi.ingsw.controller.events.ViewEvent;
 import it.polimi.ingsw.distributed.CommonGoalCardUpdate;
 import it.polimi.ingsw.distributed.GameUpdate;
@@ -13,7 +14,7 @@ import java.util.*;
 /**
  * Contains all game information
  */
-public class Game extends Observable<GameUpdate, ViewEvent> {
+public class Game extends Observable<GameUpdateToFile, ViewEvent> {
     private @Nullable Player gameEnder;
     private Player currentPlayer;
     private final Player[] players;
@@ -32,7 +33,9 @@ public class Game extends Observable<GameUpdate, ViewEvent> {
             player.addObserver(new Observer<PlayerUpdate, ViewEvent>() {
                 @Override
                 public void update(PlayerUpdate value, ViewEvent eventType) {
-                    notifyObservers(new GameUpdate(null, Arrays.asList(value), null, null, null), eventType);
+                    notifyObservers(new GameUpdateToFile(
+                            new GameUpdate(null, Arrays.asList(value), null, null, null), null),
+                        eventType);
                 }
             });
         }
@@ -40,13 +43,13 @@ public class Game extends Observable<GameUpdate, ViewEvent> {
         this.livingRoom.addObserver(new Observer<LivingRoom, ViewEvent>() {
             @Override
             public void update(LivingRoom value, ViewEvent eventType) {
-                notifyObservers(new GameUpdate(value, null, null, null, null), eventType);
+                notifyObservers(new GameUpdateToFile(new GameUpdate(value, null, null, null, null), remainingTiles), eventType);
             }
         });
 
         Arrays.stream(this.commonGoalCards).forEach(commonGoalCard -> {
             commonGoalCard.addObserver((value, eventType) -> {
-                notifyObservers(new GameUpdate(null, null, List.of(value), null, null), eventType);
+                notifyObservers(new GameUpdateToFile(new GameUpdate(null, null, List.of(value), null, null), null), eventType);
             });
         });
     }
@@ -113,7 +116,7 @@ public class Game extends Observable<GameUpdate, ViewEvent> {
         this.currentPlayer = this.players[(index + 1) % this.players.length];
 
         notifyObservers(
-                new GameUpdate(null, null, null, null, PlayerUpdate.from(this.currentPlayer, false)),
+               new GameUpdateToFile(new GameUpdate(null, null, null, null, PlayerUpdate.from(this.currentPlayer, false)), null),
                 this.isEnded() ? ViewEvent.GAME_END : ViewEvent.ACTION_UPDATE
         );
     }
@@ -127,7 +130,7 @@ public class Game extends Observable<GameUpdate, ViewEvent> {
                 PlayerUpdate.from(this.currentPlayer, true)
         );
 
-        notifyObservers(gameUpdate, ViewEvent.GAME_STATE);
+        notifyObservers(new GameUpdateToFile(gameUpdate, remainingTiles), ViewEvent.GAME_STATE);
     }
 
     /**
@@ -140,6 +143,6 @@ public class Game extends Observable<GameUpdate, ViewEvent> {
     public void setGameEnder(Player gameEnder) {
         this.gameEnder = gameEnder;
 
-        notifyObservers(new GameUpdate(null, null, null, PlayerUpdate.from(this.gameEnder, false), null), ViewEvent.ACTION_UPDATE);
+        notifyObservers(new GameUpdateToFile(new GameUpdate(null, null, null, PlayerUpdate.from(this.gameEnder, false), null), null), ViewEvent.ACTION_UPDATE);
     }
 }

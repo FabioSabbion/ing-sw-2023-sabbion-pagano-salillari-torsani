@@ -3,10 +3,16 @@ package it.polimi.ingsw.distributed;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.google.common.collect.Maps;
+import it.polimi.ingsw.GamePersistence;
+import it.polimi.ingsw.GameUpdateToFile;
 import it.polimi.ingsw.controller.GameController;
 import it.polimi.ingsw.controller.events.ViewEvent;
 import it.polimi.ingsw.distributed.exceptions.LobbyException;
 import it.polimi.ingsw.distributed.networking.Client;
+import it.polimi.ingsw.models.CommonGoalCard;
+import it.polimi.ingsw.models.CommonGoalCardFactory;
+import it.polimi.ingsw.models.Game;
+import it.polimi.ingsw.models.Player;
 import it.polimi.ingsw.utils.Observer;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
@@ -21,6 +27,7 @@ public class Lobby {
     Map<String, Client> waitingPlayers;
     final BiMap<Client, String> clientNickname;
     Map<String, GameController> nicknameController;
+    GamePersistence persistence = new GamePersistence();
     enum State {
         WAITING_FOR_GAME,
         CREATING_GAME
@@ -92,6 +99,7 @@ public class Lobby {
                 // Nickname already in use => send error
                 throw new LobbyException("Nickname already in use");
             } else {
+//                Nickname not connected to any client, connecting to controller
                 clientNickname.put(client, nickname);
 
                 this.setClientListener(client, nicknameController.get(nickname));
@@ -123,6 +131,10 @@ public class Lobby {
 
                     this.setClientListener(connection.getValue(), controller);
                 }
+
+                controller.game.addObserver((value, event) -> {
+                    persistence.saveGames(value, controller.id);
+                });
 
                 controller.game.emitGameState();
 
@@ -161,9 +173,9 @@ public class Lobby {
     }
 
     private void setClientListener(Client client, GameController controller) {
-        controller.game.addObserver(new Observer<GameUpdate, ViewEvent>() {
+        controller.game.addObserver(new Observer<GameUpdateToFile, ViewEvent>() {
             @Override
-            public void update(GameUpdate value, ViewEvent eventType) {
+            public void update(GameUpdateToFile value, ViewEvent eventType) {
 //                Weird cases in which the client is still subscribed even if already disconnected
                 System.err.println("called update");
                 if (!clientNickname.containsKey(client)) {
@@ -173,7 +185,7 @@ public class Lobby {
 
                 System.err.println("DEBUG NELL'UPDATE" + value + " AIJHOIUH " + clientNickname.get(client));
 
-                var filteredGameUpdate = GameUpdate.filterPersonalGoalCards(value, clientNickname.get(client));
+                var filteredGameUpdate = GameUpdate.filterPersonalGoalCards(value.update(), clientNickname.get(client));
                 System.err.println("FILTRATE MANNAGGIA " + filteredGameUpdate);
                 try {
                     client.updateGame(filteredGameUpdate);
@@ -218,5 +230,34 @@ public class Lobby {
 
     public State getState() {
         return this.state;
+    }
+
+    public void loadLobbyFromUpdates(Map<Integer, GameUpdateToFile> updates) {
+        for (var update : updates.entrySet()) {
+            var fileUpdt = update.getValue();
+
+            var players = fileUpdt.update().players().stream().map(PlayerUpdate::to).toList();
+
+            var cards = fileUpdt.update().commonGoalCards().stream().map(commonGoalCardUpdate -> {
+                var card = CommonGoalCardFactory.buildFromJson(players.size(), commonGoalCardUpdate.commonGoalCardID());
+
+                commonGoalCardUpdate.playerUpdateList().stream().map(player -> players.stream().filter(player1 ->
+                        player1.getNickname().equals(player)).findFirst().get()).forEach(card::checkGoal);
+
+                return card;
+            });
+
+
+            assert fileUpdt.remainingTiles() != null;
+            Game game = new Game(players.toArray(new Player[0]), (CommonGoalCard[]) cards.toArray(), fileUpdt.remainingTiles(), fileUpdt.update().livingRoom());
+
+            GameController controller = new GameController(game, update.getKey());
+
+            players.forEach(player -> this.nicknameController.put(player.getNickname(), controller));
+
+            controller.game.addObserver((value, event) -> {
+                persistence.saveGames(value, update.getKey());
+            });
+        }
     }
 }

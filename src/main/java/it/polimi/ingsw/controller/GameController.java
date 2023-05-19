@@ -11,9 +11,16 @@ import java.util.Map;
 
 public class GameController {
     public Game game;
+    public int id;
+    public static int ID = 0;
 
+    public GameController(Game game, int id) {
+        this.game = game;
+        this.id = id;
+    }
     public GameController(List<String> nicknames) {
         this.game = Game.createEmptyGame(nicknames);
+        this.id = ID++;
     }
 
     private void gameTurn(List<Coordinates> coordinatesList, int column) {

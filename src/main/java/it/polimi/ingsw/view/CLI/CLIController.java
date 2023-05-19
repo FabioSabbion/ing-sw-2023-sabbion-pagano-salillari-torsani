@@ -167,7 +167,7 @@ public class CLIController implements ViewController {
                             System.out.println((player.equals(viewingPlayerNickname) ? "You have" : (player + "has")) + " completed " + card.commonGoalCardID() + " card");
                         });
 
-                        this.commonGoalCards.set(this.commonGoalCards.indexOf(matchingCard), card);
+                        this.commonGoalCards.set(this.commonGoalCards.indexOf(matchingCard.get()), card);
                     }
                 }
 
