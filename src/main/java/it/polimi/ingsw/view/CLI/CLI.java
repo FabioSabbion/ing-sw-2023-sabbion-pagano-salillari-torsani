@@ -175,10 +175,10 @@ public class CLI {
         this.showMenu(yourTurn);
     }
 
-    public void showEndScreen(PlayerUpdate gameEnder){
+    public void showEndScreen(String winningPlayer){
         printer.clearScreen();
 
-        if (gameEnder.nickname().equals(viewingPlayer.nickname())){
+        if (winningPlayer.equals(viewingPlayer.nickname())){
             printer.print(Color.GREEN.escape() + ASCIIArt.youWon + Color.RESET);
         } else {
             printer.print(Color.RED.escape() + ASCIIArt.gameOver + Color.RESET);

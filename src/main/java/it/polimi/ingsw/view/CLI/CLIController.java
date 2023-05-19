@@ -11,6 +11,7 @@ import it.polimi.ingsw.models.Coordinates;
 import it.polimi.ingsw.models.LivingRoom;
 import it.polimi.ingsw.models.exceptions.NotEnoughCellsException;
 import it.polimi.ingsw.models.exceptions.PickTilesException;
+import it.polimi.ingsw.view.CLI.utils.ASCIIArt;
 import it.polimi.ingsw.view.CLI.utils.Color;
 import it.polimi.ingsw.view.ViewController;
 
@@ -259,6 +260,9 @@ public class CLIController implements ViewController {
     public int calculatePersonalGoalCardPoints() {
         return this.players.get(viewingPlayerNickname).personalGoalCard().point();
     }
+    public int calculatePersonalGoalCardPoints(String playerNickname) {
+        return this.players.get(playerNickname).personalGoalCard().point();
+    }
 
     private synchronized void changeState(State state) {
         this.state = state;
@@ -291,6 +295,37 @@ public class CLIController implements ViewController {
 
             this.serverError("Connection problem");
         }
+    }
+
+
+    public void showEndingScreen(){
+        Map<String, Integer> playerPoints = new HashMap<>();
+
+        for (String player: new ArrayList<>(this.players.keySet())) {
+            playerPoints.put(player, calculatePersonalGoalCardPoints(player));
+        }
+
+        for (CommonGoalCardUpdate card : this.commonGoalCards) {
+            var cardPoints = calculateCommonGoalCardPoints(card.commonGoalCardID());
+
+            for (String player : new ArrayList<>(playerPoints.keySet())) {
+                playerPoints.put(player, playerPoints.get(player) + cardPoints.get(player));
+            }
+        }
+
+
+        System.out.println(Color.BLUE.escape() + ASCIIArt.scoreBoard + Color.RESET);
+
+        System.out.println(Color.BLUE.escape() + "\n Final Results are:" + Color.RESET);
+
+        for (String player: new ArrayList<>(this.players.keySet())) {
+            System.out.println("- " + player + " :" + playerPoints.get(player));
+        }
+
+        int maxPoint = playerPoints.entrySet().stream().map(p -> p.getValue()).mapToInt(x -> x).max().getAsInt();
+        String winningPlayer = playerPoints.entrySet().stream().filter(p -> p.getValue() == maxPoint).findFirst().get().getKey();
+
+        cli.showEndScreen(winningPlayer);
     }
 
 
