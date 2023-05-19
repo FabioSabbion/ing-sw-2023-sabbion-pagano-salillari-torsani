@@ -173,7 +173,7 @@ public class CLIController implements ViewController {
                 }
 
             } else {
-                this.commonGoalCards = update.commonGoalCards();
+                this.commonGoalCards = new ArrayList<>(update.commonGoalCards());
             }
         }
 
