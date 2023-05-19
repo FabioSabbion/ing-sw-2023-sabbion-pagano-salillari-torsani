@@ -228,7 +228,7 @@ public class CLIController implements ViewController {
                 this.serverError("Wrong number of players, try again!");
             else {
                 server.setNumPlayers(parseInt(input), client);
-
+                System.out.println(Color.BLUE.escape() + "Waiting for number of players..." + Color.RESET);
                 this.changeState(State.WAITING);
             }
         } catch (NumberFormatException e) {
