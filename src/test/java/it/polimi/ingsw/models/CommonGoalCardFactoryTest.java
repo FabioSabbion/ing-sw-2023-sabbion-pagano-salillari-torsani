@@ -176,7 +176,22 @@ class CommonGoalCardFactoryTest {
             }
         }
 
-        cgc.checkGoal(player);
+        assert(cgc.checkGoal(player) > 0 );
+    }
+
+    @Test
+    @DisplayName("Checking commonGoalCard 5")
+    void getCommonGoalCard05_v2() {
+        int numPlayer = 3;
+
+        var cgc = CommonGoalCardFactory.buildFromJson(numPlayer, 5);
+
+        var player = new Player("andri", PersonalGoalCard.buildFromJson().get(0));
+
+        System.out.println("Card:");
+        System.out.println(CommonGoalCardFactory.getASCIIForCard(5));
+
+        assert(cgc.checkGoal(player) == 0);
     }
 
     @Test
