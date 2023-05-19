@@ -1,7 +1,7 @@
     [
         {
-            "maxDistinctCategoryNumber": 5,
-            "exactCategoryNumber": 0,
+            "maxDistinctCategoryNumber": 1,
+            "exactCategoryNumber": 1,
             "repetitionNumber": 6,
             "othersEmpty": false,
             "schema": [
