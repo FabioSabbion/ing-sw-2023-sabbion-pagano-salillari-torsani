@@ -187,9 +187,8 @@ public class CLIController implements ViewController {
 
 
         if (update.gameEnder() != null) {
-            System.out.println(Color.RED.escape() + (gameEnder.nickname().equals(viewingPlayerNickname) ? "You have" : (gameEnder.nickname() + "has")) + " filled his bookshelf. The game is ending" + Color.RESET);
             this.gameEnder = update.gameEnder();
-
+            System.out.println(Color.RED.escape() + (this.gameEnder.nickname().equals(viewingPlayerNickname) ? "You have" : (this.gameEnder.nickname() + "has")) + " filled his bookshelf. The game is ending" + Color.RESET);
         }
 
         if (cli == null) {

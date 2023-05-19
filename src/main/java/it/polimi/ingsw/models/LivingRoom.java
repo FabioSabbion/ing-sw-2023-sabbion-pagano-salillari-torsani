@@ -48,12 +48,12 @@ public class LivingRoom extends Observable<LivingRoom, ViewEvent> implements Ser
         for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 9; j++) {
                 if (this.board[i][j] != null && this.validCoordinates[i][j] != -1) {
-                    if (!this.hasAdjacentTile(i, j))
-                        return true;
+                    if (this.hasAdjacentTile(i, j))
+                        return false;
                 }
             }
         }
-        return false;
+        return true;
     }
 
     /**
@@ -182,6 +182,7 @@ public class LivingRoom extends Observable<LivingRoom, ViewEvent> implements Ser
      */
     public boolean fillBoardIfNeeded(int numPlayers, List<Tile> remainingTiles) {
         if (needRefill()) {
+            System.err.println("CIAOOOO QUESTA È LA LIVINGROOM  " + this);
             fillBoard(numPlayers, remainingTiles);
             return true;
         }
@@ -201,6 +202,14 @@ public class LivingRoom extends Observable<LivingRoom, ViewEvent> implements Ser
         }
 
         notifyObservers(this, ViewEvent.ACTION_UPDATE);
+    }
+
+    @Override
+    public String toString() {
+        return "LivingRoom{" +
+                "board=" + Arrays.toString(board) +
+                ", validCoordinates=" + Arrays.toString(validCoordinates) +
+                '}';
     }
 }
 
