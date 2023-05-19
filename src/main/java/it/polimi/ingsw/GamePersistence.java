@@ -11,12 +11,20 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.*;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 public class GamePersistence {
     static public final String path = "oldGames";
     static public final String startingString = "game";
     static public final int savingNumber = 3;
+    final DateTimeFormatter timeFormat = DateTimeFormatter.ofPattern("yyyy_MM_dd HH_mm_ss");
+
+    Executor executor = Executors.newSingleThreadExecutor();
 
     private final Map<Integer, GameUpdateToFile> updateMap = new TreeMap<>();
 
@@ -101,19 +109,19 @@ public class GamePersistence {
 
         File gamesDir = path.toFile();
 
-        int nextIndex = Arrays.stream(Objects.requireNonNull(gamesDir.listFiles(new FilenameFilter() {
+        var files = Arrays.stream(Objects.requireNonNull(gamesDir.listFiles(new FilenameFilter() {
             @Override
             public boolean accept(File dir, String name) {
                 var splitName = name.split("-");
 
                 if (splitName[0].equals(startingString)) {
                     try {
-                        Integer.parseInt(splitName[2]);
+                        var ignored = LocalDateTime.parse(splitName[2], timeFormat);
 
                         if (Integer.parseInt(splitName[1]) == ID) {
                             return true;
                         }
-                    } catch (NumberFormatException e) {
+                    } catch (NumberFormatException | DateTimeParseException e) {
                         return false;
                     }
                 }
@@ -121,14 +129,24 @@ public class GamePersistence {
 
                 return false;
             }
-        }))).mapToInt(a -> Integer.parseInt(a.getName().split("-")[2])).max().orElse(-1) + 1;
+        }))).sorted((fileFirst, fileSecond) -> {
+            var firstDate = LocalDateTime.parse(fileFirst.getName().split("-")[2],timeFormat);
+            var secondDate = LocalDateTime.parse(fileSecond.getName().split("-")[2],timeFormat);
 
-        String fileName = startingString + "-" + ID + "-" + nextIndex;
+            return secondDate.compareTo(firstDate);
+        }).toList();
+
+        for (int i = savingNumber - 1; i < files.size(); i++) {
+            var ignored = files.get(i).delete();
+        }
+
+        LocalDateTime myDateObj = LocalDateTime.now();
+        String formattedDate = myDateObj.format(timeFormat);
+        String fileName = startingString + "-" + ID + "-" + formattedDate;
 
         File toFile = Paths.get(path.toString(), fileName).toFile();
 
-
-        new Thread(() -> {
+        executor.execute(() -> {
             ObjectOutputStream oos = null;
             try {
                 oos = new ObjectOutputStream(new FileOutputStream(toFile));
@@ -144,7 +162,7 @@ public class GamePersistence {
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-        }).start();
+        });
     }
 
     public void loadOldGames() {
@@ -164,10 +182,10 @@ public class GamePersistence {
                         if (tempSplit.length == 3 && tempSplit[0].equals(startingString)) {
                             try {
                                 Integer.parseInt(tempSplit[1]);
-                                Integer.parseInt(tempSplit[2]);
+                                var ignored = LocalDateTime.parse(tempSplit[2], timeFormat);
 
                                 return true;
-                            } catch (NumberFormatException e) {
+                            } catch (NumberFormatException | DateTimeParseException e) {
                                 return false;
                             }
                         }
@@ -176,10 +194,10 @@ public class GamePersistence {
                     return false;
                 }
             }))).sorted((fileFirst, fileSecond) -> {
-                int firstNum = Integer.parseInt(fileFirst.getName().split("-")[2]);
-                int secondNum = Integer.parseInt(fileSecond.getName().split("-")[2]);
+                var firstDate = LocalDateTime.parse(fileFirst.getName().split("-")[2],timeFormat);
+                var secondDate = LocalDateTime.parse(fileSecond.getName().split("-")[2],timeFormat);
 
-                return secondNum - firstNum;
+                return secondDate.compareTo(firstDate);
             }).forEach(file -> {
                 int gameID = Integer.parseInt(file.getName().split("-")[1]);
 
@@ -200,8 +218,6 @@ public class GamePersistence {
         }
 
         GameController.ID = this.updateMap.keySet().stream().mapToInt(a -> a).max().orElseGet(() -> 0);
-
-        System.err.println(updateMap);
 
         Lobby.getInstance().loadLobbyFromUpdates(updateMap);
     }
