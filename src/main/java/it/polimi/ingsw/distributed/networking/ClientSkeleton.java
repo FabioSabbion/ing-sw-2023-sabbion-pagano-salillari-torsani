@@ -13,7 +13,7 @@ import java.io.Serializable;
 import java.rmi.RemoteException;
 import java.util.List;
 
-public class ClientSkeleton implements Client{
+public class ClientSkeleton implements Client {
     private final ObjectOutputStream oos;
     private final ObjectInputStream ois;
 
@@ -75,6 +75,18 @@ public class ClientSkeleton implements Client{
         } catch (IOException e) {
             throw new RemoteException();
         }
+    }
+
+    @Override
+    public void showEndingScoreboard(GameUpdate gameUpdate) throws RemoteException {
+        try {
+            oos.writeObject(new SocketMessage(EventType.GAME_END, gameUpdate));
+            oos.reset();
+            oos.flush();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 
     public void receive() throws RemoteException {

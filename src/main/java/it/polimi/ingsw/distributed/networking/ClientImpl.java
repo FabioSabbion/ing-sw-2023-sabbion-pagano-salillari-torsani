@@ -52,6 +52,12 @@ public class ClientImpl extends UnicastRemoteObject implements Client {
         //System.out.println("Server asked for keepalive");
     }
 
+    @Override
+    public void showEndingScoreboard(GameUpdate update) throws RemoteException {
+        view.updateGame(update);
+        view.showEndingScreen();
+    }
+
     public void run(ViewController view) {
         this.view = view;
     }

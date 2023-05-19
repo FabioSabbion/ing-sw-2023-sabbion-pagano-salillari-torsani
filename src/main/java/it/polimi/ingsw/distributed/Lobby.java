@@ -181,11 +181,13 @@ public class Lobby {
                     return;
                 }
 
-
-                var filteredGameUpdate = GameUpdate.filterPersonalGoalCards(value.update(), clientNickname.get(client));
-
                 try {
-                    client.updateGame(filteredGameUpdate);
+                    if (eventType == ViewEvent.GAME_END) {
+                        client.showEndingScoreboard(value.update());
+                    } else {
+                        var filteredGameUpdate = GameUpdate.filterPersonalGoalCards(value.update(), clientNickname.get(client));
+                        client.updateGame(filteredGameUpdate);
+                    }
                 } catch (RemoteException e) {
                     controller.game.deleteObserver(this);
                 }

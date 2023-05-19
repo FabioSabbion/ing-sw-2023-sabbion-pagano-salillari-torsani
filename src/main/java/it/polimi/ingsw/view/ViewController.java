@@ -14,4 +14,5 @@ public interface ViewController {
     void setNickname(String nickname);
 
     void getPlayerChoice(boolean yourTurn, String menuChoice);
+    void showEndingScreen();
 }

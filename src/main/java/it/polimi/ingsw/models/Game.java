@@ -115,8 +115,17 @@ public class Game extends Observable<GameUpdateToFile, ViewEvent> {
         int index = Arrays.asList(this.players).indexOf(this.currentPlayer);
         this.currentPlayer = this.players[(index + 1) % this.players.length];
 
+
+//        if the game is ended we want to send the personalGoalCard so that the client can show you the final scoreboard
         notifyObservers(
-               new GameUpdateToFile(new GameUpdate(null, null, null, null, PlayerUpdate.from(this.currentPlayer, false)), null),
+               new GameUpdateToFile(new GameUpdate(
+                       null,
+                       this.isEnded() ?
+                            Arrays.stream(this.players).map(player -> PlayerUpdate.from(player, true)).toList() : null,
+                       null,
+                       null,
+                       PlayerUpdate.from(this.currentPlayer, this.isEnded())),
+                       null),
                 this.isEnded() ? ViewEvent.GAME_END : ViewEvent.ACTION_UPDATE
         );
     }

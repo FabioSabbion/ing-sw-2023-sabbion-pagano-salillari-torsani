@@ -297,8 +297,8 @@ public class CLIController implements ViewController {
         }
     }
 
-
-    public void showEndingScreen(){
+    @Override
+    public void showEndingScreen() {
         Map<String, Integer> playerPoints = new HashMap<>();
 
         for (String player: new ArrayList<>(this.players.keySet())) {

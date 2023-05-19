@@ -95,6 +95,10 @@ public class ServerStub implements Server{
                 case KEEP_ALIVE -> {
                     //System.out.println("KEEP_ALIVE received");
                 }
+                case GAME_END -> {
+                    GameUpdate gameUpdate = (GameUpdate) message.data;
+                    client.showEndingScoreboard(gameUpdate);
+                }
             }
         } catch (IOException e) {
             // TODO: handle connection errors
