@@ -13,4 +13,8 @@ public record PersonalGoalCardUpdate(List<Pair<Category, Coordinates>> positions
     public static PersonalGoalCardUpdate from(PersonalGoalCard personalGoalCard, Player player) {
         return new PersonalGoalCardUpdate(personalGoalCard.getPositions(), personalGoalCard.checkGoal(player));
     }
+
+    public static PersonalGoalCard to(PersonalGoalCardUpdate personalGoalCardUpdate){
+        return new PersonalGoalCard(personalGoalCardUpdate.positions);
+    }
 }

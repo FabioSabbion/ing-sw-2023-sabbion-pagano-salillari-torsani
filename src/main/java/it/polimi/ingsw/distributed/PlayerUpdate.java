@@ -12,4 +12,8 @@ public record PlayerUpdate(@Nonnull String nickname, Bookshelf bookshelf, Person
     public static PlayerUpdate from(Player player, boolean includePersonalGoalCard) {
         return new PlayerUpdate(player.getNickname(), player.getBookshelf(), includePersonalGoalCard ? PersonalGoalCardUpdate.from(player.getPersonalGoalCard(), player) : null);
     }
+
+    public static Player to(PlayerUpdate playerUpdate){
+        return new Player(playerUpdate.nickname, PersonalGoalCardUpdate.to(playerUpdate.personalGoalCard));
+    }
 }
