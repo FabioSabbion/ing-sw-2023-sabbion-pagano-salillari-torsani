@@ -166,10 +166,14 @@ public class CLIController implements ViewController {
                         card.playerUpdateList().stream().filter(player -> !matchingCard.get().playerUpdateList().contains(player)).forEach(player -> {
                             System.out.println((player.equals(viewingPlayerNickname) ? "You have" : (player + "has")) + " completed " + card.commonGoalCardID() + " card");
                         });
+
+                        this.commonGoalCards.set(this.commonGoalCards.indexOf(matchingCard), card);
                     }
                 }
+
+            } else {
+                this.commonGoalCards = update.commonGoalCards();
             }
-            this.commonGoalCards = update.commonGoalCards();
         }
 
         boolean updatedCurrent = false;
