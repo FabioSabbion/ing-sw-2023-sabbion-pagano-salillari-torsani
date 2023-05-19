@@ -16,9 +16,13 @@ public class Player extends Observable<PlayerUpdate, ViewEvent> {
     private final Bookshelf bookshelf;
 
     public Player(String nickname, PersonalGoalCard personalGoalCard) {
+        this(nickname, personalGoalCard, new Bookshelf());
+    }
+
+    public Player(String nickname, PersonalGoalCard personalGoalCard, Bookshelf bookshelf) {
         this.nickname = nickname;
         this.personalGoalCard = personalGoalCard;
-        this.bookshelf = new Bookshelf();
+        this.bookshelf = bookshelf;
 
         Player temp = this;
         this.bookshelf.addObserver(new Observer<Bookshelf, ViewEvent>() {

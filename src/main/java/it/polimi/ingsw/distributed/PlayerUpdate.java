@@ -14,6 +14,6 @@ public record PlayerUpdate(@Nonnull String nickname, Bookshelf bookshelf, Person
     }
 
     public static Player to(PlayerUpdate playerUpdate){
-        return new Player(playerUpdate.nickname, PersonalGoalCardUpdate.to(playerUpdate.personalGoalCard));
+        return new Player(playerUpdate.nickname, PersonalGoalCardUpdate.to(playerUpdate.personalGoalCard), playerUpdate.bookshelf);
     }
 }

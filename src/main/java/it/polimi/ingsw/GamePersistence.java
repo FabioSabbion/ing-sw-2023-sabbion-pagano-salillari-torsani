@@ -40,6 +40,11 @@ public class GamePersistence {
                         players.put(playerUpdate.nickname(), playerUpdate);
                     }
                 } else {
+
+                    for (PlayerUpdate playerUpdate : gameOldUpdate.players()) {
+                        players.put(playerUpdate.nickname(), playerUpdate);
+                    }
+
                     for (PlayerUpdate playerUpdate : gameNewUpdate.players()) {
                         var prev = players.get(playerUpdate.nickname());
 
@@ -57,7 +62,7 @@ public class GamePersistence {
                 newPlayers = players.values().stream().toList();
             }
 
-            List<CommonGoalCardUpdate> commonGoalCardUpdates = gameOldUpdate.commonGoalCards();
+            List<CommonGoalCardUpdate> commonGoalCardUpdates = new ArrayList<>(gameOldUpdate.commonGoalCards());
 
             if (gameNewUpdate.commonGoalCards() != null) {
                 for(var card: gameNewUpdate.commonGoalCards()) {
@@ -118,7 +123,7 @@ public class GamePersistence {
             }
         }))).mapToInt(a -> Integer.parseInt(a.getName().split("-")[2])).max().orElse(-1) + 1;
 
-        String fileName = startingString + "-" + ID + "-" + nextIndex % savingNumber;
+        String fileName = startingString + "-" + ID + "-" + nextIndex;
 
         File toFile = Paths.get(path.toString(), fileName).toFile();
 
@@ -133,6 +138,9 @@ public class GamePersistence {
 
             try {
                 oos.writeObject(updateMap.get(ID));
+                oos.reset();
+                oos.flush();
+                oos.close();
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -192,6 +200,8 @@ public class GamePersistence {
         }
 
         GameController.ID = this.updateMap.keySet().stream().mapToInt(a -> a).max().orElseGet(() -> 0);
+
+        System.err.println(updateMap);
 
         Lobby.getInstance().loadLobbyFromUpdates(updateMap);
     }

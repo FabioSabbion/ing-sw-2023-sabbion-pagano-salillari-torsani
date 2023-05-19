@@ -40,6 +40,8 @@ public class Lobby {
     private Lobby() {
         clientNickname = Maps.synchronizedBiMap(HashBiMap.create());
 
+        this.nicknameController = new HashMap<>();
+
         (new Thread(() -> {
             while (true) {
                 synchronized (this) {
@@ -84,10 +86,6 @@ public class Lobby {
     }
     public synchronized void setNickname(String nickname, Client client) throws LobbyException {
         System.out.println("New nickname from client " + nickname);
-
-        if (nicknameController == null) {
-            this.nicknameController = new HashMap<>();
-        }
 
         if (clientNickname.containsKey(client)) {
             throw new LobbyException("Client already present");
@@ -183,10 +181,9 @@ public class Lobby {
                     return;
                 }
 
-                System.err.println("DEBUG NELL'UPDATE" + value + " AIJHOIUH " + clientNickname.get(client));
 
                 var filteredGameUpdate = GameUpdate.filterPersonalGoalCards(value.update(), clientNickname.get(client));
-                System.err.println("FILTRATE MANNAGGIA " + filteredGameUpdate);
+
                 try {
                     client.updateGame(filteredGameUpdate);
                 } catch (RemoteException e) {
@@ -223,6 +220,7 @@ public class Lobby {
    public static Lobby getInstance() {
         if(Lobby.instance == null) {
             Lobby.instance = new Lobby();
+            instance.persistence.loadOldGames();
         }
 
         return Lobby.instance;
@@ -245,11 +243,11 @@ public class Lobby {
                         player1.getNickname().equals(player)).findFirst().get()).forEach(card::checkGoal);
 
                 return card;
-            });
+            }).toList();
 
 
             assert fileUpdt.remainingTiles() != null;
-            Game game = new Game(players.toArray(new Player[0]), (CommonGoalCard[]) cards.toArray(), fileUpdt.remainingTiles(), fileUpdt.update().livingRoom());
+            Game game = new Game(players.toArray(new Player[0]), cards.toArray(new CommonGoalCard[0]), fileUpdt.remainingTiles(), fileUpdt.update().livingRoom());
 
             GameController controller = new GameController(game, update.getKey());
 
