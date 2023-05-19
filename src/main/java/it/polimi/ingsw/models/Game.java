@@ -12,7 +12,7 @@ import javax.annotation.Nullable;
 import java.util.*;
 
 /**
- * Contains all game information
+ * Contains all game information dasds
  */
 public class Game extends Observable<GameUpdateToFile, ViewEvent> {
     private @Nullable Player gameEnder;
