@@ -1,6 +1,8 @@
 package it.polimi.ingsw.models;
 
+import it.polimi.ingsw.controller.events.ViewEvent;
 import it.polimi.ingsw.distributed.CommonGoalCardUpdate;
+import it.polimi.ingsw.utils.Observable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,7 +11,7 @@ import java.util.function.Predicate;
 /**
  * Representation in java of a single generic Common Goal
  */
-public class CommonGoalCard implements GoalCard {
+public class CommonGoalCard extends Observable<CommonGoalCardUpdate, ViewEvent> implements GoalCard {
     public static final int[][] points = {
             {},
             {},
@@ -38,6 +40,9 @@ public class CommonGoalCard implements GoalCard {
 
         if(controlFunction.test(player.getBookshelf())) {
             orderOfCompletionList.add(player);
+
+            this.notifyObservers(from(this), ViewEvent.ACTION_UPDATE);
+
             return points[numPlayers][orderOfCompletionList.size() - 1];
         }
 
