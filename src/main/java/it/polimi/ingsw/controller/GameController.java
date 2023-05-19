@@ -4,6 +4,7 @@ import it.polimi.ingsw.models.*;
 import it.polimi.ingsw.models.exceptions.NotEnoughCellsException;
 import it.polimi.ingsw.models.exceptions.PickTilesException;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,6 +35,9 @@ public class GameController {
             this.game.getCurrentPlayer().getBookshelf().insertTiles(column, tiles);
             this.game.getLivingRoom().removeTiles(coordinatesList);
 
+            Arrays.stream(this.game.getCommonGoalCards()).forEach(commonGoalCard ->
+                    commonGoalCard.checkGoal(this.game.getCurrentPlayer())
+            );
 
 
         } catch (PickTilesException | NotEnoughCellsException e) {

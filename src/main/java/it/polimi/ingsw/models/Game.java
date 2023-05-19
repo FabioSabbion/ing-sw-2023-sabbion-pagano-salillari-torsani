@@ -43,6 +43,12 @@ public class Game extends Observable<GameUpdate, ViewEvent> {
                 notifyObservers(new GameUpdate(value, null, null, null, null), eventType);
             }
         });
+
+        Arrays.stream(this.commonGoalCards).forEach(commonGoalCard -> {
+            commonGoalCard.addObserver((value, eventType) -> {
+                notifyObservers(new GameUpdate(null, null, List.of(value), null, null), eventType);
+            });
+        });
     }
 
     static public Game createEmptyGame(List<String> nicknames) {
