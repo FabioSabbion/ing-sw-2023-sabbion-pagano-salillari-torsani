@@ -27,13 +27,16 @@ public class GameController {
         this.playerAction(coordinatesList, column);
         this.updateCommonGoalPoints();
 
-        if (this.game.getCurrentPlayer().getBookshelf().isFull()) {
-            this.game.setGameEnder(this.game.getCurrentPlayer());
-        }
+
+        var prevPlayer = this.game.getCurrentPlayer();
 
         this.game.getLivingRoom().fillBoardIfNeeded(this.game.getPlayers().length, this.game.getRemainingTiles());
 
         this.game.nextPlayer();
+
+        if (prevPlayer.getBookshelf().isFull()) {
+            this.game.setGameEnder(prevPlayer);
+        }
     }
 
     private void playerAction(List<Coordinates> coordinatesList, int column) {
