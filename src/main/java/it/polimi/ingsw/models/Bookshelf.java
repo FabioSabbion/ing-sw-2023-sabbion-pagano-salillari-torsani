@@ -25,7 +25,7 @@ public class Bookshelf extends Observable<Bookshelf, ViewEvent> implements Seria
     }
 
     public int pickFirstFreeIndex(int column, List<Tile> pickedTiles) throws  NotEnoughCellsException {
-        int firstEmptyIndex = 0;
+        int firstEmptyIndex = ROWS;
         for (int i = 0; i < ROWS; i++) {
             if(this.bookshelf[i][column] == null){
                 firstEmptyIndex = i;
