@@ -159,6 +159,27 @@ class CommonGoalCardFactoryTest {
     }
 
     @Test
+    @DisplayName("Checking commonGoalCard 5")
+    void getCommonGoalCard05() {
+        int numPlayer = 3;
+
+        var cgc = CommonGoalCardFactory.buildFromJson(numPlayer, 5);
+
+        var player = new Player("andri", PersonalGoalCard.buildFromJson().get(0));
+
+        System.out.println("Card:");
+        System.out.println(CommonGoalCardFactory.getASCIIForCard(5));
+
+        for (int i = 0; i < Bookshelf.ROWS; i++) {
+            for (int j = 0; j < Bookshelf.COLUMNS; j++) {
+                player.getBookshelf().getBookshelf()[i][j] = new Tile(Category.BOOKS, Icon.VARIATION1, Orientation.UP);
+            }
+        }
+
+        cgc.checkGoal(player);
+    }
+
+    @Test
     @DisplayName("Checking commonGoalCard 12")
     void getCommonGoalCard12() {
         int numPlayer = 3;

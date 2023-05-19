@@ -145,10 +145,11 @@
             }
         },
         {
-            "maxDistinctCategoryNumber": 6,
-            "exactCategoryNumber": 0,
+            "maxDistinctCategoryNumber": 1,
+            "exactCategoryNumber": 1,
             "repetitionNumber": 8,
             "othersEmpty": false,
+            "unitedCategories": true,
             "schema": [
                 {
                     "x": 0,

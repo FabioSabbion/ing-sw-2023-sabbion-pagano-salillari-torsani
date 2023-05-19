@@ -1,5 +1,7 @@
 package it.polimi.ingsw.models;
 
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Sets;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -18,6 +20,7 @@ public class CommonGoalCardFactory {
     private int repetitionNumber;
     private int numPlayers;
     private boolean othersEmpty;
+    private boolean unitedCategories;
 
     private static final JSONParser parser = new JSONParser();
 
@@ -40,6 +43,14 @@ public class CommonGoalCardFactory {
         factory.setExactCategoryNumber(((Long) jsonObjects.get(cardID).get("exactCategoryNumber")).intValue());
         factory.setRepetitionNumber(((Long) jsonObjects.get(cardID).get("repetitionNumber")).intValue());
         factory.setOthersEmpty((boolean) jsonObjects.get(cardID).get("othersEmpty"));
+
+
+        factory.setUnitedCategories(false);
+
+        if (jsonObjects.get(cardID).containsKey("unitedCategories")) {
+            factory.setUnitedCategories((boolean) jsonObjects.get(cardID).get("unitedCategories"));
+        }
+
         JSONArray tempArray = (JSONArray) jsonObjects.get(cardID).get("schema");
         for(Object item : tempArray){
             JSONObject obj = (JSONObject) item;
@@ -84,6 +95,8 @@ public class CommonGoalCardFactory {
     }
     public CommonGoalCard buildCommonGoalCard(int cardID) {
         final Predicate<Bookshelf> controlFunction = new Predicate<Bookshelf>() {
+            Set<Category> sameCategories = null;
+
             public int checkFrom(int i, int j, Set<Coordinates> blocked, Tile[][] bookshelfMat) {
                 Set<Category> categories = new HashSet<>();
 
@@ -91,7 +104,8 @@ public class CommonGoalCardFactory {
                     if (i + c.x < bookshelfMat.length
                             && j + c.y < bookshelfMat[i + c.x].length
                             && bookshelfMat[i + c.x][j + c.y] != null
-                            && !blocked.contains(new Coordinates(i + c.x, j + c.y))) {
+                            && !blocked.contains(new Coordinates(i + c.x, j + c.y))
+                            && (sameCategories == null || sameCategories.contains(bookshelfMat[i + c.x][j + c.y].category()))) {
                         categories.add(bookshelfMat[i + c.x][j + c.y].category());
                     } else {
                         categories = null;
@@ -139,10 +153,12 @@ public class CommonGoalCardFactory {
                     }
                 }
 
+                if (categories != null && categories.size() > maxDistinctCategoryNumber) {
+                    return 0;
+                }
 
 
-                if (categories != null && (categories.size() <= maxDistinctCategoryNumber) &&
-                        (exactCategoryNumber == 0 || exactCategoryNumber == categories.size())) {
+                if (categories != null && (exactCategoryNumber == 0 || exactCategoryNumber == categories.size())) {
                     var newBlocked = new HashSet<>(blocked);
 
                     for (Coordinates c: schema) {
@@ -150,8 +166,12 @@ public class CommonGoalCardFactory {
                     }
 
                     var tempResGood = checkFrom(i_next, j_next, newBlocked, bookshelfMat) + 1;
-                    var tempResBad = checkFrom(i_next, j_next, blocked, bookshelfMat);
 
+                    if (tempResGood >= repetitionNumber) {
+                        return tempResGood;
+                    }
+
+                    var tempResBad = checkFrom(i_next, j_next, blocked, bookshelfMat);
                     return Math.max(tempResGood, tempResBad);
                 }
                 return checkFrom(i_next, j_next, blocked, bookshelfMat);
@@ -163,9 +183,31 @@ public class CommonGoalCardFactory {
 
                 int matching = 0;
 
+                if (unitedCategories) {
+                    Set<Set<Category>> combinations = Sets.combinations(ImmutableSet.copyOf(Category.values()), maxDistinctCategoryNumber);
+
+                    for (var combination: combinations) {
+                        sameCategories = combination;
+
+                        for (int i = 0; i < bookshelfMat.length; i++) {
+                            for (int j = 0; j < bookshelfMat[i].length; j++) {
+                                matching = Math.max(matching, checkFrom(i, j, new HashSet<>(), bookshelfMat));
+
+                                if (matching >= repetitionNumber) {
+                                    return true;
+                                }
+                            }
+                        }
+                    }
+                }
+
                 for (int i = 0; i < bookshelfMat.length; i++) {
                     for (int j = 0; j < bookshelfMat[i].length; j++) {
                         matching = Math.max(matching, checkFrom(i, j, new HashSet<>(), bookshelfMat));
+
+                        if (matching >= repetitionNumber) {
+                            return true;
+                        }
                     }
                 }
 
@@ -194,6 +236,10 @@ public class CommonGoalCardFactory {
 
     public void setNumPlayers(int numPlayers){
         this.numPlayers = numPlayers;
+    }
+
+    public void setUnitedCategories(boolean unitedCategories) {
+        this.unitedCategories = unitedCategories;
     }
 
     public void setOthersEmpty(boolean othersEmpty){
