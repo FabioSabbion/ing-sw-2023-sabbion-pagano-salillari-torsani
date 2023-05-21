@@ -33,6 +33,31 @@ class CommonGoalCardFactoryTest {
     }
 
     @Test
+    @DisplayName("Checking commonGoalCard 0 (False case)")
+    void getCommonGoalCard0_v2() {
+        int numPlayer = 3;
+
+        var commonGoalCard = CommonGoalCardFactory.buildFromJson(numPlayer, 0);
+
+        System.out.println("Card:");
+        System.out.println(CommonGoalCardFactory.getASCIIForCard(0));
+
+        var player = new Player("andri", PersonalGoalCard.buildFromJson().get(0));
+
+        for (int i = 0; i < 5; i++) {
+            player.getBookshelf().getBookshelf()[0][i] = new Tile(Category.CATS, Icon.VARIATION1, Orientation.UP);
+            player.getBookshelf().getBookshelf()[1][i] = new Tile(Category.BOOKS, Icon.VARIATION1, Orientation.UP);
+        }
+
+        player.getBookshelf().getBookshelf()[2][0] = new Tile(Category.BOOKS, Icon.VARIATION1, Orientation.UP);
+        player.getBookshelf().getBookshelf()[3][0] = new Tile(Category.BOOKS, Icon.VARIATION1, Orientation.UP);
+
+        System.out.println(CLIRenderer.renderBookshelf(player.getBookshelf()));
+
+        assertFalse(commonGoalCard.checkGoal(player) > 0);
+    }
+
+    @Test
     @DisplayName("Checking commonGoalCard 1")
     void getCommonGoalCard1() {
         int numPlayer = 3;
