@@ -33,6 +33,7 @@ public class CLIController implements ViewController {
     private PlayerTurn playerTurn;
 
     String viewingPlayerNickname;
+    private final List<String> menuNotifications = new ArrayList<>();
 
     public CLIController(ClientImpl client, Server server) {
         this.client = client;
@@ -74,7 +75,9 @@ public class CLIController implements ViewController {
 
                 case ASK_NUM_PLAYERS -> this.setNumPlayers(input);
 
-                case YOUR_TURN -> playerTurn.inputHandler(input);
+                case YOUR_TURN -> {
+                    playerTurn.inputHandler(input);
+                }
             }
         } catch (RemoteException e) {
             throw new RuntimeException(e);
@@ -105,10 +108,11 @@ public class CLIController implements ViewController {
 
         switch (menuChoice.toLowerCase()) {
             case "help", "menu", "1" -> {
-                cli.showMenu(yourTurn);
+                cli.showMenu(yourTurn, menuNotifications);
             }
             case "main", "2" -> {
                 cli.showMain(currentPlayer);
+
             }
             case "showPlayers", "3" -> {
                 cli.showPlayers(this.players);
@@ -164,7 +168,9 @@ public class CLIController implements ViewController {
                     var matchingCard = this.commonGoalCards.stream().filter(c -> c.commonGoalCardID() == card.commonGoalCardID()).findFirst();
                     if (matchingCard.isPresent() && !matchingCard.get().playerUpdateList().equals(card.playerUpdateList())) {
                         card.playerUpdateList().stream().filter(player -> !matchingCard.get().playerUpdateList().contains(player)).forEach(player -> {
-                            System.out.println((player.equals(viewingPlayerNickname) ? "You have" : (player + "has")) + " completed " + card.commonGoalCardID() + " card");
+                            menuNotifications.add(Color.BLUE.escape() +
+                                    ((player.equals((viewingPlayerNickname)) ? "You have" : (player + " has")) + " completed CommmonGoalCard n° "
+                                            + this.commonGoalCards.indexOf(matchingCard.get())) + Color.RESET);
                         });
 
                         this.commonGoalCards.set(this.commonGoalCards.indexOf(matchingCard.get()), card);
@@ -200,15 +206,16 @@ public class CLIController implements ViewController {
         cli.updateAll(this.livingRoom, this.players.values().stream().toList(), this.currentPlayer);
 
 
-        if (updatedCurrent) {
-            cli.showPlayerTurn(currentPlayer);
-            this.changeState(State.GET_PLAYER_CHOICE);
-        }
-
         if (this.gameEnder != null) {
-            System.out.println(Color.RED.escape()
+            menuNotifications.add(Color.RED.escape()
                     + (this.gameEnder.nickname().equals(viewingPlayerNickname) ? "You have filled your" : (this.gameEnder.nickname() + " has filled his"))
                     + " bookshelf. The game is ending" + Color.RESET);
+        }
+
+        if (updatedCurrent) {
+            cli.showPlayerTurn(currentPlayer, menuNotifications);
+            menuNotifications.clear();
+            this.changeState(State.GET_PLAYER_CHOICE);
         }
     }
 
@@ -245,7 +252,7 @@ public class CLIController implements ViewController {
 
         for (PlayerUpdate player : this.players.values()) {
             if (commonGoalCard.playerUpdateList().contains(player.nickname())){
-                playerPoints.put(player.nickname(), CommonGoalCard.points[this.players.size()][this.commonGoalCards.get(cardID).playerUpdateList().indexOf(player.nickname())]);
+                playerPoints.put(player.nickname(), CommonGoalCard.points[this.players.size()][commonGoalCard.playerUpdateList().indexOf(player.nickname())]);
             }
             else {
                 playerPoints.put(player.nickname(), 0);

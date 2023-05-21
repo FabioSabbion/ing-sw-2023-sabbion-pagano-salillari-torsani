@@ -41,7 +41,7 @@ public class CLI {
         printer.print("\n\nWelcome to MyShelfie!");
     }
 
-    public void showMenu(boolean yourTurn){
+    public void showMenu(boolean yourTurn, List<String> menuNotification){
         String choices = """
                 Menu:
                 1. 'help'/'menu -> show all commands
@@ -50,10 +50,18 @@ public class CLI {
                 4. 'CommonGoalCards' -> outputs the game commonGoalCards
                 5. 'scoreboard' -> view scoreboard""";
 
-        if (yourTurn)
+        if (yourTurn) {
             choices += "\n6. 'play' -> 'play your turn";
+        }
+
 
         printer.print(Color.GREEN.escape() + choices + Color.RESET);
+
+        if (menuNotification != null) {
+            for (String notifications : menuNotification) {
+                System.out.println(notifications);
+            }
+        }
     }
 
     private void setRenderPersonalGoalCard(){
@@ -157,13 +165,11 @@ public class CLI {
 
 
     public void updateAll(LivingRoom livingRoom, List<PlayerUpdate> players, PlayerUpdate currentPlayer){
-
         setLivingRoom(livingRoom);
         setRenderBookshelves(players);
-        showPlayerTurn(currentPlayer);
     }
 
-    public void showPlayerTurn(PlayerUpdate currentPlayer){
+    public void showPlayerTurn(PlayerUpdate currentPlayer, List<String> menuNotification){
         printer.clearScreen();
         boolean yourTurn = viewingPlayer.nickname().equals(currentPlayer.nickname());
         if(!yourTurn) {
@@ -172,7 +178,7 @@ public class CLI {
         else{
             printer.print(Color.BLUE.escape() + "Now is your turn" + Color.RESET);
         }
-        this.showMenu(yourTurn);
+        this.showMenu(yourTurn, menuNotification);
     }
 
     public void showEndScreen(String winningPlayer){
