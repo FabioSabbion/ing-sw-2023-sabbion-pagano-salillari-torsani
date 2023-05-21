@@ -14,14 +14,13 @@ import java.util.function.Predicate;
 
 public class CommonGoalCardFactory {
     private static final List<JSONObject> jsonObjects = new ArrayList<JSONObject>();
-    private List<Coordinates> schema = new ArrayList<>();
+    private List<List<Coordinates>> schemas = new ArrayList<>();
     private int maxDistinctCategoryNumber;
     private int exactCategoryNumber;
     private int repetitionNumber;
     private int numPlayers;
     private boolean othersEmpty;
     private boolean unitedCategories;
-    private boolean rotatable;
 
     private static final JSONParser parser = new JSONParser();
 
@@ -45,24 +44,37 @@ public class CommonGoalCardFactory {
         factory.setRepetitionNumber(((Long) jsonObjects.get(cardID).get("repetitionNumber")).intValue());
         factory.setOthersEmpty((boolean) jsonObjects.get(cardID).get("othersEmpty"));
 
-
-
         factory.setUnitedCategories(false);
 
         if (jsonObjects.get(cardID).containsKey("unitedCategories")) {
             factory.setUnitedCategories((boolean) jsonObjects.get(cardID).get("unitedCategories"));
         }
 
-        factory.setRotatable(false);
+        if(jsonObjects.get(cardID).containsKey("schema")) {
+            JSONArray tempArray = (JSONArray) jsonObjects.get(cardID).get("schema");
+            for(Object item : tempArray) {
+                var tempSchema = new ArrayList<Coordinates>();
 
-        if (jsonObjects.get(cardID).containsKey("rotatable")) {
-            factory.setRotatable((boolean) jsonObjects.get(cardID).get("rotatable"));
-        }
+                JSONObject obj = (JSONObject) item;
+                tempSchema.add(new Coordinates(((Long)obj.get("x")).intValue(), ((Long)obj.get("y")).intValue()));
 
-        JSONArray tempArray = (JSONArray) jsonObjects.get(cardID).get("schema");
-        for(Object item : tempArray){
-            JSONObject obj = (JSONObject) item;
-            factory.schema.add(new Coordinates(((Long)obj.get("x")).intValue(), ((Long)obj.get("y")).intValue()));
+                factory.schemas.add(tempSchema);
+            }
+        } else {
+            JSONArray tempSchemas = (JSONArray) jsonObjects.get(cardID).get("schemas");
+
+            for(Object item : tempSchemas) {
+                JSONArray tempArray = (JSONArray) item;
+
+                for(Object schema : tempArray) {
+                    var tempSchema = new ArrayList<Coordinates>();
+
+                    JSONObject obj = (JSONObject) schema;
+                    tempSchema.add(new Coordinates(((Long)obj.get("x")).intValue(), ((Long)obj.get("y")).intValue()));
+
+                    factory.schemas.add(tempSchema);
+                }
+            }
         }
 
         return factory.buildCommonGoalCard(cardID);
@@ -104,44 +116,42 @@ public class CommonGoalCardFactory {
     public CommonGoalCard buildCommonGoalCard(int cardID) {
         final Predicate<Bookshelf> controlFunction = new Predicate<Bookshelf>() {
             Set<Category> sameCategories = null;
-            private record EfficiencyIndex(int i, int j, Set<Coordinates> blocked, boolean inverted) {
+            private record EfficiencyIndex(int i, int j, Set<Coordinates> blocked, int index) {
                 @Override
                 public boolean equals(Object o) {
                     if (this == o) return true;
                     if (o == null || getClass() != o.getClass()) return false;
                     EfficiencyIndex that = (EfficiencyIndex) o;
-                    return i == that.i && j == that.j && inverted == that.inverted && Objects.equals(blocked, that.blocked);
+                    return i == that.i && j == that.j && index == that.index && Objects.equals(blocked, that.blocked);
                 }
 
                 @Override
                 public int hashCode() {
-                    return Objects.hash(i, j, blocked, inverted);
+                    return Objects.hash(i, j, blocked, index);
                 }
             };
 
             Map<EfficiencyIndex, Integer> previousResult;
 
             public int checkFrom(int i, int j, Set<Coordinates> blocked, Tile[][] bookshelfMat) {
-                return checkFrom(i, j, blocked, bookshelfMat, false);
+                return checkFrom(i, j, blocked, bookshelfMat, 0);
             }
 
-            public int checkFrom(int i, int j, Set<Coordinates> blocked, Tile[][] bookshelfMat, boolean inverted) {
+            public int checkFrom(int i, int j, Set<Coordinates> blocked, Tile[][] bookshelfMat, int index) {
                 Set<Category> categories = new HashSet<>();
 
-                if(previousResult.containsKey(new EfficiencyIndex(i, j, blocked, inverted))) {
-                    return previousResult.get(new EfficiencyIndex(i, j, blocked, inverted));
+                if(previousResult.containsKey(new EfficiencyIndex(i, j, blocked, index))) {
+                    return previousResult.get(new EfficiencyIndex(i, j, blocked, index));
                 }
 
-                var localSchema = schema;
+                var localSchema = schemas.get(index);
                 int invertedResult = 0;
 
-                if (rotatable && !inverted) {
-                    invertedResult = checkFrom(i, j, blocked, bookshelfMat, true);
-
-                    localSchema = localSchema.stream().map(coordinates -> new Coordinates(coordinates.y, coordinates.x)).toList();
+                if (index < schemas.size() - 1) {
+                    invertedResult = checkFrom(i, j, blocked, bookshelfMat, index + 1);
 
                     if (invertedResult >= repetitionNumber) {
-                        previousResult.put(new EfficiencyIndex(i, j, blocked, true), invertedResult);
+                        previousResult.put(new EfficiencyIndex(i, j, blocked, index + 1), invertedResult);
                         return invertedResult;
                     }
                 }
@@ -195,13 +205,13 @@ public class CommonGoalCardFactory {
                     if (i + 1 < bookshelfMat.length) {
                         i_next = i + 1;
                     } else {
-                        previousResult.put(new EfficiencyIndex(i_next, j_next, blocked, inverted), 0);
+                        previousResult.put(new EfficiencyIndex(i_next, j_next, blocked, index), 0);
                         return 0;
                     }
                 }
 
                 if (categories != null && categories.size() > maxDistinctCategoryNumber) {
-                    previousResult.put(new EfficiencyIndex(i_next, j_next, blocked, inverted), 0);
+                    previousResult.put(new EfficiencyIndex(i_next, j_next, blocked, index), 0);
                     return 0;
                 }
 
@@ -215,7 +225,7 @@ public class CommonGoalCardFactory {
 
                     var tempResGood = checkFrom(i_next, j_next, newBlocked, bookshelfMat) + 1;
 
-                    previousResult.put(new EfficiencyIndex(i_next, j_next, newBlocked, false), tempResGood);
+                    previousResult.put(new EfficiencyIndex(i_next, j_next, newBlocked, 0), tempResGood);
 
                     if (tempResGood >= repetitionNumber) {
                         return tempResGood;
@@ -224,7 +234,7 @@ public class CommonGoalCardFactory {
                     var tempResBad = checkFrom(i_next, j_next, blocked, bookshelfMat);
 
                     var tempResFinal = Math.max(Math.max(tempResGood, tempResBad), invertedResult);
-                    previousResult.put(new EfficiencyIndex(i_next, j_next, blocked, false), tempResFinal);
+                    previousResult.put(new EfficiencyIndex(i_next, j_next, blocked, 0), tempResFinal);
 
                     return tempResFinal;
                 }
@@ -234,10 +244,10 @@ public class CommonGoalCardFactory {
                 final var resFinal = Math.max(tempNextValue, invertedResult);
 
                 if (invertedResult == resFinal)
-                    previousResult.put(new EfficiencyIndex(i_next, j_next, blocked, true), resFinal);
+                    previousResult.put(new EfficiencyIndex(i_next, j_next, blocked, index + 1), resFinal);
 
                 if (tempNextValue == resFinal)
-                    previousResult.put(new EfficiencyIndex(i_next, j_next, blocked, false), resFinal);
+                    previousResult.put(new EfficiencyIndex(i_next, j_next, blocked, index), resFinal);
 
                 return resFinal;
             }
@@ -291,10 +301,6 @@ public class CommonGoalCardFactory {
         return new CommonGoalCard(controlFunction, numPlayers, cardID);
     }
 
-    public void setSchema(List<Coordinates> schema){
-        this.schema = schema;
-    }
-
     public void setMaxDistinctCategoryNumber(int maxDistinctCategoryNumber){
         this.maxDistinctCategoryNumber = maxDistinctCategoryNumber;
     }
@@ -317,8 +323,5 @@ public class CommonGoalCardFactory {
 
     public void setOthersEmpty(boolean othersEmpty){
         this.othersEmpty = othersEmpty;
-    }
-    public void setRotatable(boolean rotatable) {
-        this.rotatable = rotatable;
     }
 }
