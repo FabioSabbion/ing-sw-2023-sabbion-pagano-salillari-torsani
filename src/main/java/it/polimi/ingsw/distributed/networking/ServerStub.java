@@ -110,7 +110,6 @@ public class ServerStub implements Server{
     }
 
     public void close() throws RemoteException {
-        System.err.println("Ciao Andri");
         try {
             socket.close();
         } catch (IOException e) {

@@ -182,7 +182,6 @@ public class LivingRoom extends Observable<LivingRoom, ViewEvent> implements Ser
      */
     public boolean fillBoardIfNeeded(int numPlayers, List<Tile> remainingTiles) {
         if (needRefill()) {
-            System.err.println("CIAOOOO QUESTA È LA LIVINGROOM  " + this);
             fillBoard(numPlayers, remainingTiles);
             return true;
         }

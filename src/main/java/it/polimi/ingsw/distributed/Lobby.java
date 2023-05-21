@@ -249,7 +249,12 @@ public class Lobby {
 
 
             assert fileUpdt.remainingTiles() != null;
-            Game game = new Game(players.toArray(new Player[0]), cards.toArray(new CommonGoalCard[0]), fileUpdt.remainingTiles(), fileUpdt.update().livingRoom());
+            Game game = new Game(
+                    players.toArray(new Player[0]),
+                    cards.toArray(new CommonGoalCard[0]),
+                    fileUpdt.remainingTiles(),
+                    fileUpdt.update().livingRoom(),
+                    players.stream().filter(p -> p.getNickname().equals(fileUpdt.update().currentPlayer().nickname())).findFirst().get());
 
             GameController controller = new GameController(game, update.getKey());
 

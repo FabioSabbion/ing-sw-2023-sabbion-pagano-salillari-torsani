@@ -22,12 +22,12 @@ public class Game extends Observable<GameUpdateToFile, ViewEvent> {
     private final List<Tile> remainingTiles;
     private final LivingRoom livingRoom;
 
-    public Game(Player[] players, CommonGoalCard[] commonGoalCards, List<Tile> remainingTiles, LivingRoom livingRoom) {
+    public Game(Player[] players, CommonGoalCard[] commonGoalCards, List<Tile> remainingTiles, LivingRoom livingRoom, Player currentPlayer) {
         this.players = players;
         this.commonGoalCards = commonGoalCards;
         this.remainingTiles = remainingTiles;
         this.livingRoom = livingRoom;
-        this.currentPlayer = players[0];
+        this.currentPlayer = currentPlayer;
 
         for (var player: this.players) {
             player.addObserver(new Observer<PlayerUpdate, ViewEvent>() {
@@ -81,7 +81,7 @@ public class Game extends Observable<GameUpdateToFile, ViewEvent> {
 
         var livingRoom = new LivingRoom();
         livingRoom.fillBoard(players.size(), tiles);
-        return new Game(players.toArray(new Player[0]), CommonGoalCardFactory.getCommonGoalCard(players.size()), tiles, livingRoom);
+        return new Game(players.toArray(new Player[0]), CommonGoalCardFactory.getCommonGoalCard(players.size()), tiles, livingRoom, players.get(0));
     }
 
     public @Nullable Player getGameEnder() {
