@@ -2,11 +2,13 @@ package it.polimi.ingsw.models;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
+import it.polimi.ingsw.view.CLI.CLIRenderer;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+import java.awt.print.Book;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
@@ -52,29 +54,39 @@ public class CommonGoalCardFactory {
 
         if(jsonObjects.get(cardID).containsKey("schema")) {
             JSONArray tempArray = (JSONArray) jsonObjects.get(cardID).get("schema");
-            for(Object item : tempArray) {
-                var tempSchema = new ArrayList<Coordinates>();
+            var tempSchema = new ArrayList<Coordinates>();
 
+            for(Object item : tempArray) {
                 JSONObject obj = (JSONObject) item;
                 tempSchema.add(new Coordinates(((Long)obj.get("x")).intValue(), ((Long)obj.get("y")).intValue()));
-
-                factory.schemas.add(tempSchema);
             }
+
+            factory.schemas.add(tempSchema);
         } else {
             JSONArray tempSchemas = (JSONArray) jsonObjects.get(cardID).get("schemas");
 
             for(Object item : tempSchemas) {
+
+                //Player playerTest = new Player("Andri", PersonalGoalCard.buildFromJson().get(0));
+                //Bookshelf bookshelfTest = playerTest.getBookshelf();
+
                 JSONArray tempArray = (JSONArray) item;
-
+                var tempSchema = new ArrayList<Coordinates>();
                 for(Object schema : tempArray) {
-                    var tempSchema = new ArrayList<Coordinates>();
-
                     JSONObject obj = (JSONObject) schema;
-                    tempSchema.add(new Coordinates(((Long)obj.get("x")).intValue(), ((Long)obj.get("y")).intValue()));
+                    Coordinates tmpCoordinates = new Coordinates(((Long)obj.get("x")).intValue(), ((Long)obj.get("y")).intValue());
 
-                    factory.schemas.add(tempSchema);
+                    tempSchema.add(tmpCoordinates);
+
+                    //bookshelfTest.getBookshelf()[tmpCoordinates.x][tmpCoordinates.y] = new Tile(Category.BOOKS, Icon.VARIATION2, Orientation.UP);
+
                 }
+                factory.schemas.add(tempSchema);
+
+                //System.out.println("THIS IS THE SCHEMA" + CLIRenderer.renderBookshelf(bookshelfTest));
+
             }
+
         }
 
         return factory.buildCommonGoalCard(cardID);
@@ -169,6 +181,7 @@ public class CommonGoalCardFactory {
                         break;
                     }
                 }
+
 
                 if(othersEmpty && categories != null) {
                     boolean allMatch = true;
@@ -271,7 +284,6 @@ public class CommonGoalCardFactory {
                                 matching = Math.max(matching, checkFrom(i, j, new HashSet<>(), bookshelfMat));
 
                                 if (matching >= repetitionNumber) {
-                                    System.err.println("MATCHING1: " + matching);
                                     return true;
                                 }
                             }
@@ -284,15 +296,11 @@ public class CommonGoalCardFactory {
                         matching = Math.max(matching, checkFrom(i, j, new HashSet<>(), bookshelfMat));
 
                         if (matching >= repetitionNumber) {
-                            System.out.println("MATCHING2: " + matching);
-
-                            System.out.println("MAPPA FINALE: " + previousResult);
                             return true;
                         }
                     }
                 }
 
-                System.err.println("MATCHING: " + matching);
 
                 return matching >= repetitionNumber;
             }

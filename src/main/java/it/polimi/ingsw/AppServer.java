@@ -6,10 +6,11 @@ import java.util.Scanner;
 
 public class AppServer {
     public static void main(String[] args) {
+        Lobby.getInstance();
+
+
         new AppServerRMI().start();
         new AppServerSocket().start();
-
-        Lobby.getInstance();
 
         Scanner sc = new Scanner(System.in);
         String s = sc.nextLine();

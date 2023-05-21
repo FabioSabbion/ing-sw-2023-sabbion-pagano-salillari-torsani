@@ -226,8 +226,8 @@ class CommonGoalCardFactoryTest {
     }
 
     @Test
-    @DisplayName("Checking commonGoalCard 12")
-    void getCommonGoalCard12() {
+    @DisplayName("Checking commonGoalCard 11")
+    void getCommonGoalCard11() {
         int numPlayer = 3;
 
         var commonGoalCard = CommonGoalCardFactory.buildFromJson(numPlayer, 11);
@@ -264,4 +264,134 @@ class CommonGoalCardFactoryTest {
         assertTrue(commonGoalCard.checkGoal(player) > 0);
 
     }
+
+    @Test
+    @DisplayName("Checking commonGoalCard 6")
+    void getCommonGoalCard6() {
+        int numPlayer = 3;
+
+        var commonGoalCard = CommonGoalCardFactory.buildFromJson(numPlayer, 6);
+
+        System.out.println("Card:");
+        System.out.println(CommonGoalCardFactory.getASCIIForCard(6));
+
+        var player = new Player("andri", PersonalGoalCard.buildFromJson().get(0));
+
+        for (int i = 0; i < 5; i++) {
+            player.getBookshelf().getBookshelf()[i][i] = new Tile(Category.PLANTS, Icon.VARIATION1, Orientation.UP);
+        }
+
+        System.out.println(CLIRenderer.renderBookshelf(player.getBookshelf()));
+
+        System.err.println("Points: "+ commonGoalCard.checkGoal(player));
+
+        assertTrue(commonGoalCard.checkGoal(player) > 0);
+
+    }
+
+    @Test
+    @DisplayName("Checking commonGoalCard 6 other diagonal")
+    void getCommonGoalCard6_v2() {
+        int numPlayer = 3;
+
+        var commonGoalCard = CommonGoalCardFactory.buildFromJson(numPlayer, 6);
+
+        System.out.println("Card:");
+        System.out.println(CommonGoalCardFactory.getASCIIForCard(6));
+
+        var player = new Player("andri", PersonalGoalCard.buildFromJson().get(0));
+
+        for (int i = 0; i < 5; i++) {
+            player.getBookshelf().getBookshelf()[Bookshelf.ROWS - i - 1][i] = new Tile(Category.PLANTS, Icon.VARIATION1, Orientation.UP);
+        }
+
+        System.out.println(CLIRenderer.renderBookshelf(player.getBookshelf()));
+
+        System.err.println("Points: "+ commonGoalCard.checkGoal(player));
+
+
+
+
+        assertTrue(commonGoalCard.checkGoal(player) > 0);
+
+    }
+
+    @Test
+    @DisplayName("Checking commonGoalCard 6 (wrong case))")
+    void getCommonGoalCard6_v3() {
+        int numPlayer = 3;
+
+        var commonGoalCard = CommonGoalCardFactory.buildFromJson(numPlayer, 6);
+
+        System.out.println("Card:");
+        System.out.println(CommonGoalCardFactory.getASCIIForCard(6));
+
+        var player = new Player("andri", PersonalGoalCard.buildFromJson().get(0));
+
+        for (int i = 0; i < 5; i++) {
+            player.getBookshelf().getBookshelf()[Bookshelf.ROWS - i - 1][i] = new Tile(Category.PLANTS, Icon.VARIATION1, Orientation.UP);
+        }
+
+        player.getBookshelf().getBookshelf()[3][2] = new Tile(Category.CATS, Icon.VARIATION1, Orientation.UP);
+
+        System.out.println(CLIRenderer.renderBookshelf(player.getBookshelf()));
+
+        System.err.println("Points: "+ commonGoalCard.checkGoal(player));
+
+        assertFalse(commonGoalCard.checkGoal(player) > 0);
+    }
+
+    @Test
+    @DisplayName("Checking commonGoalCard 9")
+    void getCommonGoalCard9() {
+        int numPlayer = 3;
+
+        var commonGoalCard = CommonGoalCardFactory.buildFromJson(numPlayer, 9);
+
+        System.out.println("Card:");
+        System.out.println(CommonGoalCardFactory.getASCIIForCard(9));
+
+        var player = new Player("andri", PersonalGoalCard.buildFromJson().get(0));
+
+        for (int j = 0; j < 5; j++) {
+            player.getBookshelf().getBookshelf()[0][j] = new Tile(Category.values()[j], Icon.VARIATION1, Orientation.UP);
+            player.getBookshelf().getBookshelf()[1][j] = new Tile(Category.values()[5-j], Icon.VARIATION1, Orientation.UP);
+        }
+
+        player.getBookshelf().getBookshelf()[1][2] = new Tile(Category.CATS, Icon.VARIATION1, Orientation.UP);
+
+        System.out.println(CLIRenderer.renderBookshelf(player.getBookshelf()));
+
+        System.err.println("Points: "+ commonGoalCard.checkGoal(player));
+
+        assertTrue(commonGoalCard.checkGoal(player) > 0);
+    }
+
+
+    @Test
+    @DisplayName("Checking commonGoalCard 9 (wrong case)")
+    void getCommonGoalCard9_v2() {
+        int numPlayer = 3;
+
+        var commonGoalCard = CommonGoalCardFactory.buildFromJson(numPlayer, 9);
+
+        System.out.println("Card:");
+        System.out.println(CommonGoalCardFactory.getASCIIForCard(9));
+
+        var player = new Player("andri", PersonalGoalCard.buildFromJson().get(0));
+
+        for (int j = 0; j < 5; j++) {
+            player.getBookshelf().getBookshelf()[0][j] = new Tile(Category.values()[j], Icon.VARIATION1, Orientation.UP);
+            player.getBookshelf().getBookshelf()[1][j] = new Tile(Category.values()[5-j], Icon.VARIATION1, Orientation.UP);
+        }
+
+        player.getBookshelf().getBookshelf()[0][2] = new Tile(Category.CATS, Icon.VARIATION1, Orientation.UP);
+
+        System.out.println(CLIRenderer.renderBookshelf(player.getBookshelf()));
+
+        System.err.println("Points: "+ commonGoalCard.checkGoal(player));
+
+        assertFalse(commonGoalCard.checkGoal(player) > 0);
+    }
+
 }
