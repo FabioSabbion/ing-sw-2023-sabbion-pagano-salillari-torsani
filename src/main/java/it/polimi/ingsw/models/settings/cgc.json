@@ -4,6 +4,7 @@
             "exactCategoryNumber": 0,
             "repetitionNumber": 6,
             "othersEmpty": false,
+            "rotatable": true,
             "schema": [
                 {
                     "x": 0,

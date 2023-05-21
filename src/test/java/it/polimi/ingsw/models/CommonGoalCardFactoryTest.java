@@ -176,11 +176,11 @@ class CommonGoalCardFactoryTest {
             }
         }
 
-        assert(cgc.checkGoal(player) > 0 );
+        assertTrue(cgc.checkGoal(player) > 0 );
     }
 
     @Test
-    @DisplayName("Checking commonGoalCard 5")
+    @DisplayName("Checking commonGoalCard 5 wrong case")
     void getCommonGoalCard05_v2() {
         int numPlayer = 3;
 
@@ -191,7 +191,7 @@ class CommonGoalCardFactoryTest {
         System.out.println("Card:");
         System.out.println(CommonGoalCardFactory.getASCIIForCard(5));
 
-        assert(cgc.checkGoal(player) == 0);
+        assertEquals(0, cgc.checkGoal(player));
     }
 
     @Test

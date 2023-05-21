@@ -21,6 +21,7 @@ public class CommonGoalCardFactory {
     private int numPlayers;
     private boolean othersEmpty;
     private boolean unitedCategories;
+    private boolean rotatable;
 
     private static final JSONParser parser = new JSONParser();
 
@@ -45,10 +46,17 @@ public class CommonGoalCardFactory {
         factory.setOthersEmpty((boolean) jsonObjects.get(cardID).get("othersEmpty"));
 
 
+
         factory.setUnitedCategories(false);
 
         if (jsonObjects.get(cardID).containsKey("unitedCategories")) {
             factory.setUnitedCategories((boolean) jsonObjects.get(cardID).get("unitedCategories"));
+        }
+
+        factory.setRotatable(false);
+
+        if (jsonObjects.get(cardID).containsKey("rotatable")) {
+            factory.setRotatable((boolean) jsonObjects.get(cardID).get("rotatable"));
         }
 
         JSONArray tempArray = (JSONArray) jsonObjects.get(cardID).get("schema");
@@ -96,11 +104,49 @@ public class CommonGoalCardFactory {
     public CommonGoalCard buildCommonGoalCard(int cardID) {
         final Predicate<Bookshelf> controlFunction = new Predicate<Bookshelf>() {
             Set<Category> sameCategories = null;
+            private record EfficiencyIndex(int i, int j, Set<Coordinates> blocked, boolean inverted) {
+                @Override
+                public boolean equals(Object o) {
+                    if (this == o) return true;
+                    if (o == null || getClass() != o.getClass()) return false;
+                    EfficiencyIndex that = (EfficiencyIndex) o;
+                    return i == that.i && j == that.j && inverted == that.inverted && Objects.equals(blocked, that.blocked);
+                }
+
+                @Override
+                public int hashCode() {
+                    return Objects.hash(i, j, blocked, inverted);
+                }
+            };
+
+            Map<EfficiencyIndex, Integer> previousResult;
 
             public int checkFrom(int i, int j, Set<Coordinates> blocked, Tile[][] bookshelfMat) {
+                return checkFrom(i, j, blocked, bookshelfMat, false);
+            }
+
+            public int checkFrom(int i, int j, Set<Coordinates> blocked, Tile[][] bookshelfMat, boolean inverted) {
                 Set<Category> categories = new HashSet<>();
 
-                for(Coordinates c: schema) {
+                if(previousResult.containsKey(new EfficiencyIndex(i, j, blocked, inverted))) {
+                    return previousResult.get(new EfficiencyIndex(i, j, blocked, inverted));
+                }
+
+                var localSchema = schema;
+                int invertedResult = 0;
+
+                if (rotatable && !inverted) {
+                    invertedResult = checkFrom(i, j, blocked, bookshelfMat, true);
+
+                    localSchema = localSchema.stream().map(coordinates -> new Coordinates(coordinates.y, coordinates.x)).toList();
+
+                    if (invertedResult >= repetitionNumber) {
+                        previousResult.put(new EfficiencyIndex(i, j, blocked, inverted), invertedResult);
+                        return invertedResult;
+                    }
+                }
+
+                for(Coordinates c: localSchema) {
                     if (i + c.x < bookshelfMat.length
                             && j + c.y < bookshelfMat[i + c.x].length
                             && bookshelfMat[i + c.x][j + c.y] != null
@@ -121,7 +167,7 @@ public class CommonGoalCardFactory {
                         for (int j_else = 0; j_else < bookshelfMat[i_else].length && allMatch; j_else++) {
                             boolean containedSchema = false;
 
-                            for (Coordinates c: schema) {
+                            for (Coordinates c: localSchema) {
                                 if ((i + c.x == i_else && j + c.y == j_else)) {
                                     containedSchema = true;
                                     break;
@@ -149,11 +195,13 @@ public class CommonGoalCardFactory {
                     if (i + 1 < bookshelfMat.length) {
                         i_next = i + 1;
                     } else {
+                        previousResult.put(new EfficiencyIndex(i_next, j_next, blocked, inverted), 0);
                         return 0;
                     }
                 }
 
                 if (categories != null && categories.size() > maxDistinctCategoryNumber) {
+                    previousResult.put(new EfficiencyIndex(i_next, j_next, blocked, inverted), 0);
                     return 0;
                 }
 
@@ -161,24 +209,36 @@ public class CommonGoalCardFactory {
                 if (categories != null && (exactCategoryNumber == 0 || exactCategoryNumber == categories.size())) {
                     var newBlocked = new HashSet<>(blocked);
 
-                    for (Coordinates c: schema) {
+                    for (Coordinates c: localSchema) {
                         newBlocked.add(new Coordinates(i + c.x, j + c.y));
                     }
 
                     var tempResGood = checkFrom(i_next, j_next, newBlocked, bookshelfMat) + 1;
+
+                    previousResult.put(new EfficiencyIndex(i_next, j_next, newBlocked, false), tempResGood);
 
                     if (tempResGood >= repetitionNumber) {
                         return tempResGood;
                     }
 
                     var tempResBad = checkFrom(i_next, j_next, blocked, bookshelfMat);
-                    return Math.max(tempResGood, tempResBad);
+
+                    var tempResFinal = Math.max(Math.max(tempResGood, tempResBad), invertedResult);
+                    previousResult.put(new EfficiencyIndex(i_next, j_next, blocked, false), tempResFinal);
+
+                    return tempResFinal;
                 }
-                return checkFrom(i_next, j_next, blocked, bookshelfMat);
+
+                var resFinal = Math.max(checkFrom(i_next, j_next, blocked, bookshelfMat), invertedResult);
+
+                previousResult.put(new EfficiencyIndex(i_next, j_next, blocked, inverted), resFinal);
+                return resFinal;
             }
 
             @Override
             public boolean test(Bookshelf bookshelf) {
+                previousResult = new HashMap<>();
+
                 var bookshelfMat = bookshelf.getBookshelf();
 
                 int matching = 0;
@@ -244,5 +304,8 @@ public class CommonGoalCardFactory {
 
     public void setOthersEmpty(boolean othersEmpty){
         this.othersEmpty = othersEmpty;
+    }
+    public void setRotatable(boolean rotatable) {
+        this.rotatable = rotatable;
     }
 }
