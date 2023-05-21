@@ -229,9 +229,16 @@ public class CommonGoalCardFactory {
                     return tempResFinal;
                 }
 
-                var resFinal = Math.max(checkFrom(i_next, j_next, blocked, bookshelfMat), invertedResult);
+                final var tempNextValue = checkFrom(i_next, j_next, blocked, bookshelfMat);
 
-                previousResult.put(new EfficiencyIndex(i_next, j_next, blocked, invertedResult == resFinal), resFinal);
+                final var resFinal = Math.max(tempNextValue, invertedResult);
+
+                if (invertedResult == resFinal)
+                    previousResult.put(new EfficiencyIndex(i_next, j_next, blocked, true), resFinal);
+
+                if (tempNextValue == resFinal)
+                    previousResult.put(new EfficiencyIndex(i_next, j_next, blocked, false), resFinal);
+
                 return resFinal;
             }
 
