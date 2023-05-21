@@ -29,6 +29,8 @@ class CommonGoalCardFactoryTest {
         player.getBookshelf().getBookshelf()[3][0] = new Tile(Category.BOOKS, Icon.VARIATION1, Orientation.UP);
 
 
+        System.out.println(CLIRenderer.renderBookshelf(player.getBookshelf()));
+
         assertTrue(commonGoalCard.checkGoal(player) > 0);
     }
 
@@ -51,6 +53,10 @@ class CommonGoalCardFactoryTest {
 
         player.getBookshelf().getBookshelf()[2][0] = new Tile(Category.BOOKS, Icon.VARIATION1, Orientation.UP);
         player.getBookshelf().getBookshelf()[3][0] = new Tile(Category.BOOKS, Icon.VARIATION1, Orientation.UP);
+
+        player.getBookshelf().getBookshelf()[1][4] = null;
+        player.getBookshelf().getBookshelf()[1][3] = null;
+        player.getBookshelf().getBookshelf()[1][2] = null;
 
         System.out.println(CLIRenderer.renderBookshelf(player.getBookshelf()));
 
@@ -114,6 +120,8 @@ class CommonGoalCardFactoryTest {
 
 
         System.out.println(CLIRenderer.renderBookshelf(player.getBookshelf()));
+
+        assertTrue(commonGoalCard.checkGoal(player) > 0);
     }
 
 

@@ -141,7 +141,7 @@ public class CommonGoalCardFactory {
                     localSchema = localSchema.stream().map(coordinates -> new Coordinates(coordinates.y, coordinates.x)).toList();
 
                     if (invertedResult >= repetitionNumber) {
-                        previousResult.put(new EfficiencyIndex(i, j, blocked, inverted), invertedResult);
+                        previousResult.put(new EfficiencyIndex(i, j, blocked, true), invertedResult);
                         return invertedResult;
                     }
                 }
@@ -231,7 +231,7 @@ public class CommonGoalCardFactory {
 
                 var resFinal = Math.max(checkFrom(i_next, j_next, blocked, bookshelfMat), invertedResult);
 
-                previousResult.put(new EfficiencyIndex(i_next, j_next, blocked, inverted), resFinal);
+                previousResult.put(new EfficiencyIndex(i_next, j_next, blocked, invertedResult == resFinal), resFinal);
                 return resFinal;
             }
 
@@ -254,6 +254,7 @@ public class CommonGoalCardFactory {
                                 matching = Math.max(matching, checkFrom(i, j, new HashSet<>(), bookshelfMat));
 
                                 if (matching >= repetitionNumber) {
+                                    System.err.println("MATCHING1: " + matching);
                                     return true;
                                 }
                             }
@@ -266,10 +267,15 @@ public class CommonGoalCardFactory {
                         matching = Math.max(matching, checkFrom(i, j, new HashSet<>(), bookshelfMat));
 
                         if (matching >= repetitionNumber) {
+                            System.out.println("MATCHING2: " + matching);
+
+                            System.out.println("MAPPA FINALE: " + previousResult);
                             return true;
                         }
                     }
                 }
+
+                System.err.println("MATCHING: " + matching);
 
                 return matching >= repetitionNumber;
             }
