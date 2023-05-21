@@ -278,6 +278,7 @@ public class CommonGoalCardFactory {
 
                     for (var combination: combinations) {
                         sameCategories = combination;
+                        previousResult.clear();
 
                         for (int i = 0; i < bookshelfMat.length; i++) {
                             for (int j = 0; j < bookshelfMat[i].length; j++) {
@@ -289,14 +290,14 @@ public class CommonGoalCardFactory {
                             }
                         }
                     }
-                }
+                } else {
+                    for (int i = 0; i < bookshelfMat.length; i++) {
+                        for (int j = 0; j < bookshelfMat[i].length; j++) {
+                            matching = Math.max(matching, checkFrom(i, j, new HashSet<>(), bookshelfMat));
 
-                for (int i = 0; i < bookshelfMat.length; i++) {
-                    for (int j = 0; j < bookshelfMat[i].length; j++) {
-                        matching = Math.max(matching, checkFrom(i, j, new HashSet<>(), bookshelfMat));
-
-                        if (matching >= repetitionNumber) {
-                            return true;
+                            if (matching >= repetitionNumber) {
+                                return true;
+                            }
                         }
                     }
                 }

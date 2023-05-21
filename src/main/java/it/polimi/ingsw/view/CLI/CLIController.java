@@ -138,7 +138,6 @@ public class CLIController implements ViewController {
 
     @Override
     public void updateGame(GameUpdate update) {
-        System.err.println("This is the update" + update);
         this.livingRoom = update.livingRoom() == null ? this.livingRoom : update.livingRoom();
         if (update.players() != null) {
             if (this.players == null) {
@@ -188,7 +187,6 @@ public class CLIController implements ViewController {
 
         if (update.gameEnder() != null) {
             this.gameEnder = update.gameEnder();
-            System.out.println(Color.RED.escape() + (this.gameEnder.nickname().equals(viewingPlayerNickname) ? "You have" : (this.gameEnder.nickname() + "has")) + " filled his bookshelf. The game is ending" + Color.RESET);
         }
 
         if (cli == null) {
@@ -207,8 +205,11 @@ public class CLIController implements ViewController {
             this.changeState(State.GET_PLAYER_CHOICE);
         }
 
-        System.err.println("ANDRI ZITTTOOOOOOO");
-        System.err.println(this.players);
+        if (this.gameEnder != null) {
+            System.out.println(Color.RED.escape()
+                    + (this.gameEnder.nickname().equals(viewingPlayerNickname) ? "You have filled your" : (this.gameEnder.nickname() + " has filled his"))
+                    + " bookshelf. The game is ending" + Color.RESET);
+        }
     }
 
     @Override
@@ -239,8 +240,11 @@ public class CLIController implements ViewController {
 
     public Map<String, Integer> calculateCommonGoalCardPoints(int cardID) {
         Map<String, Integer> playerPoints = new HashMap<>();
+
+        CommonGoalCardUpdate commonGoalCard = this.commonGoalCards.stream().filter(card -> card.commonGoalCardID() == cardID).findFirst().get();
+
         for (PlayerUpdate player : this.players.values()) {
-            if (this.commonGoalCards.get(cardID).playerUpdateList().contains(player)){
+            if (commonGoalCard.playerUpdateList().contains(player.nickname())){
                 playerPoints.put(player.nickname(), CommonGoalCard.points[this.players.size()][this.commonGoalCards.get(cardID).playerUpdateList().indexOf(player.nickname())]);
             }
             else {
@@ -318,7 +322,7 @@ public class CLIController implements ViewController {
         System.out.println(Color.BLUE.escape() + "\n Final Results are:" + Color.RESET);
 
         for (String player: new ArrayList<>(this.players.keySet())) {
-            System.out.println("- " + player + " :" + playerPoints.get(player));
+            System.out.println("- " + player + ": " + playerPoints.get(player));
         }
 
         int maxPoint = playerPoints.entrySet().stream().map(p -> p.getValue()).mapToInt(x -> x).max().getAsInt();

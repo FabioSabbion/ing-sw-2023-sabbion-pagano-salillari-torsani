@@ -1,6 +1,6 @@
 package it.polimi.ingsw.models;
 
-import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.MutablePair;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -119,7 +119,7 @@ public class CommonGoalCardTest {
     public void setup() {
         this.forPlayers = new PersonalGoalCard(
                 Collections.singletonList(
-                        new ImmutablePair<Category, Coordinates>(Category.CATS, new Coordinates(0, 0))
+                        new MutablePair<Category, Coordinates>(Category.CATS, new Coordinates(0, 0))
                 )
         );
         this.player1 = new Player("andri", forPlayers);

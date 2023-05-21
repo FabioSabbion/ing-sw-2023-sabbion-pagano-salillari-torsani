@@ -64,11 +64,7 @@ public class CLIRenderer {
             render.addAll(Arrays.asList(matrix[i]));
         }
 
-        String renderPersonalGoalCard = String.valueOf(formatter.format(ASCIIArt.personalGoalCard, render.toArray()));
-        if (personalGoalCard.point() != 0){
-            renderPersonalGoalCard = renderPersonalGoalCard + "\n Has been completed";
-        }
-        return renderPersonalGoalCard;
+        return String.valueOf(formatter.format(ASCIIArt.personalGoalCard, render.toArray()));
     }
 
     /**
@@ -108,7 +104,6 @@ public class CLIRenderer {
         Formatter formatter = new Formatter();
         List<String> render = new ArrayList<>();
 
-        System.err.println("Living room render " + (livingRoom == null));
 
         Tile[][] tiles = livingRoom.getBoard();
         String matrix[][] = new String[9][9];

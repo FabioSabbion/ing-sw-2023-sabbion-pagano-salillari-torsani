@@ -393,5 +393,38 @@ class CommonGoalCardFactoryTest {
 
         assertFalse(commonGoalCard.checkGoal(player) > 0);
     }
+    @Test
+    @DisplayName("Checking commonGoalCard 5 (Game done precedently case)")
+    void getCommonGoalCard5_v3() {
+        int numPlayer = 3;
+
+        var commonGoalCard = CommonGoalCardFactory.buildFromJson(numPlayer, 5);
+
+        System.out.println("Card:");
+        System.out.println(CommonGoalCardFactory.getASCIIForCard(5));
+
+        var player = new Player("andri", PersonalGoalCard.buildFromJson().get(0));
+
+        for (int i = 0; i < Bookshelf.COLUMNS; i++) {
+            player.getBookshelf().getBookshelf()[0][i] = new Tile(Category.values()[i], Icon.VARIATION1, Orientation.UP);
+        }
+
+        for (int i = 0; i < Bookshelf.COLUMNS; i++) {
+            player.getBookshelf().getBookshelf()[1][i] = new Tile(Category.GAMES, Icon.VARIATION1, Orientation.UP);
+        }
+
+        for (int i = 0; i < Bookshelf.COLUMNS; i++) {
+            player.getBookshelf().getBookshelf()[2][i] = new Tile(Category.values()[i], Icon.VARIATION1, Orientation.UP);
+        }
+
+        player.getBookshelf().getBookshelf()[3][0] = new Tile(Category.GAMES, Icon.VARIATION2, Orientation.UP);
+        player.getBookshelf().getBookshelf()[4][0] = new Tile(Category.CATS, Icon.VARIATION2, Orientation.UP);
+
+        System.out.println(CLIRenderer.renderBookshelf(player.getBookshelf()));
+
+        assertTrue(commonGoalCard.checkGoal(player) > 0);
+    }
+
+
 
 }

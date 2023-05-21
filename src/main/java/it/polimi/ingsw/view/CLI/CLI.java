@@ -141,7 +141,7 @@ public class CLI {
 
         for (int i = 0; i < commonGoalCards.size(); i++) {
             printer.print(Color.BLUE.escape() + "The current players' CommonGoalCard " + i + " points are: " + Color.RESET);
-            var playerPoints = controller.calculateCommonGoalCardPoints(i);
+            var playerPoints = controller.calculateCommonGoalCardPoints(commonGoalCards.get(i).commonGoalCardID());
 
             for (int j = 0; j < players.size(); j++) {
                 String toPrint = j +". " + players.get(j) + " : " + playerPoints.get(players.get(j));
@@ -176,7 +176,6 @@ public class CLI {
     }
 
     public void showEndScreen(String winningPlayer){
-        printer.clearScreen();
 
         if (winningPlayer.equals(viewingPlayer.nickname())){
             printer.print(Color.GREEN.escape() + ASCIIArt.youWon + Color.RESET);
