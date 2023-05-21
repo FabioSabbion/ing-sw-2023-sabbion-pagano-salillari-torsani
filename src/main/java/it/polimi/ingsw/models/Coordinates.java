@@ -1,5 +1,8 @@
 package it.polimi.ingsw.models;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -10,7 +13,8 @@ public class Coordinates implements Serializable {
     public final int x;
     public final int y;
 
-    public Coordinates(int x, int y) {
+    @JsonCreator
+    public Coordinates(@JsonProperty("x") int x, @JsonProperty("y") int y) {
         this.x = x;
         this.y = y;
     }

@@ -1,13 +1,22 @@
 package it.polimi.ingsw;
 
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.JsonSerializer;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializerProvider;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 import it.polimi.ingsw.controller.GameController;
 import it.polimi.ingsw.distributed.CommonGoalCardUpdate;
 import it.polimi.ingsw.distributed.GameUpdate;
 import it.polimi.ingsw.distributed.Lobby;
 import it.polimi.ingsw.distributed.PlayerUpdate;
 import it.polimi.ingsw.utils.Util;
+import org.apache.commons.lang3.tuple.Pair;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FilenameFilter;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -19,17 +28,29 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
 public class GamePersistence {
+    private static final class PairSerializer extends JsonSerializer<Pair> {
+
+        @Override
+        public void serialize(Pair value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
+            gen.writeStartObject();
+            gen.writeObjectField("left", value.getLeft());
+            gen.writeObjectField("right", value.getRight());
+            gen.writeEndObject();
+        }
+
+    }
     static public final String path = "oldGames";
     static public final String startingString = "game";
     static public final int savingNumber = 3;
     final DateTimeFormatter timeFormat = DateTimeFormatter.ofPattern("yyyy_MM_dd HH_mm_ss");
+    final ObjectMapper mapper = new ObjectMapper();
 
     Executor executor = Executors.newSingleThreadExecutor();
 
     private final Map<Integer, GameUpdateToFile> updateMap = new TreeMap<>();
 
     public GamePersistence() {
-
+        mapper.registerModule(new SimpleModule().addSerializer(Pair.class, new PairSerializer()));
     }
 
     public void saveGames(GameUpdateToFile gameUpdateToFile, int ID) {
@@ -147,18 +168,8 @@ public class GamePersistence {
         File toFile = Paths.get(path.toString(), fileName).toFile();
 
         executor.execute(() -> {
-            ObjectOutputStream oos = null;
             try {
-                oos = new ObjectOutputStream(new FileOutputStream(toFile));
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-
-            try {
-                oos.writeObject(updateMap.get(ID));
-                oos.reset();
-                oos.flush();
-                oos.close();
+                mapper.writerWithDefaultPrettyPrinter().writeValue(toFile, updateMap.get(ID));
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -198,19 +209,17 @@ public class GamePersistence {
                 var secondDate = LocalDateTime.parse(fileSecond.getName().split("-")[2],timeFormat);
 
                 return secondDate.compareTo(firstDate);
-            }).forEach(file -> {
+            }). forEach(file -> {
                 int gameID = Integer.parseInt(file.getName().split("-")[1]);
 
                 if(!updateMap.containsKey(gameID)) {
                     try {
-                        var ois = new ObjectInputStream(new FileInputStream(file));
-
-                        GameUpdateToFile update = (GameUpdateToFile) ois.readObject();
+                        GameUpdateToFile update = mapper.reader().readValue(file, GameUpdateToFile.class);
 
                         updateMap.put(gameID, update);
                     } catch (FileNotFoundException e) {
                         throw new RuntimeException(e);
-                    } catch (ClassNotFoundException | IOException e) {
+                    } catch (IOException e) {
                         System.err.println("File " + file.getName() + " is corrupted, trying with previous version");
                     }
                 }

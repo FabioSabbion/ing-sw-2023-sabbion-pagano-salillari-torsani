@@ -5,7 +5,7 @@ import it.polimi.ingsw.distributed.PersonalGoalCardUpdate;
 import it.polimi.ingsw.models.*;
 import it.polimi.ingsw.view.CLI.utils.ASCIIArt;
 import it.polimi.ingsw.view.CLI.utils.Color;
-import org.apache.commons.lang3.tuple.Pair;
+import org.apache.commons.lang3.tuple.MutablePair;
 
 import java.util.*;
 
@@ -44,7 +44,7 @@ public class CLIRenderer {
         Formatter formatter = new Formatter();
         List<String> render = new ArrayList<>();
 
-        List<Pair<Category, Coordinates>> positions = personalGoalCard.positions();
+        List<MutablePair<Category, Coordinates>> positions = personalGoalCard.positions();
         String matrix[][] = new String[Bookshelf.ROWS][Bookshelf.COLUMNS];
         for (int i = 0; i < Bookshelf.ROWS; i++) {
             for (int j = 0; j < Bookshelf.COLUMNS; j++) {

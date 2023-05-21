@@ -1,5 +1,6 @@
 package it.polimi.ingsw.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import it.polimi.ingsw.controller.events.ViewEvent;
 import it.polimi.ingsw.models.exceptions.NotEnoughCellsException;
 import it.polimi.ingsw.models.exceptions.PickTilesException;
@@ -63,9 +64,11 @@ public class Bookshelf extends Observable<Bookshelf, ViewEvent> implements Seria
         notifyObservers(this, ViewEvent.ACTION_UPDATE);
     }
 
+
     /**
      * @return true if all the tiles of the bookshelf have been filled
      */
+    @JsonIgnore
     public boolean isFull() {
         for (int i = ROWS - 1; i >= 0; i--) {
             for (int j = COLUMNS - 1; j >= 0; j--) {
@@ -83,6 +86,7 @@ public class Bookshelf extends Observable<Bookshelf, ViewEvent> implements Seria
     /**
      * @return A map of groups of {@link Tile}s, with the number of repetitions in the group
      */
+    @JsonIgnore
     public Map<Category, List<Integer>> getCloseTiles() {
         Map<Category, List<List<Coordinates>>> groups = new HashMap<>();
         for (int i = 0; i < ROWS; i++) {
