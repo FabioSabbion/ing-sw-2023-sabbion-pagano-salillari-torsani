@@ -90,9 +90,6 @@ public class GamePersistence {
     }
 
     public void saveGames(GameUpdateToFile gameUpdateToFile, int ID) {
-        System.err.println("ID: " + ID);
-        System.err.println("UPDATE MAP: " + updateMap);
-        System.err.println("Players: "+ gameUpdateToFile);
 
         if (updateMap.containsKey(ID)) {
             var oldUpdate = updateMap.get(ID);
