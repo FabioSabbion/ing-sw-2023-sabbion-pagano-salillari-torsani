@@ -87,6 +87,11 @@ public class GUIController extends Application implements ViewController {
         launch();
     }
 
+    @Override
+    public void showEndingScreen() {
+
+    }
+
     @FXML protected void playButtonPressed(ActionEvent event) {
         String input = nicknameTextField.getCharacters().toString();
         System.out.println(input);
