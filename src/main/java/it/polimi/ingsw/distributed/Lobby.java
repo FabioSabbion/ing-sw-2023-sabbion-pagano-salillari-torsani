@@ -119,6 +119,8 @@ public class Lobby {
                 this.state = State.WAITING_FOR_GAME;
                 this.numPlayer = -1;
 
+                System.err.println("Waiting players: " + this.waitingPlayers);
+
                 var controller = new GameController(this.waitingPlayers.keySet().stream().toList());
 
                 for (var connection: this.waitingPlayers.entrySet()) {
