@@ -44,7 +44,7 @@ public class CLI {
     public void showMenu(boolean yourTurn, List<String> menuNotification){
         String choices = """
                 Menu:
-                1. 'help'/'menu -> show all commands
+                1. 'help'/'menu' -> show all commands
                 2. 'main' -> show the main view (LivingRoom, PersonalGoalCard, Bookshelf)
                 3. 'showPlayers' -> shows players' bookshelf and respective points
                 4. 'CommonGoalCards' -> outputs the game commonGoalCards
