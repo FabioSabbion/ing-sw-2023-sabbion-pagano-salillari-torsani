@@ -1,10 +1,12 @@
 package it.polimi.ingsw.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import it.polimi.ingsw.controller.events.ViewEvent;
 import it.polimi.ingsw.models.exceptions.NotEnoughCellsException;
 import it.polimi.ingsw.models.exceptions.PickTilesException;
 import it.polimi.ingsw.utils.Observable;
 
+import java.io.Serializable;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -14,13 +16,28 @@ import static java.lang.Math.abs;
 /**
  * Representation of the current state of the bookshelf of the player that keeps it
  */
-public class Bookshelf extends Observable<Bookshelf, ViewEvent> {
+public class Bookshelf extends Observable<Bookshelf, ViewEvent> implements Serializable {
     public static final int ROWS = 6;
     public static final int COLUMNS = 5;
     private final Tile[][] bookshelf;
 
     public Bookshelf() {
         this.bookshelf = new Tile[ROWS][COLUMNS];
+    }
+
+    public int pickFirstFreeIndex(int column, List<Tile> pickedTiles) throws  NotEnoughCellsException {
+        int firstEmptyIndex = ROWS;
+        for (int i = 0; i < ROWS; i++) {
+            if(this.bookshelf[i][column] == null){
+                firstEmptyIndex = i;
+                break;
+            }
+        }
+        if (firstEmptyIndex + pickedTiles.size() > ROWS){
+            throw new NotEnoughCellsException("Not enough free cells available in this column");
+        }
+
+        return firstEmptyIndex;
     }
 
     /**
@@ -37,16 +54,9 @@ public class Bookshelf extends Observable<Bookshelf, ViewEvent> {
         if (pickedTiles.size() > 3 || pickedTiles.isEmpty()){
             throw new PickTilesException("You can't insert " + pickedTiles.size() + " tiles");
         }
-        int firstEmptyIndex = 0;
-        for (int i = 0; i < ROWS; i++) {
-            if(this.bookshelf[i][column] == null){
-                firstEmptyIndex = i;
-                break;
-            }
-        }
-        if (firstEmptyIndex + pickedTiles.size() > ROWS){
-            throw new NotEnoughCellsException("Not enough free cells available in this column");
-        }
+
+        int firstEmptyIndex = this.pickFirstFreeIndex(column, pickedTiles);
+
         for (int i = firstEmptyIndex; i < firstEmptyIndex + pickedTiles.size(); i++) {
             this.bookshelf[i][column] = pickedTiles.get(i - firstEmptyIndex);
         }
@@ -54,9 +64,11 @@ public class Bookshelf extends Observable<Bookshelf, ViewEvent> {
         notifyObservers(this, ViewEvent.ACTION_UPDATE);
     }
 
+
     /**
      * @return true if all the tiles of the bookshelf have been filled
      */
+    @JsonIgnore
     public boolean isFull() {
         for (int i = ROWS - 1; i >= 0; i--) {
             for (int j = COLUMNS - 1; j >= 0; j--) {
@@ -74,16 +86,17 @@ public class Bookshelf extends Observable<Bookshelf, ViewEvent> {
     /**
      * @return A map of groups of {@link Tile}s, with the number of repetitions in the group
      */
+    @JsonIgnore
     public Map<Category, List<Integer>> getCloseTiles() {
         Map<Category, List<List<Coordinates>>> groups = new HashMap<>();
         for (int i = 0; i < ROWS; i++) {
             for (int j = 0; j < COLUMNS; j++) {
                 if(this.bookshelf[i][j] == null) continue;
-                if(!groups.containsKey(this.bookshelf[i][j].getCategory())){
-                    groups.put(this.bookshelf[i][j].getCategory(), new ArrayList<>(List.of(new ArrayList<>(List.of(new Coordinates(i,j))))));
+                if(!groups.containsKey(this.bookshelf[i][j].category())){
+                    groups.put(this.bookshelf[i][j].category(), new ArrayList<>(List.of(new ArrayList<>(List.of(new Coordinates(i,j))))));
                 }
                 else{
-                    List<List<Coordinates>> temp = groups.get(this.bookshelf[i][j].getCategory());
+                    List<List<Coordinates>> temp = groups.get(this.bookshelf[i][j].category());
                     for (List<Coordinates> l: temp) {
                         for (Coordinates c: l) {
                             if(abs(c.x - j) <= 1 || abs(c.y - i) <= 1){

@@ -1,11 +1,12 @@
 package it.polimi.ingsw.models;
 
-import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.MutablePair;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -35,16 +36,16 @@ class GameTest {
     void setup() {
         // Create personal goal cards
         PersonalGoalCard personalGoalCard1 = new PersonalGoalCard(new ArrayList<>(Arrays.asList(
-                    new ImmutablePair<>(Category.GAMES, new Coordinates(0, 0)),
-                    new ImmutablePair<>(Category.BOOKS, new Coordinates(1, 1)),
-                    new ImmutablePair<>(Category.PLANTS, new Coordinates(2, 2))
+                    new MutablePair<>(Category.GAMES, new Coordinates(0, 0)),
+                    new MutablePair<>(Category.BOOKS, new Coordinates(1, 1)),
+                    new MutablePair<>(Category.PLANTS, new Coordinates(2, 2))
                 )
             )
         );
         PersonalGoalCard personalGoalCard2 = new PersonalGoalCard(new ArrayList<>(Arrays.asList(
-                    new ImmutablePair<>(Category.GAMES, new Coordinates(0, 1)),
-                    new ImmutablePair<>(Category.BOOKS, new Coordinates(1, 2)),
-                    new ImmutablePair<>(Category.PLANTS, new Coordinates(2, 4))
+                    new MutablePair<>(Category.GAMES, new Coordinates(0, 1)),
+                    new MutablePair<>(Category.BOOKS, new Coordinates(1, 2)),
+                    new MutablePair<>(Category.PLANTS, new Coordinates(2, 4))
                 )
             )
         );
@@ -66,7 +67,7 @@ class GameTest {
         LivingRoom livingRoom = new LivingRoom();
 
         // Create game
-        this.game = new Game(players, commonGoalCards, new ArrayList<>(), livingRoom);
+        this.game = new Game(players, commonGoalCards, new ArrayList<>(), livingRoom, players[0]);
 
     }
 }

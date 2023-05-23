@@ -38,6 +38,10 @@ public class ClientHandler extends Thread {
             throw new RuntimeException(e);
         } catch (NullPointerException e) {
             System.out.println("Client Closed");
+
+            System.err.println(e.getMessage());
+
+            throw new RuntimeException(e);
         } finally {
             try {
                 System.out.println("Connection Closing..");

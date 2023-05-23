@@ -12,4 +12,5 @@ public interface Client extends Remote {
     void serverError(String message) throws RemoteException;
     void askNumPlayers() throws RemoteException;
     void keepAlive() throws RemoteException;
+    void showEndingScoreboard(GameUpdate gameUpdate) throws RemoteException;
 }

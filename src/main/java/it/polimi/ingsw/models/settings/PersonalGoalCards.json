@@ -2,122 +2,122 @@
   "PersonalGoalCards": [
     {
       "PG_1": [
-        {"x": 0, "y": 0, "tile": "PLANTS"},
-        {"x": 0, "y": 2, "tile": "FRAMES"},
-        {"x": 1, "y": 4, "tile": "CATS"},
-        {"x": 2, "y": 3, "tile": "BOOKS"},
-        {"x": 3, "y": 1, "tile": "GAMES"},
-        {"x": 5, "y": 2, "tile": "TROPHIES"}
+        {"x": 5, "y": 0, "tile": "PLANTS"},
+        {"x": 5, "y": 2, "tile": "FRAMES"},
+        {"x": 4, "y": 4, "tile": "CATS"},
+        {"x": 3, "y": 3, "tile": "BOOKS"},
+        {"x": 2, "y": 1, "tile": "GAMES"},
+        {"x": 0, "y": 2, "tile": "TROPHIES"}
       ]
     },
     {
       "PG_2": [
-        {"x": 1, "y": 1, "tile": "PLANTS"},
-        {"x": 2, "y": 0, "tile": "CATS"},
-        {"x": 2, "y": 2, "tile": "GAMES"},
-        {"x": 3, "y": 4, "tile": "BOOKS"},
-        {"x": 4, "y": 3, "tile": "TROPHIES"},
-        {"x": 5, "y": 4, "tile": "FRAMES"}
+        {"x": 4, "y": 1, "tile": "PLANTS"},
+        {"x": 3, "y": 0, "tile": "CATS"},
+        {"x": 3, "y": 2, "tile": "GAMES"},
+        {"x": 2, "y": 4, "tile": "BOOKS"},
+        {"x": 1, "y": 3, "tile": "TROPHIES"},
+        {"x": 0, "y": 4, "tile": "FRAMES"}
       ]
     },
     {
       "PG_3": [
-        {"x": 1, "y": 0, "tile": "FRAMES"},
-        {"x": 1, "y": 3, "tile": "GAMES"},
-        {"x": 2, "y": 2, "tile": "PLANTS"},
-        {"x": 3, "y": 1, "tile": "CATS"},
-        {"x": 3, "y": 4, "tile": "TROPHIES"},
-        {"x": 5, "y": 0, "tile": "BOOKS"}
+        {"x": 4, "y": 0, "tile": "FRAMES"},
+        {"x": 4, "y": 3, "tile": "GAMES"},
+        {"x": 3, "y": 2, "tile": "PLANTS"},
+        {"x": 2, "y": 1, "tile": "CATS"},
+        {"x": 2, "y": 4, "tile": "TROPHIES"},
+        {"x": 0, "y": 0, "tile": "BOOKS"}
       ]
     },
     {
       "PG_4": [
-        {"x": 0, "y": 4, "tile": "GAMES"},
-        {"x": 2, "y": 0, "tile": "TROPHIES"},
-        {"x": 2, "y": 2, "tile": "FRAMES"},
-        {"x": 3, "y": 3, "tile": "PLANTS"},
-        {"x": 4, "y": 1, "tile": "BOOKS"},
-        {"x": 4, "y": 2, "tile": "CATS"}
+        {"x": 5, "y": 4, "tile": "GAMES"},
+        {"x": 3, "y": 0, "tile": "TROPHIES"},
+        {"x": 3, "y": 2, "tile": "FRAMES"},
+        {"x": 2, "y": 3, "tile": "PLANTS"},
+        {"x": 1, "y": 1, "tile": "BOOKS"},
+        {"x": 1, "y": 2, "tile": "CATS"}
       ]
     },
     {
       "PG_5": [
-        {"x": 1, "y": 1, "tile": "TROPHIES"},
-        {"x": 3, "y": 1, "tile": "FRAMES"},
-        {"x": 3, "y": 2, "tile": "BOOKS"},
-        {"x": 4, "y": 4, "tile": "PLANTS"},
-        {"x": 5, "y": 0, "tile": "GAMES"},
-        {"x": 5, "y": 3, "tile": "CATS"}
+        {"x": 4, "y": 1, "tile": "TROPHIES"},
+        {"x": 2, "y": 1, "tile": "FRAMES"},
+        {"x": 2, "y": 2, "tile": "BOOKS"},
+        {"x": 1, "y": 4, "tile": "PLANTS"},
+        {"x": 0, "y": 0, "tile": "GAMES"},
+        {"x": 0, "y": 3, "tile": "CATS"}
       ]
     },
     {
       "PG_6": [
-        {"x": 0, "y": 2, "tile": "TROPHIES"},
-        {"x": 0, "y": 4, "tile": "CATS"},
-        {"x": 2, "y": 3, "tile": "BOOKS"},
-        {"x": 4, "y": 1, "tile": "GAMES"},
-        {"x": 4, "y": 3, "tile": "FRAMES"},
-        {"x": 5, "y": 0, "tile": "PLANTS"}
+        {"x": 5, "y": 2, "tile": "TROPHIES"},
+        {"x": 5, "y": 4, "tile": "CATS"},
+        {"x": 3, "y": 3, "tile": "BOOKS"},
+        {"x": 1, "y": 1, "tile": "GAMES"},
+        {"x": 1, "y": 3, "tile": "FRAMES"},
+        {"x": 0, "y": 0, "tile": "PLANTS"}
       ]
     },
     {
       "PG_7": [
-        {"x": 0, "y": 0, "tile": "CATS"},
-        {"x": 1, "y": 3, "tile": "FRAMES"},
-        {"x": 2, "y": 1, "tile": "PLANTS"},
-        {"x": 3, "y": 0, "tile": "TROPHIES"},
-        {"x": 4, "y": 4, "tile": "GAMES"},
-        {"x": 5, "y": 2, "tile": "BOOKS"}
+        {"x": 5, "y": 0, "tile": "CATS"},
+        {"x": 4, "y": 3, "tile": "FRAMES"},
+        {"x": 3, "y": 1, "tile": "PLANTS"},
+        {"x": 2, "y": 0, "tile": "TROPHIES"},
+        {"x": 1, "y": 4, "tile": "GAMES"},
+        {"x": 0, "y": 2, "tile": "BOOKS"}
       ]
     },
     {
       "PG_8": [
-        {"x": 0, "y": 4, "tile": "FRAMES"},
-        {"x": 1, "y": 1, "tile": "CATS"},
-        {"x": 2, "y": 2, "tile": "TROPHIES"},
-        {"x": 3, "y": 0, "tile": "PLANTS"},
-        {"x": 4, "y": 3, "tile": "BOOKS"},
-        {"x": 5, "y": 3, "tile": "GAMES"},
+        {"x": 5, "y": 4, "tile": "FRAMES"},
+        {"x": 4, "y": 1, "tile": "CATS"},
+        {"x": 3, "y": 2, "tile": "TROPHIES"},
+        {"x": 2, "y": 0, "tile": "PLANTS"},
+        {"x": 1, "y": 3, "tile": "BOOKS"},
+        {"x": 0, "y": 3, "tile": "GAMES"},
       ]
     },
     {
       "PG_9": [
-        {"x": 0, "y": 2, "tile": "GAMES"},
-        {"x": 2, "y": 2, "tile": "CATS"},
-        {"x": 3, "y": 4, "tile": "BOOKS"},
-        {"x": 4, "y": 1, "tile": "TROPHIES"},
-        {"x": 4, "y": 4, "tile": "PLANTS"},
-        {"x": 5, "y": 0, "tile": "FRAMES"}
+        {"x": 5, "y": 2, "tile": "GAMES"},
+        {"x": 3, "y": 2, "tile": "CATS"},
+        {"x": 2, "y": 4, "tile": "BOOKS"},
+        {"x": 1, "y": 1, "tile": "TROPHIES"},
+        {"x": 1, "y": 4, "tile": "PLANTS"},
+        {"x": 0, "y": 0, "tile": "FRAMES"}
       ]
     },
     {
       "PG_10": [
-        {"x": 0, "y": 4, "tile": "TROPHIES"},
-        {"x": 1, "y": 1, "tile": "GAMES"},
-        {"x": 2, "y": 0, "tile": "BOOKS"},
-        {"x": 3, "y": 3, "tile": "CATS"},
-        {"x": 4, "y": 1, "tile": "FRAMES"},
-        {"x": 5, "y": 3, "tile": "PLANTS"}
+        {"x": 5, "y": 4, "tile": "TROPHIES"},
+        {"x": 4, "y": 1, "tile": "GAMES"},
+        {"x": 3, "y": 0, "tile": "BOOKS"},
+        {"x": 2, "y": 3, "tile": "CATS"},
+        {"x": 1, "y": 1, "tile": "FRAMES"},
+        {"x": 0, "y": 3, "tile": "PLANTS"}
       ]
     },
     {
       "PG_11": [
-        {"x": 0, "y": 2, "tile": "PLANTS"},
-        {"x": 1, "y": 1, "tile": "BOOKS"},
-        {"x": 2, "y": 0, "tile": "GAMES"},
-        {"x": 3, "y": 2, "tile": "FRAMES"},
-        {"x": 4, "y": 4, "tile": "CATS"},
-        {"x": 5, "y": 3, "tile": "TROPHIES"}
+        {"x": 5, "y": 2, "tile": "PLANTS"},
+        {"x": 4, "y": 1, "tile": "BOOKS"},
+        {"x": 3, "y": 0, "tile": "GAMES"},
+        {"x": 2, "y": 2, "tile": "FRAMES"},
+        {"x": 1, "y": 4, "tile": "CATS"},
+        {"x": 0, "y": 3, "tile": "TROPHIES"}
       ]
     },
     {
       "PG_12": [
-        {"x": 0, "y": 2, "tile": "BOOKS"},
-        {"x": 1, "y": 1,"tile": "PLANTS"},
-        {"x": 2, "y": 2, "tile": "FRAMES"},
-        {"x": 3, "y": 3, "tile": "TROPHIES"},
-        {"x": 4, "y": 4, "tile": "GAMES"},
-        {"x": 5, "y": 0, "tile": "CATS"}
+        {"x": 5, "y": 2, "tile": "BOOKS"},
+        {"x": 4, "y": 1,"tile": "PLANTS"},
+        {"x": 3, "y": 2, "tile": "FRAMES"},
+        {"x": 2, "y": 3, "tile": "TROPHIES"},
+        {"x": 1, "y": 4, "tile": "GAMES"},
+        {"x": 0, "y": 0, "tile": "CATS"}
       ]
     }
   ]

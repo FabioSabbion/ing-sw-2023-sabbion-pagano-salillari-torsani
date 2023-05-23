@@ -1,9 +1,14 @@
 package it.polimi.ingsw;
 
+import it.polimi.ingsw.distributed.Lobby;
+
 import java.util.Scanner;
 
 public class AppServer {
     public static void main(String[] args) {
+        Lobby.getInstance();
+
+
         new AppServerRMI().start();
         new AppServerSocket().start();
 

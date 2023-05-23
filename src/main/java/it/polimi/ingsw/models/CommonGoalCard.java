@@ -1,5 +1,9 @@
 package it.polimi.ingsw.models;
 
+import it.polimi.ingsw.controller.events.ViewEvent;
+import it.polimi.ingsw.distributed.CommonGoalCardUpdate;
+import it.polimi.ingsw.utils.Observable;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
@@ -7,8 +11,8 @@ import java.util.function.Predicate;
 /**
  * Representation in java of a single generic Common Goal
  */
-public class CommonGoalCard implements GoalCard {
-    private final int[][] points = {
+public class CommonGoalCard extends Observable<CommonGoalCardUpdate, ViewEvent> implements GoalCard {
+    public static final int[][] points = {
             {},
             {},
             {8, 4},
@@ -16,16 +20,16 @@ public class CommonGoalCard implements GoalCard {
             {8, 6, 4, 2}
     };
     private final Predicate<Bookshelf> controlFunction;
-    private final List<Player> orderOfCompletionList;
+    public final List<Player> orderOfCompletionList;
     private final int numPlayers;
 
-    private final int cgcNum;
+    public final int cardID;
 
-    public CommonGoalCard(Predicate<Bookshelf> controlFunction, int numPlayers, int cgcNum) {
+    public CommonGoalCard(Predicate<Bookshelf> controlFunction, int numPlayers, int cardID) {
         this.controlFunction = controlFunction;
         this.numPlayers = numPlayers;
         this.orderOfCompletionList = new ArrayList<>(numPlayers);
-        this.cgcNum = cgcNum;
+        this.cardID = cardID;
     }
 
     public int checkGoal(Player player) {
@@ -37,18 +41,16 @@ public class CommonGoalCard implements GoalCard {
         if(controlFunction.test(player.getBookshelf())) {
             orderOfCompletionList.add(player);
 
+            this.notifyObservers(from(this), ViewEvent.ACTION_UPDATE);
+
             return points[numPlayers][orderOfCompletionList.size() - 1];
         }
 
         return 0;
     }
 
-    static CommonGoalCard[] createCommonGoalCards(int numPlayers) {
-        //TODO to implement
-        System.out.println("WARNING, this is fake");
-
-        return new CommonGoalCard[]{new CommonGoalCard((bookshelf) -> {
-            return false;
-        }, numPlayers, 0)};
+    static public CommonGoalCardUpdate from(CommonGoalCard card) {
+        return new CommonGoalCardUpdate(card.cardID,
+                card.orderOfCompletionList.stream().map(Player::getNickname).toList());
     }
 }

@@ -1,17 +1,17 @@
 package it.polimi.ingsw.models;
 
 import it.polimi.ingsw.controller.events.ViewEvent;
-import it.polimi.ingsw.distributed.LivingRoomUpdate;
 import it.polimi.ingsw.models.exceptions.NumPlayersException;
 import it.polimi.ingsw.models.exceptions.PickTilesException;
 import it.polimi.ingsw.utils.Observable;
 
+import java.io.Serializable;
 import java.util.*;
 
 /**
  * Represents the living room of the game. It contains Tiles that can be picked up by Players
  */
-public class LivingRoom extends Observable<LivingRoomUpdate, ViewEvent> {
+public class LivingRoom extends Observable<LivingRoom, ViewEvent> implements Serializable {
     private final Tile[][] board;
     private final int[][] validCoordinates;
 
@@ -48,12 +48,12 @@ public class LivingRoom extends Observable<LivingRoomUpdate, ViewEvent> {
         for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 9; j++) {
                 if (this.board[i][j] != null && this.validCoordinates[i][j] != -1) {
-                    if (!this.hasAdjacentTile(i, j))
-                        return true;
+                    if (this.hasAdjacentTile(i, j))
+                        return false;
                 }
             }
         }
-        return false;
+        return true;
     }
 
     /**
@@ -107,7 +107,7 @@ public class LivingRoom extends Observable<LivingRoomUpdate, ViewEvent> {
             this.board[popped.x][popped.y] = remainingTiles.remove(0);
         }
 
-        notifyObservers(new LivingRoomUpdate(this.board), ViewEvent.ACTION_UPDATE);
+        notifyObservers(this, ViewEvent.ACTION_UPDATE);
     }
 
     /**
@@ -200,7 +200,15 @@ public class LivingRoom extends Observable<LivingRoomUpdate, ViewEvent> {
             this.board[coords.x][coords.y] = null;
         }
 
-        notifyObservers(new LivingRoomUpdate(this.board), ViewEvent.ACTION_UPDATE);
+        notifyObservers(this, ViewEvent.ACTION_UPDATE);
+    }
+
+    @Override
+    public String toString() {
+        return "LivingRoom{" +
+                "board=" + Arrays.toString(board) +
+                ", validCoordinates=" + Arrays.toString(validCoordinates) +
+                '}';
     }
 }
 

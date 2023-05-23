@@ -4,27 +4,39 @@ import it.polimi.ingsw.models.*;
 import it.polimi.ingsw.models.exceptions.NotEnoughCellsException;
 import it.polimi.ingsw.models.exceptions.PickTilesException;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class GameController {
     public Game game;
+    public int id;
+    public static int ID = 0;
 
+    public GameController(Game game, int id) {
+        this.game = game;
+        this.id = id;
+    }
     public GameController(List<String> nicknames) {
         this.game = Game.createEmptyGame(nicknames);
+        this.id = ID++;
     }
 
     private void gameTurn(List<Coordinates> coordinatesList, int column) {
         this.playerAction(coordinatesList, column);
         this.updateCommonGoalPoints();
 
-        if (this.game.getCurrentPlayer().getBookshelf().isFull()) {
-            this.game.setGameEnder(this.game.getCurrentPlayer());
-        }
 
+        var prevPlayer = this.game.getCurrentPlayer();
+
+        this.game.getLivingRoom().fillBoardIfNeeded(this.game.getPlayers().length, this.game.getRemainingTiles());
 
         this.game.nextPlayer();
+
+        if (prevPlayer.getBookshelf().isFull()) {
+            this.game.setGameEnder(prevPlayer);
+        }
     }
 
     private void playerAction(List<Coordinates> coordinatesList, int column) {
@@ -33,6 +45,9 @@ public class GameController {
             this.game.getCurrentPlayer().getBookshelf().insertTiles(column, tiles);
             this.game.getLivingRoom().removeTiles(coordinatesList);
 
+            Arrays.stream(this.game.getCommonGoalCards()).forEach(commonGoalCard ->
+                    commonGoalCard.checkGoal(this.game.getCurrentPlayer())
+            );
 
 
         } catch (PickTilesException | NotEnoughCellsException e) {

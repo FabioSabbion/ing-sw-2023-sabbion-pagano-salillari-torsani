@@ -1,12 +1,13 @@
 package it.polimi.ingsw.models;
 
-import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
 import java.io.FileReader;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,12 +15,12 @@ import java.util.List;
 /**
  * Represents the personal goal card of a Player
  */
-public class PersonalGoalCard implements GoalCard {
+public class PersonalGoalCard implements GoalCard, Serializable {
     private final int[] points = {0, 1, 2, 4, 6, 9, 12};
-    private final List<Pair<Category, Coordinates>> positions;
+    private final List<MutablePair<Category, Coordinates>> positions;
     private static JSONObject jsonFile;
 
-    public PersonalGoalCard(List<Pair<Category, Coordinates>> positions) {
+    public PersonalGoalCard(List<MutablePair<Category, Coordinates>> positions) {
         this.positions = positions;
     }
 
@@ -28,7 +29,8 @@ public class PersonalGoalCard implements GoalCard {
 
         for (Pair<Category, Coordinates> position :
                 this.positions) {
-            if (player.getBookshelf().getBookshelf()[position.getRight().y][position.getRight().x].getCategory() == position.getLeft()) {
+            Tile checkTile = player.getBookshelf().getBookshelf()[position.getRight().x][position.getRight().y];
+            if (checkTile != null && checkTile.category() == position.getLeft()) {
                 counterCorrect++;
             }
         }
@@ -50,7 +52,7 @@ public class PersonalGoalCard implements GoalCard {
             JSONObject pgJson = (JSONObject) pg;
             String pgId = pgJson.keySet().iterator().next().toString();
             JSONArray tilesJson = (JSONArray) pgJson.get(pgId);
-            List<Pair<Category, Coordinates>> positions = new ArrayList<>();
+            List<MutablePair<Category, Coordinates>> positions = new ArrayList<>();
 
             for (Object tile : tilesJson) {
                 JSONObject tileJson = (JSONObject) tile;
@@ -59,7 +61,7 @@ public class PersonalGoalCard implements GoalCard {
 
                 Category category = Category.valueOf(tileJson.get("tile").toString());
                 Coordinates coordinates = new Coordinates(x, y);
-                positions.add(new ImmutablePair<>(category, coordinates));
+                positions.add(new MutablePair<>(category, coordinates));
             }
 
             personalGoalCards.add(new PersonalGoalCard(positions));
@@ -79,7 +81,7 @@ public class PersonalGoalCard implements GoalCard {
         }
     }
 
-    public List<Pair<Category, Coordinates>> getPositions() {
+    public List<MutablePair<Category, Coordinates>> getPositions() {
         return positions;
     }
 }
