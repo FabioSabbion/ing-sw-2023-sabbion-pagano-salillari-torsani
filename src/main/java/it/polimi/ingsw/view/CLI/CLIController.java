@@ -206,10 +206,12 @@ public class CLIController implements ViewController {
         cli.updateAll(this.livingRoom, this.players.values().stream().toList(), this.currentPlayer);
 
 
-        if (this.gameEnder != null) {
+        if (update.gameEnder() != null) {
             menuNotifications.add(Color.RED.escape()
                     + (this.gameEnder.nickname().equals(viewingPlayerNickname) ? "You have filled your" : (this.gameEnder.nickname() + " has filled his"))
                     + " bookshelf. The game is ending" + Color.RESET);
+
+            cli.showPlayerTurn(currentPlayer, menuNotifications);
         }
 
         if (updatedCurrent) {

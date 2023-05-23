@@ -53,6 +53,42 @@ public class GamePersistence {
         mapper.registerModule(new SimpleModule().addSerializer(Pair.class, new PairSerializer()));
     }
 
+    public void removeGames(int id) {
+        Path path = Paths.get(GamePersistence.path);
+
+        if (!Files.exists(path) || !Files.isDirectory(path)) {
+            try {
+                Files.createDirectory(path);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        File gamesDir = path.toFile();
+
+        Arrays.stream(Objects.requireNonNull(gamesDir.listFiles(new FilenameFilter() {
+            @Override
+            public boolean accept(File dir, String name) {
+                var splitName = name.split("-");
+
+                if (splitName[0].equals(startingString)) {
+                    try {
+                        var ignored = LocalDateTime.parse(splitName[2], timeFormat);
+
+                        if (Integer.parseInt(splitName[1]) == id) {
+                            return true;
+                        }
+                    } catch (NumberFormatException | DateTimeParseException e) {
+                        return false;
+                    }
+                }
+
+
+                return false;
+            }
+        }))).forEach(game -> {var ignored = game.delete();});
+    }
+
     public void saveGames(GameUpdateToFile gameUpdateToFile, int ID) {
         if (updateMap.containsKey(ID)) {
             var oldUpdate = updateMap.get(ID);

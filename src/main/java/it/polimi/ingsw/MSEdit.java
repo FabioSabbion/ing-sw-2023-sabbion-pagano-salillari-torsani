@@ -14,20 +14,13 @@ public class MSEdit {
         Bookshelf bookshelf = new Bookshelf();
 
 
-        for (int i = 0; i < Bookshelf.COLUMNS; i++) {
-            bookshelf.getBookshelf()[0][i] = new Tile(Category.values()[i], Icon.VARIATION1, Orientation.UP);
+        for (int i = 0; i < Bookshelf.ROWS; i++) {
+            for (int j = 0; j < Bookshelf.COLUMNS; j++) {
+                bookshelf.getBookshelf()[i][j] = new Tile(Category.values()[i % Category.values().length], Icon.VARIATION1, Orientation.UP);
+            }
         }
 
-        for (int i = 0; i < Bookshelf.COLUMNS; i++) {
-            bookshelf.getBookshelf()[1][i] = new Tile(Category.GAMES, Icon.VARIATION1, Orientation.UP);
-        }
-
-        for (int i = 0; i < Bookshelf.COLUMNS; i++) {
-            bookshelf.getBookshelf()[2][i] = new Tile(Category.values()[i], Icon.VARIATION1, Orientation.UP);
-        }
-
-        bookshelf.getBookshelf()[3][0] = new Tile(Category.GAMES, Icon.VARIATION2, Orientation.UP);
-        bookshelf.getBookshelf()[4][0] = new Tile(Category.CATS, Icon.VARIATION2, Orientation.UP);
+        bookshelf.getBookshelf()[Bookshelf.ROWS-1][0] = null;
 
         System.out.println(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(bookshelf));
     }

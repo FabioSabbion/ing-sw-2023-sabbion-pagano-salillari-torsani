@@ -18,10 +18,7 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.rmi.RemoteException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Lobby {
     Map<String, Client> waitingPlayers;
@@ -130,9 +127,7 @@ public class Lobby {
                     this.setClientListener(connection.getValue(), controller);
                 }
 
-                controller.game.addObserver((value, event) -> {
-                    persistence.saveGames(value, controller.id);
-                });
+                this.setControllerSaveFileListener(controller);
 
                 controller.game.emitGameState();
 
@@ -184,6 +179,9 @@ public class Lobby {
                 try {
                     if (eventType == ViewEvent.GAME_END) {
                         client.showEndingScoreboard(value.update());
+
+                        clientNickname.remove(client);
+                        controller.game.deleteObserver(this);
                     } else {
                         var filteredGameUpdate = GameUpdate.filterPersonalGoalCards(value.update(), clientNickname.get(client));
                         client.updateGame(filteredGameUpdate);
@@ -260,9 +258,28 @@ public class Lobby {
 
             players.forEach(player -> this.nicknameController.put(player.getNickname(), controller));
 
-            controller.game.addObserver((value, event) -> {
-                persistence.saveGames(value, update.getKey());
-            });
+
+            this.setControllerSaveFileListener(controller);
         }
+    }
+
+
+    private void setControllerSaveFileListener(GameController controller) {
+        controller.game.addObserver(new Observer<GameUpdateToFile, ViewEvent>() {
+            @Override
+            public void update(GameUpdateToFile value, ViewEvent event) {
+                if(event == ViewEvent.GAME_END) {
+                    Arrays.stream(controller.game.getPlayers()).forEach(player -> {
+                        nicknameController.remove(player.getNickname());
+                    });
+
+                    controller.game.deleteObserver(this);
+
+                    persistence.removeGames(controller.id);
+                } else {
+                    persistence.saveGames(value, controller.id);
+                }
+            }
+        });
     }
 }
