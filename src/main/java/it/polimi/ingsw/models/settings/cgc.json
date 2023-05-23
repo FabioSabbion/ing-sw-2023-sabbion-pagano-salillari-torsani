@@ -1,406 +1,527 @@
-    [
+[
+  {
+    "maxDistinctCategoryNumber": 1,
+    "exactCategoryNumber": 1,
+    "repetitionNumber": 6,
+    "othersEmpty": false,
+    "schemas": [
+      [
         {
-            "maxDistinctCategoryNumber": 5,
-            "exactCategoryNumber": 0,
-            "repetitionNumber": 6,
-            "othersEmpty": false,
-            "schema": [
-                {
-                    "x": 0,
-                    "y": 0
-                },
-                {
-                    "x": 1,
-                    "y": 0
-                }
-            ],
-            "graphics" : {
-                "ascii" : "+---+\n| = |\n|---| x 6\n| = |\n+---+",
-                "gui" : "NotAvailable",
-                "description" : "Six groups each containing at least\n2 tiles of the same type (not necessarily\nin the depicted shape).\nThe tiles of one group can be different\nfrom those of another group."
-            }
+          "x": 0,
+          "y": 0
         },
         {
-            "maxDistinctCategoryNumber": 5,
-            "exactCategoryNumber": 0,
-            "repetitionNumber": 1,
-            "othersEmpty": false,
-            "schema": [
-                {
-                    "x": 0,
-                    "y": 0
-                },
-                {
-                    "x": 0,
-                    "y": 4
-                },
-                {
-                    "x": 5,
-                    "y": 0
-                },
-                {
-                    "x": 5,
-                    "y": 4
-                }
-            ],
-            "graphics" : {
-            "ascii" : "+---+---+---+---+---+\n| = |   |   |   | = |\n|---|---|---|---|---|\n|   |   |   |   |   |\n|---|---|---|---|---|\n|   |   |   |   |   |\n|---|---|---|---|---|\n|   |   |   |   |   |\n|---|---|---|---|---|\n|   |   |   |   |   |\n|---|---|---|---|---|\n| = |   |   |   | = |\n+---+---+---+---+---+",
-            "gui" : "NotAvailable",
-            "description" : "Four tiles of the same type in the four\ncorners of the bookshelf. "
-            }
-        },
-        {
-            "maxDistinctCategoryNumber": 3,
-            "exactCategoryNumber": 0,
-            "repetitionNumber": 4,
-            "othersEmpty": false,
-            "schema": [
-                {
-                    "x": 0,
-                    "y": 0
-                },
-                {
-                    "x": 1,
-                    "y": 0
-                },
-                {
-                    "x": 2,
-                    "y": 0
-                },
-                {
-                    "x": 3,
-                    "y": 0
-                }
-            ],
-            "graphics" : {
-            "ascii" : "+---+\n| = |\n|---|\n| = |\n|---| x 4\n| = |\n|---|\n| = |\n+---+",
-            "gui" : "NotAvailable",
-            "description" : "Four groups each containing at least\n4 tiles of the same type (not necessarily\nin the depicted shape).\nThe tiles of one group can be different\nfrom those of another group."
-            }
-        },
-        {
-            "maxDistinctCategoryNumber": 1,
-            "exactCategoryNumber": 1,
-            "repetitionNumber": 2,
-            "othersEmpty": false,
-            "schema": [
-                {
-                    "x": 0,
-                    "y": 0
-                },
-                {
-                    "x": 0,
-                    "y": 1
-                },
-                {
-                    "x": 1,
-                    "y": 0
-                },
-                {
-                    "x": 1,
-                    "y": 1
-                }
-            ],
-            "graphics" : {
-            "ascii" : "+---+---+\n| = | = |\n|---|---| x 2\n| = | = |\n+---+---+",
-            "gui" : "NotAvailable",
-            "description" : "Two groups each containing 4 tiles of\nthe same type in a 2x2 square. The tiles\nof one square can be different from\nthose of the other square."
-            }
-        },
-        {
-            "maxDistinctCategoryNumber": 3,
-            "exactCategoryNumber": 0,
-            "repetitionNumber": 3,
-            "othersEmpty": false,
-            "schema": [
-                {
-                    "x": 0,
-                    "y": 0
-                },
-                {
-                    "x": 1,
-                    "y": 0
-                },
-                {
-                    "x": 2,
-                    "y": 0
-                },
-                {
-                    "x": 3,
-                    "y": 0
-                },
-                {
-                    "x": 4,
-                    "y": 0
-                },
-                {
-                    "x": 5,
-                    "y": 0
-                }
-            ],
-            "graphics" : {
-            "ascii" : "+---+\n|   |\n|---|\n|   |\n|---| max 3 !=\n|   |\n|---|\n|   | x 3\n|---|\n|   |\n|---| \n|   |\n+---+",
-            "gui" : "NotAvailable",
-            "description" : "Three columns each formed by 6 tiles\nof maximum three different types. One column can show the same or a different combination of another column."
-            }
-        },
-        {
-            "maxDistinctCategoryNumber": 6,
-            "exactCategoryNumber": 0,
-            "repetitionNumber": 8,
-            "othersEmpty": false,
-            "schema": [
-                {
-                    "x": 0,
-                    "y": 0
-                }
-            ],
-            "graphics" : {
-            "ascii" : "+---+\n| = | x 8\n+---+",
-            "gui" : "NotAvailable",
-            "description" : "Eight tiles of the same type. There’s no\nrestriction about the position of these\ntiles."
-            }
-        },
-        {
-            "maxDistinctCategoryNumber": 6,
-            "exactCategoryNumber": 0,
-            "repetitionNumber": 3,
-            "othersEmpty": false,
-            "schema": [
-                {
-                    "x": 0,
-                    "y": 0
-                },
-                {
-                    "x": 1,
-                    "y": 1
-                },
-                {
-                    "x": 2,
-                    "y": 2
-                },
-                {
-                    "x": 3,
-                    "y": 3
-                },
-                {
-                    "x": 4,
-                    "y": 4
-                }
-            ],
-            "graphics" : {
-                "ascii" : "+---+\n| = |\n+---|---+\n    | = |\n    +---+---+\n        | = |\n        +---|---+\n            | = |\n            +---|---+\n                | = |\n                +---+",
-                "gui" : "NotAvailable",
-                "description" : "Five tiles of the same type forming a\ndiagonal.."
-            }
-        },
-        {
-            "maxDistinctCategoryNumber": 3,
-            "exactCategoryNumber": 0,
-            "repetitionNumber": 4,
-            "othersEmpty": false,
-            "schema": [
-                {
-                    "x": 0,
-                    "y": 0
-                },
-                {
-                    "x": 0,
-                    "y": 1
-                },
-                {
-                    "x": 0,
-                    "y": 2
-                },
-                {
-                    "x": 0,
-                    "y": 3
-                },
-                {
-                    "x": 0,
-                    "y": 4
-                }
-            ],
-            "graphics" : {
-                "ascii" : "+---+---+---+---+---+\n| %s| %s| %s| %s| %s|\n+---+---+---+---+---+\n       max 3 !=\n          x4",
-                "gui" : "NotAvailable",
-                "description" : "Four lines each formed by 5 tiles of\nmaximum three different types. One\nline can show the same or a different\ncombination of another line."
-            }
-        },
-        {
-            "maxDistinctCategoryNumber": 6,
-            "exactCategoryNumber": 6,
-            "repetitionNumber": 2,
-            "othersEmpty": false,
-            "schema": [
-                {
-                    "x": 0,
-                    "y": 0
-                },
-                {
-                    "x": 1,
-                    "y": 0
-                },
-                {
-                    "x": 2,
-                    "y": 0
-                },
-                {
-                    "x": 3,
-                    "y": 0
-                },
-                {
-                    "x": 4,
-                    "y": 0
-                },
-                {
-                    "x": 5,
-                    "y": 0
-                }
-            ],
-            "graphics" : {
-                "ascii" : "+---+\n|=/=|\n|---|\n|=/=|\n|---|\n|=/=|\n|---| x 2\n|=/=|\n|---|\n|=/=|\n|---| \n|=/=|\n+---+",
-                "gui" : "NotAvailable",
-                "description" : "Two columns each formed by 6\ndifferent types of tiles. "
-            }
-        },
-        {
-            "maxDistinctCategoryNumber": 5,
-            "exactCategoryNumber": 5,
-            "repetitionNumber": 2,
-            "othersEmpty": false,
-            "schema": [
-                {
-                    "x": 0,
-                    "y": 0
-                },
-                {
-                    "x": 1,
-                    "y": 0
-                },
-                {
-                    "x": 2,
-                    "y": 0
-                },
-                {
-                    "x": 3,
-                    "y": 0
-                },
-                {
-                    "x": 4,
-                    "y": 0
-                }
-            ],
-            "graphics" : {
-                "ascii" : "+---+---+---+---+---+\n|=/=|=/=|=/=|=/=|=/=|\n+---+---+---+---+---+\n          x3",
-                "gui" : "NotAvailable",
-                "description" : "Three columns each formed by 6 tiles\nof maximum three different types. One column can show the same or a different combination of another column."
-            }
-        },
-        {
-            "maxDistinctCategoryNumber": 5,
-            "exactCategoryNumber": 0,
-            "repetitionNumber": 1,
-            "othersEmpty": false,
-            "schema": [
-                {
-                    "x": 0,
-                    "y": 0
-                },
-                {
-                    "x": 1,
-                    "y": 1
-                },
-                {
-                    "x": 0,
-                    "y": 2
-                },
-                {
-                    "x": 2,
-                    "y": 0
-                },
-                {
-                    "x": 2,
-                    "y": 2
-                }
-            ],
-            "graphics" : {
-                "ascii" : "+---+   +---+\n| = |   | = |\n+---+---+---+\n    | = |\n+---+---+---+\n| = |   | = |\n+---+   +---+",
-                "gui" : "NotAvailable",
-                "description" : "Five tiles of the same type forming an X."
-            }
-        },
-        {
-            "maxDistinctCategoryNumber": 6,
-            "exactCategoryNumber": 0,
-            "repetitionNumber": 1,
-            "othersEmpty": true,
-            "schema": [
-                {
-                    "x": 0,
-                    "y": 0
-                },
-                {
-                    "x": 1,
-                    "y": 0
-                },
-                {
-                    "x": 2,
-                    "y": 0
-                },
-                {
-                    "x": 3,
-                    "y": 0
-                },
-                {
-                    "x": 4,
-                    "y": 0
-                },
-                {
-                    "x": 0,
-                    "y": 1
-                },
-                {
-                    "x": 1,
-                    "y": 1
-                },
-                {
-                    "x": 2,
-                    "y": 1
-                },
-                {
-                    "x": 3,
-                    "y": 1
-                },
-                {
-                    "x": 0,
-                    "y": 2
-                },
-                {
-                    "x": 1,
-                    "y": 2
-                },
-                {
-                    "x": 2,
-                    "y": 2
-                },
-                {
-                    "x": 0,
-                    "y": 3
-                },
-                {
-                    "x": 1,
-                    "y": 3
-                },
-                {
-                    "x": 0,
-                    "y": 4
-                }
-            ],
-            "graphics" : {
-                "ascii" : "+---+\n|   |\n|---|---+\n|   |   |\n|---|---|---+\n|   |   |   |\n|---|---|---|---+\n|   |   |   |   |\n|---|---|---|---|---+\n|   |   |   |   |   |\n+---+---+---+---+---+",
-                "gui" : "NotAvailable",
-                "description" : "Five columns of increasing or decreasing\nheight. Starting from the first column on\nthe left or on the right, each next column\nmust be made of exactly one more tile.\nTiles can be of any type.     "
-            }
+          "x": 1,
+          "y": 0
         }
-    ]
+      ],
+      [
+        {
+          "x": 0,
+          "y": 0
+        },
+        {
+          "x": 0,
+          "y": 1
+        }
+      ]
+    ],
+    "graphics": {
+      "ascii": "+---+\n| = |\n|---| x 6\n| = |\n+---+",
+      "gui": "NotAvailable",
+      "description": "Six groups each containing at least\n2 tiles of the same type (not necessarily\nin the depicted shape).\nThe tiles of one group can be different\nfrom those of another group."
+    }
+  },
+  {
+    "maxDistinctCategoryNumber": 1,
+    "exactCategoryNumber": 1,
+    "repetitionNumber": 1,
+    "othersEmpty": false,
+    "schema": [
+      {
+        "x": 0,
+        "y": 0
+      },
+      {
+        "x": 0,
+        "y": 4
+      },
+      {
+        "x": 5,
+        "y": 0
+      },
+      {
+        "x": 5,
+        "y": 4
+      }
+    ],
+    "graphics": {
+      "ascii": "+---+---+---+---+---+\n| = |   |   |   | = |\n|---|---|---|---|---|\n|   |   |   |   |   |\n|---|---|---|---|---|\n|   |   |   |   |   |\n|---|---|---|---|---|\n|   |   |   |   |   |\n|---|---|---|---|---|\n|   |   |   |   |   |\n|---|---|---|---|---|\n| = |   |   |   | = |\n+---+---+---+---+---+",
+      "gui": "NotAvailable",
+      "description": "Four tiles of the same type in the four\ncorners of the bookshelf. "
+    }
+  },
+  {
+    "maxDistinctCategoryNumber": 1,
+    "exactCategoryNumber": 1,
+    "repetitionNumber": 4,
+    "othersEmpty": false,
+    "schemas": [
+      [
+        {
+          "x": 0,
+          "y": 0
+        },
+        {
+          "x": 1,
+          "y": 0
+        },
+        {
+          "x": 2,
+          "y": 0
+        },
+        {
+          "x": 3,
+          "y": 0
+        }
+      ],
+      [
+        {
+          "x": 0,
+          "y": 0
+        },
+        {
+          "x": 1,
+          "y": 0
+        },
+        {
+          "x": 2,
+          "y": 0
+        },
+        {
+          "x": 3,
+          "y": 0
+        }
+      ]
+    ],
+    "graphics": {
+      "ascii": "+---+\n| = |\n|---|\n| = |\n|---| x 4\n| = |\n|---|\n| = |\n+---+",
+      "gui": "NotAvailable",
+      "description": "Four groups each containing at least\n4 tiles of the same type (not necessarily\nin the depicted shape).\nThe tiles of one group can be different\nfrom those of another group."
+    }
+  },
+  {
+    "maxDistinctCategoryNumber": 1,
+    "exactCategoryNumber": 1,
+    "repetitionNumber": 2,
+    "othersEmpty": false,
+    "schema": [
+      {
+        "x": 0,
+        "y": 0
+      },
+      {
+        "x": 0,
+        "y": 1
+      },
+      {
+        "x": 1,
+        "y": 0
+      },
+      {
+        "x": 1,
+        "y": 1
+      }
+    ],
+    "graphics": {
+      "ascii": "+---+---+\n| = | = |\n|---|---| x 2\n| = | = |\n+---+---+",
+      "gui": "NotAvailable",
+      "description": "Two groups each containing 4 tiles of\nthe same type in a 2x2 square. The tiles\nof one square can be different from\nthose of the other square."
+    }
+  },
+  {
+    "maxDistinctCategoryNumber": 3,
+    "exactCategoryNumber": 0,
+    "repetitionNumber": 3,
+    "othersEmpty": false,
+    "schema": [
+      {
+        "x": 0,
+        "y": 0
+      },
+      {
+        "x": 1,
+        "y": 0
+      },
+      {
+        "x": 2,
+        "y": 0
+      },
+      {
+        "x": 3,
+        "y": 0
+      },
+      {
+        "x": 4,
+        "y": 0
+      },
+      {
+        "x": 5,
+        "y": 0
+      }
+    ],
+    "graphics": {
+      "ascii": "+---+\n|   |\n|---|\n|   |\n|---| max 3 !=\n|   |\n|---|\n|   | x 3\n|---|\n|   |\n|---| \n|   |\n+---+",
+      "gui": "NotAvailable",
+      "description": "Three columns each formed by 6 tiles\nof maximum three different types. One column can show the same or a different combination of another column."
+    }
+  },
+  {
+    "maxDistinctCategoryNumber": 1,
+    "exactCategoryNumber": 1,
+    "repetitionNumber": 8,
+    "othersEmpty": false,
+    "unitedCategories": true,
+    "schema": [
+      {
+        "x": 0,
+        "y": 0
+      }
+    ],
+    "graphics": {
+      "ascii": "+---+\n| = | x 8\n+---+",
+      "gui": "NotAvailable",
+      "description": "Eight tiles of the same type. There’s no\nrestriction about the position of these\ntiles."
+    }
+  },
+  {
+    "maxDistinctCategoryNumber": 1,
+    "exactCategoryNumber": 1,
+    "repetitionNumber": 1,
+    "othersEmpty": false,
+    "schemas": [
+      [
+        {
+          "x": 0,
+          "y": 0
+        },
+        {
+          "x": 1,
+          "y": 1
+        },
+        {
+          "x": 2,
+          "y": 2
+        },
+        {
+          "x": 3,
+          "y": 3
+        },
+        {
+          "x": 4,
+          "y": 4
+        }
+      ],
+      [
+        {
+          "x": 5,
+          "y": 0
+        },
+        {
+          "x": 4,
+          "y": 1
+        },
+        {
+          "x": 3,
+          "y": 2
+        },
+        {
+          "x": 2,
+          "y": 3
+        },
+        {
+          "x": 1,
+          "y": 4
+        }
+      ]
+    ],
+    "graphics": {
+      "ascii": "+---+\n| = |\n+---|---+\n    | = |\n    +---+---+\n        | = |\n        +---|---+\n            | = |\n            +---|---+\n                | = |\n                +---+",
+      "gui": "NotAvailable",
+      "description": "Five tiles of the same type forming a\ndiagonal.."
+    }
+  },
+  {
+    "maxDistinctCategoryNumber": 3,
+    "exactCategoryNumber": 0,
+    "repetitionNumber": 4,
+    "othersEmpty": false,
+    "schema": [
+      {
+        "x": 0,
+        "y": 0
+      },
+      {
+        "x": 0,
+        "y": 1
+      },
+      {
+        "x": 0,
+        "y": 2
+      },
+      {
+        "x": 0,
+        "y": 3
+      },
+      {
+        "x": 0,
+        "y": 4
+      }
+    ],
+    "graphics": {
+      "ascii": "+---+---+---+---+---+\n| %s| %s| %s| %s| %s|\n+---+---+---+---+---+\n       max 3 !=\n          x4",
+      "gui": "NotAvailable",
+      "description": "Four lines each formed by 5 tiles of\nmaximum three different types. One\nline can show the same or a different\ncombination of another line."
+    }
+  },
+  {
+    "maxDistinctCategoryNumber": 6,
+    "exactCategoryNumber": 6,
+    "repetitionNumber": 2,
+    "othersEmpty": false,
+    "schema": [
+      {
+        "x": 0,
+        "y": 0
+      },
+      {
+        "x": 1,
+        "y": 0
+      },
+      {
+        "x": 2,
+        "y": 0
+      },
+      {
+        "x": 3,
+        "y": 0
+      },
+      {
+        "x": 4,
+        "y": 0
+      },
+      {
+        "x": 5,
+        "y": 0
+      }
+    ],
+    "graphics": {
+      "ascii": "+---+\n|=/=|\n|---|\n|=/=|\n|---|\n|=/=|\n|---| x 2\n|=/=|\n|---|\n|=/=|\n|---| \n|=/=|\n+---+",
+      "gui": "NotAvailable",
+      "description": "Two columns each formed by 6\ndifferent types of tiles. "
+    }
+  },
+  {
+    "maxDistinctCategoryNumber": 5,
+    "exactCategoryNumber": 5,
+    "repetitionNumber": 2,
+    "othersEmpty": false,
+    "schema": [
+      {
+        "x": 0,
+        "y": 0
+      },
+      {
+        "x": 0,
+        "y": 1
+      },
+      {
+        "x": 0,
+        "y": 2
+      },
+      {
+        "x": 0,
+        "y": 3
+      },
+      {
+        "x": 0,
+        "y": 4
+      }
+    ],
+    "graphics": {
+      "ascii": "+---+---+---+---+---+\n|=/=|=/=|=/=|=/=|=/=|\n+---+---+---+---+---+\n          x2",
+      "gui": "NotAvailable",
+      "description": "Two lines each formed by 5 different types of tiles. One line can show the same or a different combination of the other line."
+    }
+  },
+  {
+    "maxDistinctCategoryNumber": 1,
+    "exactCategoryNumber": 1,
+    "repetitionNumber": 1,
+    "othersEmpty": false,
+    "schema": [
+      {
+        "x": 0,
+        "y": 0
+      },
+      {
+        "x": 1,
+        "y": 1
+      },
+      {
+        "x": 0,
+        "y": 2
+      },
+      {
+        "x": 2,
+        "y": 0
+      },
+      {
+        "x": 2,
+        "y": 2
+      }
+    ],
+    "graphics": {
+      "ascii": "+---+   +---+\n| = |   | = |\n+---+---+---+\n    | = |\n+---+---+---+\n| = |   | = |\n+---+   +---+",
+      "gui": "NotAvailable",
+      "description": "Five tiles of the same type forming an X."
+    }
+  },
+  {
+    "maxDistinctCategoryNumber": 6,
+    "exactCategoryNumber": 0,
+    "repetitionNumber": 1,
+    "othersEmpty": true,
+    "schemas": [
+      [
+        {
+          "x": 0,
+          "y": 0
+        },
+        {
+          "x": 1,
+          "y": 0
+        },
+        {
+          "x": 2,
+          "y": 0
+        },
+        {
+          "x": 3,
+          "y": 0
+        },
+        {
+          "x": 4,
+          "y": 0
+        },
+        {
+          "x": 0,
+          "y": 1
+        },
+        {
+          "x": 1,
+          "y": 1
+        },
+        {
+          "x": 2,
+          "y": 1
+        },
+        {
+          "x": 3,
+          "y": 1
+        },
+        {
+          "x": 0,
+          "y": 2
+        },
+        {
+          "x": 1,
+          "y": 2
+        },
+        {
+          "x": 2,
+          "y": 2
+        },
+        {
+          "x": 0,
+          "y": 3
+        },
+        {
+          "x": 1,
+          "y": 3
+        },
+        {
+          "x": 0,
+          "y": 4
+        }
+      ],
+      [
+        {
+          "x": 0,
+          "y": 4
+        },
+        {
+          "x": 1,
+          "y": 4
+        },
+        {
+          "x": 2,
+          "y": 4
+        },
+        {
+          "x": 3,
+          "y": 4
+        },
+        {
+          "x": 4,
+          "y": 4
+        },
+        {
+          "x": 0,
+          "y": 3
+        },
+        {
+          "x": 1,
+          "y": 3
+        },
+        {
+          "x": 2,
+          "y": 3
+        },
+        {
+          "x": 3,
+          "y": 3
+        },
+        {
+          "x": 0,
+          "y": 2
+        },
+        {
+          "x": 1,
+          "y": 2
+        },
+        {
+          "x": 2,
+          "y": 2
+        },
+        {
+          "x": 0,
+          "y": 1
+        },
+        {
+          "x": 1,
+          "y": 1
+        },
+        {
+          "x": 0,
+          "y": 0
+        }
+      ]
+    ],
+    "graphics": {
+      "ascii": "+---+\n|   |\n|---|---+\n|   |   |\n|---|---|---+\n|   |   |   |\n|---|---|---|---+\n|   |   |   |   |\n|---|---|---|---|---+\n|   |   |   |   |   |\n+---+---+---+---+---+",
+      "gui": "NotAvailable",
+      "description": "Five columns of increasing or decreasing\nheight. Starting from the first column on\nthe left or on the right, each next column\nmust be made of exactly one more tile.\nTiles can be of any type.     "
+    }
+  }
+]

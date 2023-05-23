@@ -21,14 +21,14 @@
                   <Rectangle2D />
                </viewport>
                <image>
-                  <Image url="@../resources/publisher/Display_5.jpg" />
+                  <Image url="/images/publisher/Display_5.jpg" />
                </image>
             </ImageView>
             <VBox alignment="CENTER" StackPane.alignment="CENTER">
                <children>
                   <ImageView fitHeight="142.0" fitWidth="366.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../../Downloads/MyShelfie_GraphicalResources%20(1)/17_MyShelfie_BGA/Publisher%20material/Title%202000x618px.png" />
+                        <Image url="/images/publisher/Title 2000x618px.png" />
                      </image>
                   </ImageView>
                   <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="20.0">
