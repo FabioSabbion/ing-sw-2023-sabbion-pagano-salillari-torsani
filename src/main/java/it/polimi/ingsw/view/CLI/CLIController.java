@@ -35,13 +35,6 @@ public class CLIController implements ViewController {
     String viewingPlayerNickname;
     private final List<String> menuNotifications = new ArrayList<>();
 
-    public CLIController(ClientImpl client, Server server) {
-        this.client = client;
-        this.server = server;
-        this.state = State.START;
-
-        client.run(this);
-    }
 
     enum State {
         START,
@@ -52,7 +45,14 @@ public class CLIController implements ViewController {
 
     }
 
-    public void start() {
+    @Override
+    public void start(ClientImpl client, Server server) {
+        this.client = client;
+        this.server = server;
+        this.state = State.START;
+
+        client.run(this);
+
         this.changeState(State.START);
         CLI.initialScreen();
 
