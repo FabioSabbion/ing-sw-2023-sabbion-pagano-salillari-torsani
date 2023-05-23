@@ -21,7 +21,7 @@
          <children>
             <StackPane prefWidth="200.0">
                <children>
-                  <GridPane id="bookshelfGrid" alignment="CENTER" maxWidth="-Infinity" prefWidth="360.0" StackPane.alignment="CENTER">
+                  <GridPane fx:id="bookshelfGrid" alignment="CENTER" maxWidth="-Infinity" prefWidth="360.0" StackPane.alignment="CENTER">
                     <columnConstraints>
                       <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -75,7 +75,7 @@
                         <Image url="" />
                      </image>
                   </ImageView>
-                  <HBox id="tokenRow" alignment="CENTER" maxWidth="-Infinity" prefWidth="400.0" spacing="20.0" StackPane.alignment="CENTER">
+                  <HBox fx:id="tokenRow" alignment="CENTER" maxWidth="-Infinity" prefWidth="400.0" spacing="20.0" StackPane.alignment="CENTER">
                      <children>
                         <ImageView fitHeight="70.0" fitWidth="70.0" pickOnBounds="true" preserveRatio="true">
                            <image>

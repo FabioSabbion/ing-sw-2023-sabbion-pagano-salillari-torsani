@@ -24,7 +24,7 @@
                <children>
                   <StackPane prefHeight="150.0" prefWidth="200.0">
                      <children>
-                        <GridPane id="livingRoomGrid" alignment="CENTER">
+                        <GridPane fx:id="livingRoomGrid" alignment="CENTER">
                           <columnConstraints>
                               <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                               <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -62,11 +62,11 @@
                      <children>
                         <HBox prefHeight="100.0" prefWidth="200.0" spacing="25.0">
                            <children>
-                              <Button id="c1Button" mnemonicParsing="false" prefHeight="40.0" prefWidth="50.0" text="C1" />
-                              <Button id="c2Button" mnemonicParsing="false" prefHeight="40.0" prefWidth="50.0" text="C2" />
-                              <Button id="c3Button" mnemonicParsing="false" prefHeight="40.0" prefWidth="50.0" text="C3" />
-                              <Button id="c4Button" mnemonicParsing="false" prefHeight="40.0" prefWidth="50.0" text="C4" />
-                              <Button id="c5Button" mnemonicParsing="false" prefHeight="40.0" prefWidth="50.0" text="C5" />
+                              <Button fx:id="c1Button" mnemonicParsing="false" prefHeight="40.0" prefWidth="50.0" text="C1" />
+                              <Button fx:id="c2Button" mnemonicParsing="false" prefHeight="40.0" prefWidth="50.0" text="C2" />
+                              <Button fx:id="c3Button" mnemonicParsing="false" prefHeight="40.0" prefWidth="50.0" text="C3" />
+                              <Button fx:id="c4Button" mnemonicParsing="false" prefHeight="40.0" prefWidth="50.0" text="C4" />
+                              <Button fx:id="c5Button" mnemonicParsing="false" prefHeight="40.0" prefWidth="50.0" text="C5" />
                            </children>
                            <VBox.margin>
                               <Insets left="50.0" />
@@ -74,7 +74,7 @@
                         </HBox>
                         <StackPane prefHeight="150.0" prefWidth="200.0">
                            <children>
-                              <GridPane id="bookshelfGrid" StackPane.alignment="CENTER">
+                              <GridPane fx:id="bookshelfGrid" StackPane.alignment="CENTER">
                                 <columnConstraints>
                                     <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                                     <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -110,25 +110,25 @@
                         </StackPane>
                         <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="40.0">
                            <children>
-                              <Button id="player1Button" mnemonicParsing="false" prefHeight="50.0" prefWidth="100.0" text="Player 1" />
-                              <Button id="player2Button" mnemonicParsing="false" prefHeight="50.0" prefWidth="100.0" text="Player 2" />
-                              <Button id="player3Button" mnemonicParsing="false" prefHeight="50.0" prefWidth="100.0" text="Player 3" />
+                              <Button fx:id="player1Button" mnemonicParsing="false" prefHeight="50.0" prefWidth="100.0" text="Player 1" />
+                              <Button fx:id="player2Button" mnemonicParsing="false" prefHeight="50.0" prefWidth="100.0" text="Player 2" />
+                              <Button fx:id="player3Button" mnemonicParsing="false" prefHeight="50.0" prefWidth="100.0" text="Player 3" />
                            </children></HBox>
                      </children>
                   </VBox>
                   <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="50.0">
                      <children>
-                        <ImageView id="personalGoalCardImage" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fx:id="personalGoalCardImage" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
                            <image>
                               <Image url="" />
                            </image>
                         </ImageView>
-                        <ImageView id="commonGoalCardImage1" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fx:id="commonGoalCardImage1" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
                            <image>
                               <Image url="" />
                            </image>
                         </ImageView>
-                        <ImageView id="commonGoalCardImage2" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fx:id="commonGoalCardImage2" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
                            <image>
                               <Image url="" />
                            </image>
@@ -143,7 +143,7 @@
                         <Image url="/images/misc/base_pagina2.jpg" />
                      </image>
                   </ImageView>
-                  <HBox id="tokenRow" alignment="CENTER" prefHeight="150.0" prefWidth="1300.0" spacing="60.0">
+                  <HBox fx:id="tokenRow" alignment="CENTER" prefHeight="150.0" prefWidth="1300.0" spacing="60.0">
                      <children>
                         <ImageView fitHeight="100.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true">
                            <image>

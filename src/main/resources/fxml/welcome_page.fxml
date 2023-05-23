@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
+<BorderPane fx:controller="it.polimi.ingsw.view.GUI.GUIController"  maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
    <center>
       <StackPane BorderPane.alignment="CENTER">
          <children>
@@ -33,7 +33,7 @@
                   </ImageView>
                   <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="20.0">
                      <children>
-                        <TextField id="nicknameTextField" prefHeight="54.0" prefWidth="254.0" promptText="Insert nickname">
+                        <TextField fx:id="nicknameTextField" prefHeight="54.0" prefWidth="254.0" promptText="Insert nickname">
                            <font>
                               <Font size="18.0" />
                            </font>
@@ -41,7 +41,7 @@
                               <Insets />
                            </opaqueInsets>
                         </TextField>
-                        <Button id="playButton" accessibleText="play" mnemonicParsing="false" prefHeight="54.0" prefWidth="119.0" text="PLAY" />
+                        <Button fx:id="playButton" accessibleText="play" mnemonicParsing="false" prefHeight="54.0" prefWidth="119.0" text="PLAY" onAction="#playButtonPressed" />
                      </children>
                   </HBox>
                </children>

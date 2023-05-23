@@ -26,17 +26,17 @@
             </Text>
             <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="30.0">
                <children>
-                  <Button id="choose2Button" mnemonicParsing="false" prefHeight="60.0" prefWidth="60.0" text="2">
+                  <Button fx:id="choose2Button" mnemonicParsing="false" prefHeight="60.0" prefWidth="60.0" text="2">
                      <font>
                         <Font size="24.0" />
                      </font>
                   </Button>
-                  <Button id="choose3Button" mnemonicParsing="false" prefHeight="60.0" prefWidth="60.0" text="3">
+                  <Button fx:id="choose3Button" mnemonicParsing="false" prefHeight="60.0" prefWidth="60.0" text="3">
                      <font>
                         <Font size="24.0" />
                      </font>
                   </Button>
-                  <Button id="choose4Button" mnemonicParsing="false" prefHeight="60.0" prefWidth="60.0" text="4">
+                  <Button fx:id="choose4Button" mnemonicParsing="false" prefHeight="60.0" prefWidth="60.0" text="4">
                      <font>
                         <Font size="24.0" />
                      </font>
