@@ -15,7 +15,7 @@
    <children>
       <ImageView pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@../Downloads/MyShelfie_GraphicalResources/17_MyShelfie_BGA/misc/sfondo%20parquet.jpg" />
+            <Image url="/images/misc/sfondo parquet.jpg" />
          </image>
       </ImageView>
       <VBox alignment="BOTTOM_CENTER" prefHeight="200.0" prefWidth="100.0" spacing="20.0">
@@ -53,7 +53,7 @@
                         </GridPane>
                         <ImageView fitHeight="573.0" fitWidth="637.0" pickOnBounds="true" preserveRatio="true">
                            <image>
-                              <Image url="@../Downloads/MyShelfie_GraphicalResources/17_MyShelfie_BGA/boards/livingroom.png" />
+                              <Image url="/images/boards/livingroom.png" />
                            </image>
                         </ImageView>
                      </children>
@@ -96,14 +96,14 @@
                                  <children>
                                     <ImageView fitHeight="65.0" fitWidth="65.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
-                                          <Image url="@../Downloads/MyShelfie_GraphicalResources/17_MyShelfie_BGA/item%20tiles/Cornici1.3.png" />
+                                          <Image url="" />
                                        </image>
                                     </ImageView>
                                  </children>
                               </GridPane>
                               <ImageView fitHeight="505.0" fitWidth="452.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@../Downloads/MyShelfie_GraphicalResources/17_MyShelfie_BGA/boards/bookshelf.png" />
+                                    <Image url="/images/boards/bookshelf.png" />
                                  </image>
                               </ImageView>
                            </children>
@@ -120,17 +120,17 @@
                      <children>
                         <ImageView id="personalGoalCardImage" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
                            <image>
-                              <Image url="@../Downloads/MyShelfie_GraphicalResources/17_MyShelfie_BGA/personal%20goal%20cards/Personal_Goals7.png" />
+                              <Image url="" />
                            </image>
                         </ImageView>
                         <ImageView id="commonGoalCardImage1" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
                            <image>
-                              <Image url="@../Downloads/MyShelfie_GraphicalResources/17_MyShelfie_BGA/common%20goal%20cards/2.jpg" />
+                              <Image url="" />
                            </image>
                         </ImageView>
                         <ImageView id="commonGoalCardImage2" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
                            <image>
-                              <Image url="@../Downloads/MyShelfie_GraphicalResources/17_MyShelfie_BGA/common%20goal%20cards/5.jpg" />
+                              <Image url="" />
                            </image>
                         </ImageView>
                      </children></VBox>
@@ -140,19 +140,19 @@
                <children>
                   <ImageView fitHeight="150.0" pickOnBounds="true">
                      <image>
-                        <Image url="@../Downloads/MyShelfie_GraphicalResources/17_MyShelfie_BGA/misc/base_pagina2.jpg" />
+                        <Image url="/images/misc/base_pagina2.jpg" />
                      </image>
                   </ImageView>
                   <HBox id="tokenRow" alignment="CENTER" prefHeight="150.0" prefWidth="1300.0" spacing="60.0">
                      <children>
                         <ImageView fitHeight="100.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true">
                            <image>
-                              <Image url="@../Downloads/MyShelfie_GraphicalResources/17_MyShelfie_BGA/scoring%20tokens/scoring_4.jpg" />
+                              <Image url="" />
                            </image>
                         </ImageView>
                         <ImageView fitHeight="100.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true">
                            <image>
-                              <Image url="@../Downloads/MyShelfie_GraphicalResources/17_MyShelfie_BGA/misc/firstplayertoken.png" />
+                              <Image url="" />
                            </image>
                         </ImageView>
                      </children>

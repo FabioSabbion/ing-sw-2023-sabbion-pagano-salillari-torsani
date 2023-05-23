@@ -14,7 +14,7 @@
    <children>
       <ImageView fitWidth="374.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@../../Downloads/MyShelfie_GraphicalResources%20(1)/17_MyShelfie_BGA/Publisher%20material/Display_4.jpg" />
+            <Image url="/images/publisher/Display_4.jpg" />
          </image>
       </ImageView>
       <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" StackPane.alignment="CENTER">
