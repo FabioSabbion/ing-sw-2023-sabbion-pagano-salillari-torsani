@@ -4,7 +4,6 @@ import it.polimi.ingsw.models.*;
 import it.polimi.ingsw.models.exceptions.NotEnoughCellsException;
 import it.polimi.ingsw.models.exceptions.PickTilesException;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,6 +17,7 @@ public class GameController {
         this.game = game;
         this.id = id;
     }
+
     public GameController(List<String> nicknames) {
         this.game = Game.createEmptyGame(nicknames);
         this.id = ID++;
@@ -45,11 +45,6 @@ public class GameController {
             this.game.getCurrentPlayer().getBookshelf().insertTiles(column, tiles);
             this.game.getLivingRoom().removeTiles(coordinatesList);
 
-            Arrays.stream(this.game.getCommonGoalCards()).forEach(commonGoalCard ->
-                    commonGoalCard.checkGoal(this.game.getCurrentPlayer())
-            );
-
-
         } catch (PickTilesException | NotEnoughCellsException e) {
             throw new RuntimeException(e);
         }
@@ -58,6 +53,7 @@ public class GameController {
 
     /**
      * Updates the Players who have completed each {@link CommonGoalCard}
+     *
      * @return Current common goal points for each player
      */
     private Map<Player, Integer> updateCommonGoalPoints() {
@@ -66,8 +62,9 @@ public class GameController {
 
         Map<Player, Integer> results = new HashMap<>();
 
-        for (var commonGoal: commonGoals) {
-            for (var player: players) {
+        for (var commonGoal : commonGoals) {
+            for (var player : players) {
+
                 results.put(player, results.getOrDefault(player, 0) + commonGoal.checkGoal(player));
             }
         }
@@ -81,3 +78,4 @@ public class GameController {
         }
     }
 }
+

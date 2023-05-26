@@ -425,6 +425,39 @@ class CommonGoalCardFactoryTest {
         assertTrue(commonGoalCard.checkGoal(player) > 0);
     }
 
+    @Test
+    @DisplayName("Checking commonGoalCard 0 (Game bug)")
+    void getCommonGoalCard0_v3() {
+        int numPlayer = 3;
+
+        var commonGoalCard = CommonGoalCardFactory.buildFromJson(numPlayer, 0);
+
+        System.out.println("Card:");
+        System.out.println(CommonGoalCardFactory.getASCIIForCard(0));
+
+        var player = new Player("andri", PersonalGoalCard.buildFromJson().get(0));
+
+
+
+
+        for (int i = 0; i < Bookshelf.ROWS; i++) {
+            for (int j = 0; j < Bookshelf.COLUMNS; j++) {
+                player.getBookshelf().getBookshelf()[i][j] = new Tile(Category.values()[i % Category.values().length], Icon.VARIATION1, Orientation.UP);
+            }
+        }
+
+        player.getBookshelf().getBookshelf()[Bookshelf.ROWS-1][0] = new Tile(Category.TROPHIES, Icon.VARIATION2, Orientation.UP);
+
+
+        System.out.println(CLIRenderer.renderBookshelf(player.getBookshelf()));
+
+        assertTrue(commonGoalCard.checkGoal(player) > 0);
+
+    }
+
+
+
+
 
 
 }
