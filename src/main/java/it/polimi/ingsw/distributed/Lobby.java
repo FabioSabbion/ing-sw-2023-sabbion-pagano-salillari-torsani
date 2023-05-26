@@ -9,10 +9,7 @@ import it.polimi.ingsw.controller.GameController;
 import it.polimi.ingsw.controller.events.ViewEvent;
 import it.polimi.ingsw.distributed.exceptions.LobbyException;
 import it.polimi.ingsw.distributed.networking.Client;
-import it.polimi.ingsw.models.CommonGoalCard;
-import it.polimi.ingsw.models.CommonGoalCardFactory;
-import it.polimi.ingsw.models.Game;
-import it.polimi.ingsw.models.Player;
+import it.polimi.ingsw.models.*;
 import it.polimi.ingsw.utils.Observer;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
@@ -49,27 +46,11 @@ public class Lobby {
                             client.getKey().keepAlive();
                         } catch (RemoteException e) {
                             removableClients.add(client.getKey());
-
-                            System.out.println("Client disconnected");
                         }
                     }
-
-                    Client waitingClient = null;
 
                     for (var client: removableClients) {
-                        var disconnected = clientNickname.remove(client);
-
-                        if (this.state == State.CREATING_GAME && waitingPlayers != null) {
-                            waitingClient = waitingPlayers.remove(disconnected);
-                        }
-                    }
-
-                    if (waitingClient != null) {
-                        this.updatedWaitingPlayers();
-                        if (waitingPlayers.isEmpty()) {
-                            this.waitingPlayers = null;
-                            this.state = State.WAITING_FOR_GAME;
-                        }
+                        removeDisconnectedClient(client);
                     }
                 }
 
@@ -80,6 +61,23 @@ public class Lobby {
                 }
             }
         })).start();
+    }
+
+    public synchronized void removeDisconnectedClient(Client client) {
+        var disconnected = clientNickname.remove(client);
+        Client waitingClient = null;
+
+        if (this.state == State.CREATING_GAME && waitingPlayers != null) {
+            waitingClient = waitingPlayers.remove(disconnected);
+        }
+
+        if (waitingClient != null) {
+            this.updatedWaitingPlayers();
+            if (waitingPlayers.isEmpty()) {
+                this.waitingPlayers = null;
+                this.state = State.WAITING_FOR_GAME;
+            }
+        }
     }
     public synchronized void setNickname(String nickname, Client client) throws LobbyException {
         System.out.println("New nickname from client " + nickname);
@@ -150,9 +148,7 @@ public class Lobby {
 
                 System.out.println("Creating game");
             } catch (RemoteException e) {
-                this.waitingPlayers = null;
-                this.state = State.WAITING_FOR_GAME;
-                System.out.println("Client not reachable");
+                removeDisconnectedClient(client);
             }
         }
     }
@@ -162,7 +158,7 @@ public class Lobby {
             try {
                 oldConnections.getValue().updatedPlayerList(this.waitingPlayers.keySet().stream().toList());
             } catch (RemoteException e) {
-                System.out.println("Error");
+                removeDisconnectedClient(oldConnections.getValue());
             }
         }
     }
@@ -190,6 +186,7 @@ public class Lobby {
                     }
                 } catch (RemoteException e) {
                     controller.game.deleteObserver(this);
+                    removeDisconnectedClient(client);
                 }
             }
         });
@@ -209,7 +206,18 @@ public class Lobby {
         }
     }
 
-    public Pair<String, GameController> getNicknameController(Client client) throws LobbyException {
+    public void updateController(Client client, List<Coordinates> coordinatesList, int column) throws LobbyException {
+        var gameData = this.getNicknameController(client);
+
+        var offlinePlayers = Arrays.stream(gameData.getRight().game.getPlayers())
+                .map(Player::getNickname)
+                .filter(player -> !this.clientNickname.containsValue(player))
+                .toList();
+
+        gameData.getRight().update(coordinatesList, column, gameData.getLeft(), offlinePlayers);
+    }
+
+    private Pair<String, GameController> getNicknameController(Client client) throws LobbyException {
         if (!this.clientNickname.containsKey(client)
                 || !this.nicknameController.containsKey(this.clientNickname.get(client))) {
             throw new LobbyException("Client not found in any controller");

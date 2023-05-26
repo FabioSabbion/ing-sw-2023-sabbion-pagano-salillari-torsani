@@ -110,8 +110,7 @@ public class ClientSkeleton implements Client {
                     }
                     int col = (int) message.data;
 
-                    var gameData = Lobby.getInstance().getNicknameController(this);
-                    gameData.getRight().update(pickedTiles, col, gameData.getLeft());
+                    Lobby.getInstance().updateController(this, pickedTiles, col);
                 }
             }
 

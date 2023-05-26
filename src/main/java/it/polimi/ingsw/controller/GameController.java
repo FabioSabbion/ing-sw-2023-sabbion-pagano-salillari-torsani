@@ -23,7 +23,7 @@ public class GameController {
         this.id = ID++;
     }
 
-    private void gameTurn(List<Coordinates> coordinatesList, int column) {
+    private void gameTurn(List<Coordinates> coordinatesList, int column, List<String> offlineNicknames) {
         this.playerAction(coordinatesList, column);
         this.updateCommonGoalPoints();
 
@@ -32,7 +32,7 @@ public class GameController {
 
         this.game.getLivingRoom().fillBoardIfNeeded(this.game.getPlayers().length, this.game.getRemainingTiles());
 
-        this.game.nextPlayer();
+        this.game.nextPlayer(offlineNicknames);
 
         if (prevPlayer.getBookshelf().isFull()) {
             this.game.setGameEnder(prevPlayer);
@@ -72,9 +72,9 @@ public class GameController {
         return results;
     }
 
-    public void update(List<Coordinates> coordinatesList, int column, String player) {
+    public void update(List<Coordinates> coordinatesList, int column, String player, List<String> offlineNicknames) {
         if (player.equals(game.getCurrentPlayer().getNickname())) {
-            this.gameTurn(coordinatesList, column);
+            this.gameTurn(coordinatesList, column, offlineNicknames);
         }
     }
 }
