@@ -134,6 +134,10 @@ public class Game extends Observable<GameUpdateToFile, ViewEvent> {
     }
 
     public void emitGameState() {
+        this.emitGameState(false);
+    }
+
+    public void emitGameState(boolean ending) {
         GameUpdate gameUpdate = new GameUpdate(
                 this.livingRoom,
                 Arrays.stream(this.players).map((p) -> PlayerUpdate.from(p, true)).toList(),
@@ -142,7 +146,7 @@ public class Game extends Observable<GameUpdateToFile, ViewEvent> {
                 PlayerUpdate.from(this.currentPlayer, true)
         );
 
-        notifyObservers(new GameUpdateToFile(gameUpdate, remainingTiles), ViewEvent.GAME_STATE);
+        notifyObservers(new GameUpdateToFile(gameUpdate, remainingTiles), ending ? ViewEvent.GAME_END : ViewEvent.GAME_STATE);
     }
 
     /**

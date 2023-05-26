@@ -18,9 +18,11 @@ import java.rmi.RemoteException;
 import java.util.*;
 
 public class Lobby {
+    public static final int seconds = 30;
     Map<String, Client> waitingPlayers;
     final BiMap<Client, String> clientNickname;
     Map<String, GameController> nicknameController;
+    Map<String, Thread> lastSurvivingWinner;
     GamePersistence persistence = new GamePersistence();
     enum State {
         WAITING_FOR_GAME,
@@ -32,6 +34,7 @@ public class Lobby {
     static private Lobby instance;
 
     private Lobby() {
+        lastSurvivingWinner = new HashMap<>();
         clientNickname = Maps.synchronizedBiMap(HashBiMap.create());
 
         this.nicknameController = new HashMap<>();
@@ -77,6 +80,42 @@ public class Lobby {
                 this.waitingPlayers = null;
                 this.state = State.WAITING_FOR_GAME;
             }
+        } else {
+            List<String> remainedClients = Arrays.stream(nicknameController.get(disconnected).game.getPlayers())
+                    .map(Player::getNickname)
+                    .filter(clientNickname::containsValue)
+                    .toList();
+
+            if (remainedClients.size() == 1) {
+                Objects.requireNonNull(lastSurvivingWinner.put(remainedClients.get(0), new Thread(() -> {
+                    try {
+                        Thread.sleep(seconds * 1000);
+                        Game playerGame = nicknameController.get(remainedClients.get(0)).game;
+
+                        for (Player player : playerGame.getPlayers()) {
+                            if (clientNickname.containsValue(player.getNickname())
+                                    && !player.getNickname().equals(remainedClients.get(0))) {
+                                return;
+                            }
+                        }
+
+                        playerGame.emitGameState(true);
+                    } catch (InterruptedException ignored) { }
+                }))).start();
+            } else {
+                remainedClients.forEach(connectedClient -> {
+                    if (lastSurvivingWinner.containsKey(connectedClient))
+                        lastSurvivingWinner.get(connectedClient).interrupt();
+                });
+            }
+
+            remainedClients.stream().map(player -> clientNickname.inverse().get(player)).forEach(client1 -> {
+                try {
+                    client1.updatedPlayerList(remainedClients);
+                } catch (RemoteException e) {
+                    removeDisconnectedClient(client1);
+                }
+            });
         }
     }
     public synchronized void setNickname(String nickname, Client client) throws LobbyException {
