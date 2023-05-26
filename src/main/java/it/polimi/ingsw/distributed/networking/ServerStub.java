@@ -72,7 +72,7 @@ public class ServerStub implements Server{
         }
     }
 
-    public void receive(Client client) throws RemoteException {
+    public void receive(Client client) throws RemoteException, IOException {
         SocketMessage message;
         try {
             message = (SocketMessage) ois.readObject();
@@ -100,10 +100,6 @@ public class ServerStub implements Server{
                     client.showEndingScoreboard(gameUpdate);
                 }
             }
-        } catch (IOException e) {
-            // TODO: handle connection errors
-            client.serverError("Connection error");
-            throw new RuntimeException(e);
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         }

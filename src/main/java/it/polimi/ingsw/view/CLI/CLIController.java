@@ -31,6 +31,7 @@ public class CLIController implements ViewController {
     private CLI cli;
     private State state;
     private PlayerTurn playerTurn;
+    private boolean gameFinished = false;
 
     String viewingPlayerNickname;
     private final List<String> menuNotifications = new ArrayList<>();
@@ -48,7 +49,8 @@ public class CLIController implements ViewController {
         WAITING,
         ASK_NUM_PLAYERS,
         GET_PLAYER_CHOICE,
-        YOUR_TURN;
+        YOUR_TURN,
+        END_GAME;
 
     }
 
@@ -60,7 +62,7 @@ public class CLIController implements ViewController {
 
         System.out.println("Enter a nickname");
 
-        while (true) {
+        while (!this.state.equals(State.END_GAME)) {
             this.inputHandler(scanner.nextLine());
         }
     }
@@ -108,7 +110,7 @@ public class CLIController implements ViewController {
 
         switch (menuChoice.toLowerCase()) {
             case "help", "menu", "1" -> {
-                cli.showMenu(yourTurn, menuNotifications);
+                cli.showMenu(yourTurn, menuNotifications, gameFinished);
             }
             case "main", "2" -> {
                 cli.showMain(currentPlayer);
@@ -121,12 +123,18 @@ public class CLIController implements ViewController {
                 cli.showCommonGoalCards();
             }
             case "scoreboard", "5" -> {
-                cli.showScoreboard();
+                if (!gameFinished)
+                    cli.showScoreboard();
+                else
+                    this.showFinalScoreBoard();
             }
-            case "play", "6" -> {
-                if (yourTurn) {
+            case "play", "6", "quit" -> {
+                if (yourTurn && !gameFinished && !menuChoice.equalsIgnoreCase("quit")) {
                     playerTurn = new PlayerTurn();
                     this.changeState(State.YOUR_TURN);
+                } else if (gameFinished) {
+                    System.out.println(Color.YELLOW.escape() + "Thanks for playing!" + Color.RESET);
+                    this.changeState(State.END_GAME);
                 } else System.out.println("It's not your turn! Please enter a valid option...");
             }
             default -> System.out.println("That is not a valid option! Enter a valid one");
@@ -211,11 +219,11 @@ public class CLIController implements ViewController {
                     + (this.gameEnder.nickname().equals(viewingPlayerNickname) ? "You have filled your" : (this.gameEnder.nickname() + " has filled his"))
                     + " bookshelf. The game is ending" + Color.RESET);
 
-            cli.showPlayerTurn(currentPlayer, menuNotifications);
+            cli.showPlayerTurn(currentPlayer, menuNotifications, gameFinished);
         }
 
         if (updatedCurrent) {
-            cli.showPlayerTurn(currentPlayer, menuNotifications);
+            cli.showPlayerTurn(currentPlayer, menuNotifications, gameFinished);
             menuNotifications.clear();
             this.changeState(State.GET_PLAYER_CHOICE);
         }
@@ -311,6 +319,13 @@ public class CLIController implements ViewController {
 
     @Override
     public void showEndingScreen() {
+        String winningPlayer = this.showFinalScoreBoard();
+
+        this.gameFinished = true;
+        cli.showEndScreen(winningPlayer);
+    }
+
+    private String showFinalScoreBoard() {
         Map<String, Integer> playerPoints = new HashMap<>();
 
         for (String player: new ArrayList<>(this.players.keySet())) {
@@ -325,7 +340,7 @@ public class CLIController implements ViewController {
             }
         }
 
-
+        System.out.print("\n".repeat(60));
         System.out.println(Color.BLUE.escape() + ASCIIArt.scoreBoard + Color.RESET);
 
         System.out.println(Color.BLUE.escape() + "\n Final Results are:" + Color.RESET);
@@ -334,10 +349,8 @@ public class CLIController implements ViewController {
             System.out.println("- " + player + ": " + playerPoints.get(player));
         }
 
-        int maxPoint = playerPoints.entrySet().stream().map(p -> p.getValue()).mapToInt(x -> x).max().getAsInt();
-        String winningPlayer = playerPoints.entrySet().stream().filter(p -> p.getValue() == maxPoint).findFirst().get().getKey();
-
-        cli.showEndScreen(winningPlayer);
+        int maxPoint = playerPoints.values().stream().mapToInt(x -> x).max().getAsInt();
+        return playerPoints.entrySet().stream().filter(p -> p.getValue() == maxPoint).findFirst().get().getKey();
     }
 
 
@@ -356,7 +369,7 @@ public class CLIController implements ViewController {
         }
 
         public PlayerTurn() {
-            System.out.println("How many tiles do you want? (1 - 3)");
+            System.out.println("How many tiles do you want? (1 - 3) (enter 'back' to go back to the menu)");
             this.state = TurnState.NUM_TILES;
             this.rowLivingRoom = -1;
             this.colLivingRoom = -1;
@@ -372,7 +385,10 @@ public class CLIController implements ViewController {
         public void inputHandler(String input) {
 
             try {
-
+                if (input.equalsIgnoreCase("back")){
+                    CLIController.this.changeState(State.GET_PLAYER_CHOICE);
+                    return;
+                }
                 int inputInt = Integer.parseInt(input);
 
                 switch (this.state) {
@@ -417,20 +433,15 @@ public class CLIController implements ViewController {
             }
         }
 
-
-        void getNumTiles() {
-            this.changeState(TurnState.NUM_TILES);
-        }
-
         void getRowLivingRoom() {
             cli.showMain(currentPlayer);
-            System.out.println("\nChoose Row");
+            System.out.println("\nChoose Row (enter 'back' to go back to the menu)");
             this.changeState(TurnState.ROW_LIVING_ROOM);
         }
 
         void getColumnLivingRoom() {
             cli.showMain(currentPlayer);
-            System.out.println("\nChoose Column");
+            System.out.println("\nChoose Column (enter 'back' to go back to the menu)");
             this.changeState(TurnState.COL_LIVING_ROOM);
         }
 
@@ -448,7 +459,7 @@ public class CLIController implements ViewController {
 
         private void getColumnBookshelf() {
             cli.showMain(currentPlayer);
-            System.out.printf("Choose your column (0-%d)\n", Bookshelf.COLUMNS - 1);
+            System.out.printf("Choose your column (0-%d) (enter 'back' to go back to the menu)\n", Bookshelf.COLUMNS - 1);
             this.changeState(TurnState.COL_BOOKSHELF);
         }
 
