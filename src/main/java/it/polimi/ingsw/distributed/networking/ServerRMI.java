@@ -43,9 +43,7 @@ public class ServerRMI extends UnicastRemoteObject implements Server {
     @Override
     public void playerMove(List<Coordinates> coordinates, int column, Client client) throws RemoteException {
         try {
-            var gameData = Lobby.getInstance().getNicknameController(client);
-
-            gameData.getRight().update(coordinates, column, gameData.getLeft());
+            Lobby.getInstance().updateController(client, coordinates, column);
         } catch (LobbyException e) {
             client.serverError(e.getMessage());
         }
