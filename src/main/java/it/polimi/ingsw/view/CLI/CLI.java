@@ -41,7 +41,7 @@ public class CLI {
         printer.print("\n\nWelcome to MyShelfie!");
     }
 
-    public void showMenu(boolean yourTurn, List<String> menuNotification){
+    public void showMenu(boolean yourTurn, List<String> menuNotification, boolean gameFinished){
         String choices = """
                 Menu:
                 1. 'help'/'menu' -> show all commands
@@ -50,8 +50,10 @@ public class CLI {
                 4. 'CommonGoalCards' -> outputs the game commonGoalCards
                 5. 'scoreboard' -> view scoreboard""";
 
-        if (yourTurn) {
+        if (yourTurn && !gameFinished) {
             choices += "\n6. 'play' -> 'play your turn";
+        } else if (gameFinished) {
+            choices += "\n6. 'quit' -> 'end your game";
         }
 
 
@@ -169,7 +171,7 @@ public class CLI {
         setRenderBookshelves(players);
     }
 
-    public void showPlayerTurn(PlayerUpdate currentPlayer, List<String> menuNotification){
+    public void showPlayerTurn(PlayerUpdate currentPlayer, List<String> menuNotification, boolean gameFinished){
         printer.clearScreen();
         boolean yourTurn = viewingPlayer.nickname().equals(currentPlayer.nickname());
         if(!yourTurn) {
@@ -178,7 +180,7 @@ public class CLI {
         else{
             printer.print(Color.BLUE.escape() + "Now is your turn" + Color.RESET);
         }
-        this.showMenu(yourTurn, menuNotification);
+        this.showMenu(yourTurn, menuNotification, gameFinished);
     }
 
     public void showEndScreen(String winningPlayer){
@@ -188,6 +190,8 @@ public class CLI {
         } else {
             printer.print(Color.RED.escape() + ASCIIArt.gameOver + Color.RESET);
         }
+
+        printer.print(Color.YELLOW.escape() + "\n\n\n You can look at your menu by typing the same commands. To end the game enter 'quit'" + Color.RESET);
     }
 
 
