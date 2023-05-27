@@ -32,6 +32,7 @@ public class CLIController implements ViewController {
     private State state;
     private PlayerTurn playerTurn;
     private boolean gameFinished = false;
+    private List<String> chatMessages = new ArrayList<>();
 
     String viewingPlayerNickname;
     private final List<String> menuNotifications = new ArrayList<>();
@@ -50,7 +51,8 @@ public class CLIController implements ViewController {
         ASK_NUM_PLAYERS,
         GET_PLAYER_CHOICE,
         YOUR_TURN,
-        END_GAME;
+        END_GAME,
+        CHAT;
 
     }
 
@@ -80,11 +82,16 @@ public class CLIController implements ViewController {
                 case YOUR_TURN -> {
                     playerTurn.inputHandler(input);
                 }
+                case CHAT -> {
+                    this.sendMessage(input);
+                }
             }
         } catch (RemoteException e) {
             throw new RuntimeException(e);
         }
     }
+
+
 
 
     @Override
@@ -128,7 +135,10 @@ public class CLIController implements ViewController {
                 else
                     this.showFinalScoreBoard();
             }
-            case "play", "6", "quit" -> {
+            case "chat", "6" -> {
+                this.openChat();
+            }
+            case "play", "7", "quit" -> {
                 if (yourTurn && !gameFinished && !menuChoice.equalsIgnoreCase("quit")) {
                     playerTurn = new PlayerTurn();
                     this.changeState(State.YOUR_TURN);
@@ -141,10 +151,85 @@ public class CLIController implements ViewController {
         }
     }
 
+    /**
+     * Open the chat and shows only the last 10 messages
+     */
+    private void openChat() {
+
+        // TODO testing messages
+        this.chatMessages.add("CIAOOOOO");
+
+        if (this.chatMessages.size() > 10)
+            this.chatMessages = chatMessages.subList(chatMessages.size() - 10, chatMessages.size());
+
+        System.out.println(Color.PURPLE.escape() + "Chat messages\n" + Color.RESET);
+
+        for (String message: this.chatMessages) {
+            System.out.println("- " + message + "\n");
+        }
+
+        System.out.println(
+                Color.PURPLE.escape() + "To send a message enter " +
+                Color.RED.escape() + "PlayerName" +
+                Color.PURPLE.escape() + "/" +
+                Color.RED.escape() + "@All" +
+                Color.PURPLE.escape() + "'" +
+                Color.RED.escape() + " message" +
+                Color.PURPLE.escape() + "'" +
+                Color.RESET);
+        System.out.println(
+                Color.PURPLE.escape() + "To go back to the menu enter '" +
+                Color.RED.escape() + "back" +
+                Color.PURPLE.escape() + "'" +
+                Color.RESET);
+
+        this.changeState(State.CHAT);
+    }
+
+    private void sendMessage(String input) {
+        String[] splitInput = input.split(" ");
+
+        if (splitInput.length == 1) {
+            if (splitInput[0].equals("back")){
+                this.changeState(State.GET_PLAYER_CHOICE);
+                this.cli.showMenu(viewingPlayerNickname.equals(currentPlayer.nickname()), menuNotifications, gameFinished);
+            } else
+                this.serverError("Wrong formatting for the message!");
+
+            return;
+        }
+
+        String recipient = splitInput[0];
+        String message = input.substring(recipient.length() + 1);
+
+
+        List<String> players = new ArrayList<>(this.players.keySet());
+
+        if (recipient.equals(viewingPlayerNickname)){
+            this.serverError("It is pointless to send a message to yourself! Try Again");
+            return;
+        }
+
+        if (!players.contains(recipient) && !recipient.equals("@All")){
+            this.serverError("There's no such message recipient! Try Again");
+            return;
+        }
+
+        // TODO: call server to send message
+        System.err.println("DEBUGGING");
+        System.err.println("RECIPIENT" + recipient);
+        System.err.println("MESSAGE" + message);
+
+        System.out.println(Color.BLUE.escape() + "Message was successfully sent!" + Color.RESET);
+
+        this.cli.showMenu(viewingPlayerNickname.equals(currentPlayer.nickname()), menuNotifications, gameFinished);
+        this.changeState(State.GET_PLAYER_CHOICE);
+    }
+
 
     @Override
     public void updatedPlayerList(List<String> players) {
-        players.stream().forEach(System.out::println);
+        players.forEach(System.out::println);
     }
 
 
@@ -387,6 +472,7 @@ public class CLIController implements ViewController {
             try {
                 if (input.equalsIgnoreCase("back")){
                     CLIController.this.changeState(State.GET_PLAYER_CHOICE);
+                    CLIController.this.cli.showMenu(viewingPlayerNickname.equals(currentPlayer.nickname()), CLIController.this.menuNotifications, CLIController.this.gameFinished);
                     return;
                 }
                 int inputInt = Integer.parseInt(input);

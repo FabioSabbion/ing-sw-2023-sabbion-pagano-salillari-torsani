@@ -48,12 +48,13 @@ public class CLI {
                 2. 'main' -> show the main view (LivingRoom, PersonalGoalCard, Bookshelf)
                 3. 'showPlayers' -> shows players' bookshelf and respective points
                 4. 'CommonGoalCards' -> outputs the game commonGoalCards
-                5. 'scoreboard' -> view scoreboard""";
+                5. 'scoreboard' -> view scoreboard
+                6. 'chat -> open chat""";
 
         if (yourTurn && !gameFinished) {
-            choices += "\n6. 'play' -> 'play your turn";
+            choices += "\n7. 'play' -> 'play your turn";
         } else if (gameFinished) {
-            choices += "\n6. 'quit' -> 'end your game";
+            choices += "\n7. 'quit' -> 'end your game";
         }
 
 
