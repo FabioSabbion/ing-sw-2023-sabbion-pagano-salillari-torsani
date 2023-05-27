@@ -152,15 +152,12 @@ public class CLIController implements ViewController {
     }
 
     /**
-     * Open the chat and shows only the last 10 messages
+     * Open the chat and let you send a message
      */
     private void openChat() {
 
         // TODO testing messages
         this.chatMessages.add("CIAOOOOO");
-
-        if (this.chatMessages.size() > 10)
-            this.chatMessages = chatMessages.subList(chatMessages.size() - 10, chatMessages.size());
 
         System.out.println(Color.PURPLE.escape() + "Chat messages\n" + Color.RESET);
 
