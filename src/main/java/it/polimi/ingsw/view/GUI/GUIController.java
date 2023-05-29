@@ -3,38 +3,18 @@ package it.polimi.ingsw.view.GUI;
 import it.polimi.ingsw.distributed.GameUpdate;
 import it.polimi.ingsw.distributed.networking.ClientImpl;
 import it.polimi.ingsw.distributed.networking.Server;
+import it.polimi.ingsw.view.CLI.CLIController;
+import it.polimi.ingsw.view.CLI.utils.Color;
 import it.polimi.ingsw.view.ViewController;
-import javafx.application.Application;
-import javafx.event.ActionEvent;
-import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.control.TextField;
-import javafx.stage.Stage;
 
-import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.List;
 
-public class GUIController extends Application implements ViewController {
-    @FXML
-    private TextField nicknameTextField;
-    Server server;
-    ClientImpl client;
+import static java.lang.Integer.parseInt;
 
-
-    @Override
-    public void start(Stage primaryStage) throws IOException {
-        Parent root = FXMLLoader.load(getClass().getResource("/fxml/welcome_page.fxml"));
-
-        Scene scene = new Scene(root);
-
-        primaryStage.setTitle("MyShelfie");
-        primaryStage.setScene(scene);
-        primaryStage.show();
-
-    }
+public class GUIController implements ViewController {
+    private Server server;
+    private ClientImpl client;
 
     @Override
     public void updatedPlayerList(List<String> players) {
@@ -53,7 +33,17 @@ public class GUIController extends Application implements ViewController {
 
     @Override
     public void askNumPlayers() {
+        GUI.showAskNumPlayersPage();
+    }
 
+    public void setNumPlayers(int numPlayers) {
+        try {
+            server.setNumPlayers(numPlayers, client);
+        } catch (NumberFormatException e) {
+            this.serverError("You must choose a number");
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
@@ -83,18 +73,10 @@ public class GUIController extends Application implements ViewController {
         this.server = server;
 
         client.run(this);
-
-        launch();
     }
 
     @Override
     public void showEndingScreen() {
 
     }
-
-    @FXML protected void playButtonPressed(ActionEvent event) {
-        String input = nicknameTextField.getCharacters().toString();
-        System.out.println(input);
-    }
-
 }
