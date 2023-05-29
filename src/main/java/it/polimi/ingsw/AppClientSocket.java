@@ -10,10 +10,6 @@ import java.rmi.RemoteException;
 
 public class AppClientSocket {
     public static void start(ViewController viewController) throws RemoteException {
-        if (viewController instanceof GUIController) {
-            GUI.main(null);
-            return;
-        }
         ServerStub serverStub = new ServerStub("localhost", 4445);
         ClientImpl client = new ClientImpl();
         new Thread() {
