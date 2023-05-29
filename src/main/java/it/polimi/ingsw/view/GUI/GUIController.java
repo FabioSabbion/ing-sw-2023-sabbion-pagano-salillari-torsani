@@ -15,10 +15,11 @@ import static java.lang.Integer.parseInt;
 public class GUIController implements ViewController {
     private Server server;
     private ClientImpl client;
+    private String myNickname;
 
     @Override
     public void updatedPlayerList(List<String> players) {
-
+        GUI.showLobbyPage(players);
     }
 
     @Override
@@ -56,7 +57,7 @@ public class GUIController implements ViewController {
             }
 
             server.setNickname(nickname, client);
-
+            myNickname = nickname;
         } catch (RemoteException e) {
             throw new RuntimeException(e);
         }
@@ -78,5 +79,9 @@ public class GUIController implements ViewController {
     @Override
     public void showEndingScreen() {
 
+    }
+
+    public String getMyNickname() {
+        return myNickname;
     }
 }

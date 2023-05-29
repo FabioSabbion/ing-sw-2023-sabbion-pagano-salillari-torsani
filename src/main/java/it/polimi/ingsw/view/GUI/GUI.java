@@ -7,30 +7,57 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.rmi.RemoteException;
+import java.util.List;
 
 public class GUI extends Application {
     static private GUIController guiController;
-    static private PageNavigator navigator;
+    static private Stage primaryStage;
+    static private Page currentPage;
 
     static public void setNickname(String nickname) {
         guiController.setNickname(nickname);
     }
 
     static public void showAskNumPlayersPage(){
-        navigator.navigateToNumPlayersPage();
+        try {
+            primaryStage.getScene().setRoot(FXMLLoader.load(GUI.class.getResource("/fxml/choose_numplayers_view.fxml")));
+            currentPage = Page.ASKNUMPLAYERS;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    static public void showLobbyPage(List<String> players){
+        try {
+            if (currentPage != Page.LOBBY) {
+                primaryStage.getScene().setRoot(FXMLLoader.load(GUI.class.getResource("/fxml/lobby_page.fxml")));
+                currentPage = Page.LOBBY;
+            }
+            Text text = (Text) primaryStage.getScene().lookup("#playersText");
+            String s = "";
+            for (String p: players) {
+                s = s + p + "\n";
+            }
+            text.setText(s);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     static public void setNumPlayers(int numPlayers) {
         guiController.setNumPlayers(numPlayers);
+        showLobbyPage(List.of(guiController.getMyNickname()));
     }
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        GUI.navigator = new PageNavigator(primaryStage);
+        GUI.primaryStage = primaryStage;
+        currentPage = Page.WELCOME;
         Parent root = FXMLLoader.load(GUI.class.getResource("/fxml/welcome_page.fxml"));
 
         Scene scene = new Scene(root);
