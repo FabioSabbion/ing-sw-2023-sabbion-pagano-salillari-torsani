@@ -76,7 +76,7 @@ public class PersonalGoalCard implements GoalCard, Serializable {
     public static void reloadJson(){
         JSONParser parser = new JSONParser();
         try {
-            InputStream path = PersonalGoalCard.class.getResourceAsStream("/settings/PersonalGoalCard.json");
+            InputStream path = PersonalGoalCard.class.getResourceAsStream("/settings/PersonalGoalCards.json");
             jsonFile = (JSONObject) parser.parse(new InputStreamReader(path));
             } catch (Exception e) {
             e.printStackTrace();

@@ -2,13 +2,11 @@ package it.polimi.ingsw.view.CLI;
 
 import it.polimi.ingsw.distributed.CommonGoalCardUpdate;
 import it.polimi.ingsw.distributed.GameUpdate;
+import it.polimi.ingsw.distributed.Lobby;
 import it.polimi.ingsw.distributed.PlayerUpdate;
 import it.polimi.ingsw.distributed.networking.ClientImpl;
 import it.polimi.ingsw.distributed.networking.Server;
-import it.polimi.ingsw.models.Bookshelf;
-import it.polimi.ingsw.models.CommonGoalCard;
-import it.polimi.ingsw.models.Coordinates;
-import it.polimi.ingsw.models.LivingRoom;
+import it.polimi.ingsw.models.*;
 import it.polimi.ingsw.models.exceptions.NotEnoughCellsException;
 import it.polimi.ingsw.models.exceptions.PickTilesException;
 import it.polimi.ingsw.view.CLI.utils.ASCIIArt;
@@ -16,6 +14,7 @@ import it.polimi.ingsw.view.CLI.utils.Color;
 import it.polimi.ingsw.view.ViewController;
 
 import java.rmi.RemoteException;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 import static java.lang.Integer.parseInt;
@@ -32,10 +31,11 @@ public class CLIController implements ViewController {
     private State state;
     private PlayerTurn playerTurn;
     private boolean gameFinished = false;
-    private List<String> chatMessages = new ArrayList<>();
+    private final SortedMap<Integer, Message> chatMessages = new TreeMap<>();
 
     String viewingPlayerNickname;
     private final List<String> menuNotifications = new ArrayList<>();
+    private List<String> offlinePlayers = new ArrayList<>();
 
     public CLIController(ClientImpl client, Server server) {
         this.client = client;
@@ -124,7 +124,7 @@ public class CLIController implements ViewController {
 
             }
             case "showPlayers", "3" -> {
-                cli.showPlayers(this.players);
+                cli.showPlayers(this.players, this.offlinePlayers);
             }
             case "CommonGoalCards", "4" -> {
                 cli.showCommonGoalCards();
@@ -156,13 +156,13 @@ public class CLIController implements ViewController {
      */
     private void openChat() {
 
-        // TODO testing messages
-        this.chatMessages.add("CIAOOOOO");
-
         System.out.println(Color.PURPLE.escape() + "Chat messages\n" + Color.RESET);
 
-        for (String message: this.chatMessages) {
-            System.out.println("- " + message + "\n");
+        for (Message message: this.chatMessages.values()) {
+            System.out.println("- ["
+                    + message.timestamp().format(DateTimeFormatter.ofPattern("HH:mm:ss"))
+                    + "] " + (message.to() == null ? "@All " : "")
+                    + (message.from().equals(viewingPlayerNickname) ? "You" : message.from()) + ": " + message.message());
         }
 
         System.out.println(
@@ -212,24 +212,66 @@ public class CLIController implements ViewController {
             return;
         }
 
-        // TODO: call server to send message
-        System.err.println("DEBUGGING");
-        System.err.println("RECIPIENT" + recipient);
-        System.err.println("MESSAGE" + message);
-
-        System.out.println(Color.BLUE.escape() + "Message was successfully sent!" + Color.RESET);
+        try {
+            this.server.sendMessageTo(recipient.equals("@All") ? null : recipient, message, this.client);
+            System.out.println(Color.BLUE.escape() + "Message was successfully sent!" + Color.RESET);
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
+        }
 
         this.cli.showMenu(viewingPlayerNickname.equals(currentPlayer.nickname()), menuNotifications, gameFinished);
         this.changeState(State.GET_PLAYER_CHOICE);
     }
 
-
     @Override
-    public void updatedPlayerList(List<String> players) {
-        players.forEach(System.out::println);
+    public void receiveMessages(List<Message> messages){
+        for (Message message: messages){
+           chatMessages.put(message.id(), message);
+        }
     }
 
 
+    /**
+     * Receives the current players in the game and communicate them to the online players through menuNotifications
+     * @param players
+     */
+    @Override
+    public void updatedPlayerList(List<String> players) {
+        if (this.players != null){
+
+            if ((this.players.size() - players.size()) < offlinePlayers.size() && offlinePlayers.size() != 0){
+                //Means someone has reconnected
+
+                for (String updatedPlayer: players) {
+                    if (offlinePlayers.contains(updatedPlayer)){
+                        menuNotifications.add(Color.RED.escape() + updatedPlayer + " has reconnected");
+
+                        offlinePlayers.remove(updatedPlayer);
+                    }
+                }
+            } else {
+                this.offlinePlayers = new ArrayList<>(this.players.keySet());
+                this.offlinePlayers.removeAll(players);
+
+                for (String offlinePlayer: offlinePlayers) {
+                    menuNotifications.add(Color.RED.escape() + offlinePlayer + " has disconnected" + Color.RESET);
+                }
+
+                if (this.players.keySet().size() - offlinePlayers.size() == 1){
+                    menuNotifications.add(Color.RED.escape() + ("You are the only player left!" +
+                            " After %d seconds you will win if no one reconnects").formatted(Lobby.seconds) + Color.RESET);
+                }
+            }
+
+            cli.showPlayerTurn(currentPlayer, menuNotifications, gameFinished);
+        }
+    }
+
+
+    /**
+     * Updates the CLI and communicates the updates with the viewingPlayer through menuNotification
+     * @param update
+     */
     @Override
     public void updateGame(GameUpdate update) {
         this.livingRoom = update.livingRoom() == null ? this.livingRoom : update.livingRoom();

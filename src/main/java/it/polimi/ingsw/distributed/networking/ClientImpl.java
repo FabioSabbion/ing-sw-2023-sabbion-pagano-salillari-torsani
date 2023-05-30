@@ -61,7 +61,7 @@ public class ClientImpl extends UnicastRemoteObject implements Client {
 
     @Override
     public void sendMessagesUpdate(List<Message> messageList) throws RemoteException {
-        System.err.println("MESSAGES ARRIVED " + messageList);
+        view.receiveMessages(messageList);
     }
 
     public void run(ViewController view) {

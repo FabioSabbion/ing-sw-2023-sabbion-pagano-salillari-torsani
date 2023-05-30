@@ -9,14 +9,15 @@ import java.util.List;
 import java.util.Map;
 
 public class GameController {
-    public Game game;
-    public Chat chat;
-    public int id;
+    public final Game game;
+    public final Chat chat;
+    public final int id;
     public static int ID = 0;
 
     public GameController(Game game, int id) {
         this.game = game;
         this.id = id;
+        this.chat = new Chat();
     }
 
     public GameController(List<String> nicknames) {

@@ -84,7 +84,7 @@ public class CLI {
     }
 
 
-    public void showPlayers(Map<String, PlayerUpdate> playerMap){
+    public void showPlayers(Map<String, PlayerUpdate> playerMap, List<String> offlinePlayers){
 
         String concatBookshelves = "";
 
@@ -102,6 +102,11 @@ public class CLI {
             else {
                 printer.print("- " + player);
             }
+        }
+
+        printer.print("\n Offline Players:");
+        for (String offlinePlayer : offlinePlayers) {
+            printer.print("- " + offlinePlayer);
         }
     }
 

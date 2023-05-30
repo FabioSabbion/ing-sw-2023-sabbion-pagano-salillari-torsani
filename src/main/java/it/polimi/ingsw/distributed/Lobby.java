@@ -82,8 +82,7 @@ public class Lobby {
                 this.waitingPlayers = null;
                 this.state = State.WAITING_FOR_GAME;
             }
-        } else {
-
+        } else if (nicknameController.containsKey(disconnected)){
             var remainedClients = updatedPlayerList(disconnected);
 
 //            Skip current client if he disconnected with no reason
@@ -309,7 +308,9 @@ public class Lobby {
                 }
 
                 if (eventType == MessageEvent.SINGLE_MESSAGE
-                        && !(value.get(0).to() == null || Objects.equals(value.get(0).to(), clientNickname.get(client)))) {
+                        && !(value.get(0).to() == null
+                        || Objects.equals(value.get(0).to(), clientNickname.get(client))
+                        || Objects.equals(value.get(0).from(), clientNickname.get(client)))) {
                     return;
                 }
 
