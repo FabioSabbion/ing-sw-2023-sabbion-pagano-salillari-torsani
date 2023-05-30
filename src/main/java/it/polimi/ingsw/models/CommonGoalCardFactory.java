@@ -2,15 +2,14 @@ package it.polimi.ingsw.models;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
-import it.polimi.ingsw.view.CLI.CLIRenderer;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import java.awt.print.Book;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.*;
 import java.util.function.Predicate;
 
@@ -112,7 +111,9 @@ public class CommonGoalCardFactory {
 
     public static void reloadJson() {
         try {
-            Object obj = parser.parse(new FileReader("src/main/java/it/polimi/ingsw/models/settings/cgc.json"));
+            InputStream path = CommonGoalCardFactory.class.getResourceAsStream("/settings/cgc.json");
+
+            Object obj = parser.parse(new InputStreamReader(path));
             JSONArray jsonArray = (JSONArray) obj;
             for (Object o : jsonArray) {
                 jsonObjects.add((JSONObject) o);
