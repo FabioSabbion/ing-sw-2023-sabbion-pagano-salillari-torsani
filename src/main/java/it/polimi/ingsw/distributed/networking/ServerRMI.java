@@ -4,6 +4,7 @@ import it.polimi.ingsw.distributed.Lobby;
 import it.polimi.ingsw.distributed.exceptions.LobbyException;
 import it.polimi.ingsw.models.Coordinates;
 
+import javax.annotation.Nullable;
 import java.rmi.RemoteException;
 import java.rmi.server.RMIClientSocketFactory;
 import java.rmi.server.RMIServerSocketFactory;
@@ -47,6 +48,11 @@ public class ServerRMI extends UnicastRemoteObject implements Server {
         } catch (LobbyException e) {
             client.serverError(e.getMessage());
         }
+    }
+
+    @Override
+    public void sendMessageTo(@Nullable String to, String message, Client client) throws RemoteException {
+        Lobby.getInstance().sendMessage(client, to, message);
     }
 
 }

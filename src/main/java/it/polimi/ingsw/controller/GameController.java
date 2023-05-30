@@ -10,6 +10,7 @@ import java.util.Map;
 
 public class GameController {
     public Game game;
+    public Chat chat;
     public int id;
     public static int ID = 0;
 
@@ -21,6 +22,7 @@ public class GameController {
     public GameController(List<String> nicknames) {
         this.game = Game.createEmptyGame(nicknames);
         this.id = ID++;
+        this.chat = new Chat();
     }
 
     private void gameTurn(List<Coordinates> coordinatesList, int column, List<String> offlineNicknames) {

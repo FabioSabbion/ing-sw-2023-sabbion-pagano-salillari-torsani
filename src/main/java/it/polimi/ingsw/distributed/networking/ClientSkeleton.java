@@ -5,12 +5,14 @@ import it.polimi.ingsw.distributed.GameUpdate;
 import it.polimi.ingsw.distributed.Lobby;
 import it.polimi.ingsw.distributed.exceptions.LobbyException;
 import it.polimi.ingsw.models.Coordinates;
+import it.polimi.ingsw.models.Message;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ClientSkeleton implements Client {
@@ -89,6 +91,17 @@ public class ClientSkeleton implements Client {
 
     }
 
+    @Override
+    public void sendMessagesUpdate(List<Message> messageList) throws RemoteException {
+        try {
+            oos.writeObject(new SocketMessage(EventType.MESSAGE_EVENT, new ArrayList<>(messageList)));
+            oos.reset();
+            oos.flush();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public void receive() throws RemoteException {
         SocketMessage message;
         try {
@@ -111,6 +124,11 @@ public class ClientSkeleton implements Client {
                     int col = (int) message.data;
 
                     Lobby.getInstance().updateController(this, pickedTiles, col);
+                }
+                case MESSAGE_EVENT -> {
+                    Message mess = (Message) message.data;
+
+                    Lobby.getInstance().sendMessage(this, mess.to(), mess.message());
                 }
             }
 

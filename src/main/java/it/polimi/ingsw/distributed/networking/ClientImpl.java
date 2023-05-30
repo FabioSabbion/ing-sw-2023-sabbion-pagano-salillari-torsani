@@ -1,6 +1,7 @@
 package it.polimi.ingsw.distributed.networking;
 
 import it.polimi.ingsw.distributed.GameUpdate;
+import it.polimi.ingsw.models.Message;
 import it.polimi.ingsw.view.ViewController;
 
 import java.rmi.RemoteException;
@@ -56,6 +57,11 @@ public class ClientImpl extends UnicastRemoteObject implements Client {
     public void showEndingScoreboard(GameUpdate update) throws RemoteException {
         view.updateGame(update);
         view.showEndingScreen();
+    }
+
+    @Override
+    public void sendMessagesUpdate(List<Message> messageList) throws RemoteException {
+        System.err.println("MESSAGES ARRIVED " + messageList);
     }
 
     public void run(ViewController view) {
