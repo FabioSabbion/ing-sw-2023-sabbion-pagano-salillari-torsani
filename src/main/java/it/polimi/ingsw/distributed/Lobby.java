@@ -308,12 +308,16 @@ public class Lobby {
                     return;
                 }
 
-                if (eventType == MessageEvent.SINGLE_MESSAGE && !(value.get(0).to() == null || Objects.equals(value.get(0).to(), clientNickname.get(client)))) {
+                if (eventType == MessageEvent.SINGLE_MESSAGE
+                        && !(value.get(0).to() == null || Objects.equals(value.get(0).to(), clientNickname.get(client)))) {
                     return;
                 }
 
                 try {
-                    client.sendMessagesUpdate(value.stream().filter(message -> message.to() == null || Objects.equals(message.to(), clientNickname.get(client))).toList());
+                    client.sendMessagesUpdate(value.stream().filter(message ->
+                            message.to() == null
+                                    || Objects.equals(message.to(), clientNickname.get(client))
+                                    || Objects.equals(message.from(), clientNickname.get(client))).toList());
                 } catch (RemoteException e) {
                     controller.chat.deleteObserver(this);
                     removeDisconnectedClient(client);
