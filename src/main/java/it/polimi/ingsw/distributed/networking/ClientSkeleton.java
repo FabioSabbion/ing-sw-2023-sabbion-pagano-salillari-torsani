@@ -3,6 +3,7 @@ package it.polimi.ingsw.distributed.networking;
 import it.polimi.ingsw.controller.events.EventType;
 import it.polimi.ingsw.distributed.GameUpdate;
 import it.polimi.ingsw.distributed.Lobby;
+import it.polimi.ingsw.distributed.MessageUpdate;
 import it.polimi.ingsw.distributed.exceptions.LobbyException;
 import it.polimi.ingsw.models.Coordinates;
 import it.polimi.ingsw.models.Message;
@@ -126,7 +127,7 @@ public class ClientSkeleton implements Client {
                     Lobby.getInstance().updateController(this, pickedTiles, col);
                 }
                 case MESSAGE_EVENT -> {
-                    Message mess = (Message) message.data;
+                    MessageUpdate mess = (MessageUpdate) message.data;
 
                     Lobby.getInstance().sendMessage(this, mess.to(), mess.message());
                 }
