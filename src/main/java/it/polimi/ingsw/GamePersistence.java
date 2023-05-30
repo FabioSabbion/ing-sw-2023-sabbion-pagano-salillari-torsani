@@ -234,6 +234,7 @@ public class GamePersistence {
 
                                 return true;
                             } catch (NumberFormatException | DateTimeParseException e) {
+                                System.err.println("Error in files parsing " + e.getMessage());
                                 return false;
                             }
                         }

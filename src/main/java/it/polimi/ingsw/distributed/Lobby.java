@@ -21,7 +21,7 @@ public class Lobby {
     public static final int seconds = 30;
     Map<String, Client> waitingPlayers;
     final BiMap<Client, String> clientNickname;
-    Map<String, GameController> nicknameController;
+    final Map<String, GameController> nicknameController;
     Map<String, Thread> lastSurvivingWinner;
     GamePersistence persistence = new GamePersistence();
     enum State {
@@ -86,22 +86,10 @@ public class Lobby {
                     .filter(clientNickname::containsValue)
                     .toList();
 
-            if (remainedClients.size() == 1) {
-                Objects.requireNonNull(lastSurvivingWinner.put(remainedClients.get(0), new Thread(() -> {
-                    try {
-                        Thread.sleep(seconds * 1000);
-                        Game playerGame = nicknameController.get(remainedClients.get(0)).game;
-
-                        for (Player player : playerGame.getPlayers()) {
-                            if (clientNickname.containsValue(player.getNickname())
-                                    && !player.getNickname().equals(remainedClients.get(0))) {
-                                return;
-                            }
-                        }
-
-                        playerGame.emitGameState(true);
-                    } catch (InterruptedException ignored) { }
-                }))).start();
+            if (remainedClients.size() == 0) {
+                nicknameController.get(disconnected).game.emitGameState(true);
+            } else if (remainedClients.size() == 1) {
+                this.setLastSurvivingWinner(remainedClients.get(0));
             } else {
                 remainedClients.forEach(connectedClient -> {
                     if (lastSurvivingWinner.containsKey(connectedClient))
@@ -118,6 +106,40 @@ public class Lobby {
             });
         }
     }
+
+
+    public void setLastSurvivingWinner(String lastClient) {
+        Objects.requireNonNull(lastSurvivingWinner.put(lastClient, new Thread(() -> {
+            try {
+                Thread.sleep(seconds * 1000);
+
+                Game playerGame = null;
+                synchronized (nicknameController) {
+                    if (!nicknameController.containsKey(lastClient)) {
+                        return;
+                    }
+
+                    playerGame = nicknameController.get(lastClient).game;
+
+                    List<String> connectedClients = Arrays.stream(nicknameController.get(lastClient).game.getPlayers())
+                            .map(Player::getNickname)
+                            .filter(clientNickname::containsValue)
+                            .toList();
+
+
+
+                    if(connectedClients.size() >= 1) {
+                        return;
+                    }
+                }
+
+                if(playerGame != null) {
+                    playerGame.emitGameState(true);
+                }
+            } catch (InterruptedException ignored) { }
+        }))).start();
+    }
+
     public synchronized void setNickname(String nickname, Client client) throws LobbyException {
         System.out.println("New nickname from client " + nickname);
 
@@ -252,6 +274,13 @@ public class Lobby {
                 .map(Player::getNickname)
                 .filter(player -> !this.clientNickname.containsValue(player))
                 .toList();
+
+        if (gameData.getRight().game.getPlayers().length - offlinePlayers.size() == 1) {
+//            we will assume that the last remaining player is this player, if something weird has happened we have to fix it
+            if(!this.lastSurvivingWinner.containsKey(this.clientNickname.get(client))) {
+                this.setLastSurvivingWinner(this.clientNickname.get(client));
+            }
+        }
 
         gameData.getRight().update(coordinatesList, column, gameData.getLeft(), offlinePlayers);
     }
