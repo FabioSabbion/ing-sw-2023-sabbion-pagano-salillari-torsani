@@ -5,6 +5,7 @@ import it.polimi.ingsw.utils.Observable;
 import it.polimi.ingsw.utils.Observer;
 
 import javax.annotation.Nullable;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -18,7 +19,7 @@ public class Chat extends Observable<List<Message>, MessageEvent> {
     }
 
     public void sendMessage(String message, String from, @Nullable String to) {
-        Message record = new Message(messageList.size(), from, to, message);
+        Message record = new Message(messageList.size(), from, to, message, LocalDateTime.now());
 
         messageList.add(record);
 

@@ -197,13 +197,15 @@ public class Lobby {
                 // Nickname already in use => send error
                 throw new LobbyException("Nickname already in use");
             } else {
+                GameController controller = nicknameController.get(nickname);
 //                Nickname not connected to any client, connecting to controller
                 clientNickname.put(client, nickname);
 
-                this.setClientListener(client, nicknameController.get(nickname));
+                this.setClientListener(client, controller);
 
                 this.updatedPlayerList(nickname);
-                nicknameController.get(nickname).game.emitGameState();
+                controller.game.emitGameState();
+                controller.chat.emitAllMessages();
             }
         } else if(this.state == State.CREATING_GAME) {
             if (clientNickname.containsValue(nickname)) {

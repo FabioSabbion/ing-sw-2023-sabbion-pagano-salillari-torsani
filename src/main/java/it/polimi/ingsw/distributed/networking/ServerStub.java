@@ -2,6 +2,7 @@ package it.polimi.ingsw.distributed.networking;
 
 import it.polimi.ingsw.controller.events.EventType;
 import it.polimi.ingsw.distributed.GameUpdate;
+import it.polimi.ingsw.distributed.MessageUpdate;
 import it.polimi.ingsw.models.Coordinates;
 import it.polimi.ingsw.models.Message;
 
@@ -78,7 +79,7 @@ public class ServerStub implements Server{
     @Override
     public void sendMessageTo(@Nullable String to, String message, Client client) throws RemoteException {
         try {
-            oos.writeObject(new Message(0, "", to, message));
+            oos.writeObject(new MessageUpdate(to, message));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
