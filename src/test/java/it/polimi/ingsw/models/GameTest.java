@@ -20,11 +20,11 @@ class GameTest {
     @DisplayName("Check current player is changed correctly")
     void nextPlayer() {
         assertEquals(game.getPlayers()[0], game.getCurrentPlayer());
-        game.nextPlayer();
+        game.nextPlayer(new ArrayList<>());
         assertEquals(game.getPlayers()[1], game.getCurrentPlayer());
-        game.nextPlayer();
-        game.nextPlayer();
-        game.nextPlayer();
+        game.nextPlayer(new ArrayList<>());
+        game.nextPlayer(new ArrayList<>());
+        game.nextPlayer(new ArrayList<>());
         assertEquals(game.getPlayers()[0], game.getCurrentPlayer());
     }
 
