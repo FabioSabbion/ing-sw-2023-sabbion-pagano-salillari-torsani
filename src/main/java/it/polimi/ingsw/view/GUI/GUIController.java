@@ -3,8 +3,6 @@ package it.polimi.ingsw.view.GUI;
 import it.polimi.ingsw.distributed.GameUpdate;
 import it.polimi.ingsw.distributed.networking.ClientImpl;
 import it.polimi.ingsw.distributed.networking.Server;
-import it.polimi.ingsw.view.CLI.CLIController;
-import it.polimi.ingsw.view.CLI.utils.Color;
 import it.polimi.ingsw.view.ViewController;
 
 import java.rmi.RemoteException;
@@ -16,25 +14,35 @@ public class GUIController implements ViewController {
     private Server server;
     private ClientImpl client;
     private String myNickname;
+    private State currentState;
 
     @Override
     public void updatedPlayerList(List<String> players) {
-        GUI.showLobbyPage(players);
+        if (currentState != State.LOBBY) {
+            GUI.showLobbyView(players);
+            currentState = State.LOBBY;
+        } else {
+            GUI.updateLobby(players);
+        }
     }
 
     @Override
     public void updateGame(GameUpdate update) {
-
+        if (currentState != State.GAME) {
+            GUI.showGameView();
+            currentState = State.GAME;
+        }
     }
 
     @Override
     public void serverError(String message) {
-        System.out.println(message);
+        GUI.showToast(message);
     }
 
     @Override
     public void askNumPlayers() {
-        GUI.showAskNumPlayersPage();
+        GUI.showNumPlayersView();
+        currentState = State.ASKNUMPLAYERS;
     }
 
     public void setNumPlayers(int numPlayers) {
@@ -83,5 +91,9 @@ public class GUIController implements ViewController {
 
     public String getMyNickname() {
         return myNickname;
+    }
+
+    public State getCurrentState() {
+        return currentState;
     }
 }

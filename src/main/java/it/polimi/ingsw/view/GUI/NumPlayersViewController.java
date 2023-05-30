@@ -3,7 +3,7 @@ package it.polimi.ingsw.view.GUI;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 
-public class NumPlayersController {
+public class NumPlayersViewController {
     @FXML
     protected void numPlayer2(ActionEvent event) {
         GUI.setNumPlayers(2);

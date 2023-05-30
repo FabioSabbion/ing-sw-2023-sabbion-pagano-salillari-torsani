@@ -15,33 +15,41 @@ import java.util.List;
 public class GUI extends Application {
     static private GUIController guiController;
     static private Stage primaryStage;
-    static private Page currentPage;
+    static private State currentState;
 
     static public void setNickname(String nickname) {
         guiController.setNickname(nickname);
     }
 
-    static public void showAskNumPlayersPage(){
+    static public void showNumPlayersView(){
         try {
             primaryStage.getScene().setRoot(FXMLLoader.load(GUI.class.getResource("/fxml/choose_numplayers_view.fxml")));
-            currentPage = Page.ASKNUMPLAYERS;
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    static public void showLobbyPage(List<String> players){
+    static public void showLobbyView(List<String> players){
         try {
-            if (currentPage != Page.LOBBY) {
-                primaryStage.getScene().setRoot(FXMLLoader.load(GUI.class.getResource("/fxml/lobby_page.fxml")));
-                currentPage = Page.LOBBY;
-            }
-            Text text = (Text) primaryStage.getScene().lookup("#playersText");
-            String s = "";
-            for (String p: players) {
-                s = s + p + "\n";
-            }
-            text.setText(s);
+            primaryStage.getScene().setRoot(FXMLLoader.load(GUI.class.getResource("/fxml/lobby_page.fxml")));
+            updateLobby(players);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    static public void updateLobby(List<String> players) {
+        Text text = (Text) primaryStage.getScene().lookup("#playersText");
+        String s = "";
+        for (String p: players) {
+            s = s + p + "\n";
+        }
+        text.setText(s);
+    }
+
+    static public void showGameView() {
+        try {
+            primaryStage.getScene().setRoot(FXMLLoader.load(GUI.class.getResource("/fxml/game_view.fxml")));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -49,13 +57,17 @@ public class GUI extends Application {
 
     static public void setNumPlayers(int numPlayers) {
         guiController.setNumPlayers(numPlayers);
-        showLobbyPage(List.of(guiController.getMyNickname()));
+        showLobbyView(List.of(guiController.getMyNickname()));
+    }
+
+    static public void showToast(String message) {
+        Toast.makeText(primaryStage, message, 4000, 200, 200);
     }
 
     @Override
     public void start(Stage primaryStage) throws Exception {
         GUI.primaryStage = primaryStage;
-        currentPage = Page.WELCOME;
+        currentState = State.WELCOME;
         Parent root = FXMLLoader.load(GUI.class.getResource("/fxml/welcome_page.fxml"));
 
         Scene scene = new Scene(root);

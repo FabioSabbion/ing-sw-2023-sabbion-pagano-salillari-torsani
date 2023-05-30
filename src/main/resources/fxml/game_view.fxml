@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1400.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
+<StackPane fx:controller="it.polimi.ingsw.view.GUI.GameViewController" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1400.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <ImageView pickOnBounds="true" preserveRatio="true">
          <image>
@@ -94,11 +94,7 @@
                                     <Insets bottom="60.0" left="45.0" right="45.0" top="30.0" />
                                  </padding>
                                  <children>
-                                    <ImageView fitHeight="65.0" fitWidth="65.0" pickOnBounds="true" preserveRatio="true">
-                                       <image>
-                                          <Image url="" />
-                                       </image>
-                                    </ImageView>
+
                                  </children>
                               </GridPane>
                               <ImageView fitHeight="505.0" fitWidth="452.0" pickOnBounds="true" preserveRatio="true">
@@ -120,17 +116,17 @@
                      <children>
                         <ImageView fx:id="personalGoalCardImage" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
                            <image>
-                              <Image url="" />
+                              <Image url="/images/placeholders/placeholder200x150.png" />
                            </image>
                         </ImageView>
                         <ImageView fx:id="commonGoalCardImage1" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
                            <image>
-                              <Image url="" />
+                              <Image url="/images/placeholders/placeholder200x150.png" />
                            </image>
                         </ImageView>
                         <ImageView fx:id="commonGoalCardImage2" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
                            <image>
-                              <Image url="" />
+                              <Image url="/images/placeholders/placeholder200x150.png" />
                            </image>
                         </ImageView>
                      </children></VBox>
@@ -147,12 +143,12 @@
                      <children>
                         <ImageView fitHeight="100.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true">
                            <image>
-                              <Image url="" />
+                              <Image url="/images/placeholders/placeholder100x100.png" />
                            </image>
                         </ImageView>
                         <ImageView fitHeight="100.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true">
                            <image>
-                              <Image url="" />
+                              <Image url="/images/placeholders/placeholder100x100.png" />
                            </image>
                         </ImageView>
                      </children>
