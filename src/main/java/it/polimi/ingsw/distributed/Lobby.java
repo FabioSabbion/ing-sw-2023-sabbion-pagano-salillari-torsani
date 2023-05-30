@@ -22,7 +22,7 @@ public class Lobby {
     Map<String, Client> waitingPlayers;
     final BiMap<Client, String> clientNickname;
     final Map<String, GameController> nicknameController;
-    Map<String, Thread> lastSurvivingWinner;
+    final Map<String, Thread> lastSurvivingWinner;
     GamePersistence persistence = new GamePersistence();
     enum State {
         WAITING_FOR_GAME,
@@ -81,21 +81,42 @@ public class Lobby {
                 this.state = State.WAITING_FOR_GAME;
             }
         } else {
-            List<String> remainedClients = Arrays.stream(nicknameController.get(disconnected).game.getPlayers())
-                    .map(Player::getNickname)
+            var clientWithTheSameController = Arrays.stream(nicknameController.get(disconnected).game.getPlayers())
+                    .map(Player::getNickname).toList();
+
+            List<String> remainedClients = clientWithTheSameController
+                    .stream()
                     .filter(clientNickname::containsValue)
                     .toList();
 
-            if (remainedClients.size() == 0) {
-                nicknameController.get(disconnected).game.emitGameState(true);
-            } else if (remainedClients.size() == 1) {
-                this.setLastSurvivingWinner(remainedClients.get(0));
-            } else {
-                remainedClients.forEach(connectedClient -> {
-                    if (lastSurvivingWinner.containsKey(connectedClient))
-                        lastSurvivingWinner.get(connectedClient).interrupt();
-                });
+            switch (remainedClients.size()) {
+                case 0 -> {
+                    nicknameController.get(disconnected).game.emitGameState(true);
+                }
+                case 1 -> {
+                    this.setLastSurvivingWinner(remainedClients.get(0));
+                }
+                default -> {
+                    remainedClients.forEach(connectedClient -> {
+                        synchronized (lastSurvivingWinner) {
+                            if (lastSurvivingWinner.containsKey(connectedClient))
+                                lastSurvivingWinner.get(connectedClient).interrupt();
+                        }
+                    });
+                }
             }
+
+//            Skip current client if he disconnected with no reason
+            if (remainedClients.size() > 0 && nicknameController.get(disconnected).game.getCurrentPlayer().getNickname().equals(disconnected)) {
+                List<String> offlineClients = clientWithTheSameController
+                        .stream()
+                        .filter(player -> !clientNickname.containsValue(player))
+                        .toList();
+
+                nicknameController.get(disconnected).game.nextPlayer(offlineClients);
+            }
+
+
 
             remainedClients.stream().map(player -> clientNickname.inverse().get(player)).forEach(client1 -> {
                 try {
@@ -109,7 +130,7 @@ public class Lobby {
 
 
     public void setLastSurvivingWinner(String lastClient) {
-        Objects.requireNonNull(lastSurvivingWinner.put(lastClient, new Thread(() -> {
+        var threadForTimer = new Thread(() -> {
             try {
                 Thread.sleep(seconds * 1000);
 
@@ -137,7 +158,14 @@ public class Lobby {
                     playerGame.emitGameState(true);
                 }
             } catch (InterruptedException ignored) { }
-        }))).start();
+        });
+
+
+        synchronized (lastSurvivingWinner) {
+            lastSurvivingWinner.put(lastClient, threadForTimer);
+        }
+
+        threadForTimer.start();
     }
 
     public synchronized void setNickname(String nickname, Client client) throws LobbyException {
@@ -277,8 +305,10 @@ public class Lobby {
 
         if (gameData.getRight().game.getPlayers().length - offlinePlayers.size() == 1) {
 //            we will assume that the last remaining player is this player, if something weird has happened we have to fix it
-            if(!this.lastSurvivingWinner.containsKey(this.clientNickname.get(client))) {
-                this.setLastSurvivingWinner(this.clientNickname.get(client));
+            synchronized (this.lastSurvivingWinner) {
+                if(!this.lastSurvivingWinner.containsKey(this.clientNickname.get(client))) {
+                    this.setLastSurvivingWinner(this.clientNickname.get(client));
+                }
             }
         }
 
