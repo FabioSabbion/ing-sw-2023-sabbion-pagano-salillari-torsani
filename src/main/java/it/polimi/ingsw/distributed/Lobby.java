@@ -132,10 +132,12 @@ public class Lobby {
     public void setLastSurvivingWinner(String lastClient) {
         var threadForTimer = new Thread(() -> {
             try {
+
                 Thread.sleep(seconds * 1000);
 
                 Game playerGame = null;
                 synchronized (nicknameController) {
+
                     if (!nicknameController.containsKey(lastClient)) {
                         return;
                     }
@@ -149,7 +151,8 @@ public class Lobby {
 
 
 
-                    if(connectedClients.size() >= 1) {
+                    if(connectedClients.size() > 1) {
+                        System.err.println(connectedClients);
                         return;
                     }
                 }
@@ -157,7 +160,8 @@ public class Lobby {
                 if(playerGame != null) {
                     playerGame.emitGameState(true);
                 }
-            } catch (InterruptedException ignored) { }
+            } catch (InterruptedException ignored) {
+            }
         });
 
 
