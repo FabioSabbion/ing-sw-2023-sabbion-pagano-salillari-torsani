@@ -12,6 +12,7 @@ import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
@@ -21,6 +22,7 @@ import javafx.stage.Stage;
 
 import java.awt.print.Book;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -80,10 +82,31 @@ public class GUI extends Application {
         ImageView commonGoalCardImage2 = (ImageView) primaryStage.getScene().lookup("#commonGoalCardImage2");
         ImageView personalGoalCardImage = (ImageView) primaryStage.getScene().lookup("#personalGoalCardImage");
 
-        // TODO: check common goal cards IDs
-        //commonGoalCardImage1.setImage(new Image("/images/common_goal_cards/1.jpg"));
-        //commonGoalCardImage2.setImage(new Image("/images/common_goal_cards/2.jpg"));
-        //personalGoalCardImage.setImage(new Image("/images/personal_goal_cards/"++".jpg"));
+        // TODO: CHECK CORRESPONDENCE OF COMMON GOAL CARDS WITH CLI
+        commonGoalCardImage1.setImage(new Image("/images/common_goal_cards/"+ (cgc1+1) +".jpg"));
+        commonGoalCardImage2.setImage(new Image("/images/common_goal_cards/"+ (cgc2+1) +".jpg"));
+        //personalGoalCardImage.setImage(new Image("/images/personal_goal_cards/"++".jpg"))
+
+        // Update players buttons
+        List<Button> playerButtons = new ArrayList<>();
+        playerButtons.add((Button) primaryStage.getScene().lookup("#player1Button"));
+        playerButtons.add((Button) primaryStage.getScene().lookup("#player2Button"));
+        playerButtons.add((Button) primaryStage.getScene().lookup("#player3Button"));
+        List<PlayerUpdate> playerUpdates = new ArrayList<>(gameUpdate.players());
+        playerUpdates.removeIf(p -> p.nickname().equals(guiController.getMyNickname()));
+        int c;
+        for (c = 0; c < playerUpdates.size(); c++) {
+            int finalC = c;
+            Platform.runLater(() -> {
+                playerButtons.get(finalC).setText(playerUpdates.get(finalC).nickname());
+            });
+        }
+        for (int j = c; j < 3; j++) {
+            int finalJ = j;
+            Platform.runLater(() -> {
+                playerButtons.get(finalJ).setVisible(false);
+            });
+        }
 
         // Update Living Room
         GridPane livingRoomGrid = (GridPane) primaryStage.getScene().lookup("#livingRoomGrid");
@@ -162,8 +185,13 @@ public class GUI extends Application {
         Scene scene = new Scene(root);
 
         primaryStage.setTitle("MyShelfie");
+        primaryStage.getIcons().add(new Image("/images/publisher/Icon 50x50px.png"));
         primaryStage.setScene(scene);
         primaryStage.show();
+
+        primaryStage.setOnCloseRequest(event -> {
+            System.exit(0);
+        });
     }
 
     @Override
