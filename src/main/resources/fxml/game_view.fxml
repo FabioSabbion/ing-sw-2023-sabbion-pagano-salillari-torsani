@@ -24,6 +24,11 @@
                <children>
                   <StackPane prefHeight="150.0" prefWidth="200.0">
                      <children>
+                         <ImageView fitHeight="573.0" fitWidth="637.0" pickOnBounds="true" preserveRatio="true">
+                             <image>
+                                 <Image url="/images/boards/livingroom.png" />
+                             </image>
+                         </ImageView>
                         <GridPane fx:id="livingRoomGrid" alignment="CENTER">
                           <columnConstraints>
                               <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -51,11 +56,7 @@
                               <Insets bottom="25.0" left="25.0" right="30.0" top="25.0" />
                            </padding>
                         </GridPane>
-                        <ImageView fitHeight="573.0" fitWidth="637.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="/images/boards/livingroom.png" />
-                           </image>
-                        </ImageView>
+
                      </children>
                   </StackPane>
                   <VBox prefHeight="200.0" prefWidth="100.0">
@@ -106,9 +107,9 @@
                         </StackPane>
                         <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="40.0">
                            <children>
-                              <Button fx:id="player1Button" mnemonicParsing="false" prefHeight="50.0" prefWidth="100.0" text="Player 1" />
-                              <Button fx:id="player2Button" mnemonicParsing="false" prefHeight="50.0" prefWidth="100.0" text="Player 2" />
-                              <Button fx:id="player3Button" mnemonicParsing="false" prefHeight="50.0" prefWidth="100.0" text="Player 3" />
+                              <Button fx:id="player1Button" mnemonicParsing="false" prefHeight="50.0" prefWidth="100.0" text="Player 1" onAction="#onPlayer1BtnPressed" />
+                              <Button fx:id="player2Button" mnemonicParsing="false" prefHeight="50.0" prefWidth="100.0" text="Player 2" onAction="#onPlayer2BtnPressed" />
+                              <Button fx:id="player3Button" mnemonicParsing="false" prefHeight="50.0" prefWidth="100.0" text="Player 3" onAction="#onPlayer3BtnPressed" />
                            </children></HBox>
                      </children>
                   </VBox>
@@ -141,16 +142,7 @@
                   </ImageView>
                   <HBox fx:id="tokenRow" alignment="CENTER" prefHeight="150.0" prefWidth="1300.0" spacing="60.0">
                      <children>
-                        <ImageView fitHeight="100.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="/images/placeholders/placeholder100x100.png" />
-                           </image>
-                        </ImageView>
-                        <ImageView fitHeight="100.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="/images/placeholders/placeholder100x100.png" />
-                           </image>
-                        </ImageView>
+
                      </children>
                   </HBox>
                </children>

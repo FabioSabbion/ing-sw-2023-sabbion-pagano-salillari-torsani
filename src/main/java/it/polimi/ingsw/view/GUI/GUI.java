@@ -2,15 +2,27 @@ package it.polimi.ingsw.view.GUI;
 
 import it.polimi.ingsw.AppClientRMI;
 import it.polimi.ingsw.AppClientSocket;
+import it.polimi.ingsw.distributed.GameUpdate;
+import it.polimi.ingsw.distributed.PersonalGoalCardUpdate;
+import it.polimi.ingsw.distributed.PlayerUpdate;
+import it.polimi.ingsw.models.Bookshelf;
+import it.polimi.ingsw.models.Tile;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
+import java.awt.print.Book;
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 public class GUI extends Application {
     static private GUIController guiController;
@@ -50,8 +62,85 @@ public class GUI extends Application {
     static public void showGameView() {
         try {
             primaryStage.getScene().setRoot(FXMLLoader.load(GUI.class.getResource("/fxml/game_view.fxml")));
+            primaryStage.setWidth(1400.0);
+            primaryStage.setHeight(800.0);
+            primaryStage.setX(0);
+            primaryStage.setY(0);
         } catch (IOException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    static public void updateGameView(GameUpdate gameUpdate) {
+        int cgc1 = gameUpdate.commonGoalCards().get(0).commonGoalCardID();
+        int cgc2 = gameUpdate.commonGoalCards().get(1).commonGoalCardID();
+        PersonalGoalCardUpdate personalGoalCardUpdate = gameUpdate.players().stream().filter(playerUpdate -> playerUpdate.nickname().equals(guiController.getMyNickname())).toList().get(0).personalGoalCard();
+
+        ImageView commonGoalCardImage1 = (ImageView) primaryStage.getScene().lookup("#commonGoalCardImage1");
+        ImageView commonGoalCardImage2 = (ImageView) primaryStage.getScene().lookup("#commonGoalCardImage2");
+        ImageView personalGoalCardImage = (ImageView) primaryStage.getScene().lookup("#personalGoalCardImage");
+
+        // TODO: check common goal cards IDs
+        //commonGoalCardImage1.setImage(new Image("/images/common_goal_cards/1.jpg"));
+        //commonGoalCardImage2.setImage(new Image("/images/common_goal_cards/2.jpg"));
+        //personalGoalCardImage.setImage(new Image("/images/personal_goal_cards/"++".jpg"));
+
+        // Update Living Room
+        GridPane livingRoomGrid = (GridPane) primaryStage.getScene().lookup("#livingRoomGrid");
+        for (int i = 0; i < 9; i++) {
+            for (int j = 0; j < 9; j++) {
+                Tile t = gameUpdate.livingRoom().getBoard()[j][i];
+                if (t == null) continue;
+                ImageView imageView = new ImageView();
+                imageView.setImage(new Image("/images/item_tiles/" + t.category().toString() + "_" + t.icon().toString() + ".png"));
+                imageView.setFitWidth(55);
+                imageView.setFitHeight(55);
+                int finalI = i;
+                int finalJ = j;
+                imageView.setOnMouseClicked(value -> {
+                    System.out.println("Clicked on tile " + finalJ + "," + finalI);
+                });
+                Platform.runLater(() -> {
+                    livingRoomGrid.add(imageView, finalI, finalJ);
+                });
+            }
+        }
+
+        // Update Bookshelf
+        GridPane bookshelfGrid = (GridPane) primaryStage.getScene().lookup("#bookshelfGrid");
+        Bookshelf myBookshelf = gameUpdate.players().stream()
+                .filter(player -> player.nickname().equals(guiController.getMyNickname()))
+                .findFirst().orElseThrow().bookshelf();
+        updateBookshelf(myBookshelf, bookshelfGrid);
+
+        // Update tokens
+        HBox tokenRow = (HBox) primaryStage.getScene().lookup("#tokenRow");
+        if (gameUpdate.players().get(0).nickname().equals(guiController.getMyNickname())) {
+            ImageView imageView = new ImageView();
+            imageView.setImage(new Image("/images/misc/firstplayertoken.png"));
+            imageView.setFitWidth(100);
+            imageView.setFitHeight(100);
+            tokenRow.getChildren().add(imageView);
+        }
+
+
+    }
+
+    static private void updateBookshelf(Bookshelf bookshelf, GridPane gridPane) {
+        for (int i = 0; i < Bookshelf.ROWS; i++) {
+            for (int j = 0; j < Bookshelf.COLUMNS; j++) {
+                Tile t = bookshelf.getBookshelf()[i][j];
+                if (t == null) continue;
+                ImageView imageView = new ImageView();
+                imageView.setImage(new Image("/images/item_tiles/" + t.category().toString() + "_" + t.icon().toString() + ".png"));
+                imageView.setFitWidth(65);
+                imageView.setFitHeight(65);
+                int finalI = i;
+                int finalJ = j;
+                Platform.runLater(() -> {
+                    gridPane.add(imageView, finalI, finalJ);
+                });
+            }
         }
     }
 

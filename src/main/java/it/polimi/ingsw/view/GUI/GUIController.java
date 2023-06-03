@@ -15,6 +15,7 @@ public class GUIController implements ViewController {
     private ClientImpl client;
     private String myNickname;
     private State currentState;
+    private GameUpdate gameUpdate;
 
     @Override
     public void updatedPlayerList(List<String> players) {
@@ -28,10 +29,14 @@ public class GUIController implements ViewController {
 
     @Override
     public void updateGame(GameUpdate update) {
+        // TODO: update gameUpdate with changes
         if (currentState != State.GAME) {
+            gameUpdate = update;
             GUI.showGameView();
             currentState = State.GAME;
         }
+
+        GUI.updateGameView(gameUpdate);
     }
 
     @Override
