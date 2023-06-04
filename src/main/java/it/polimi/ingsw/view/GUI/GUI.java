@@ -134,7 +134,7 @@ public class GUI extends Application {
         Bookshelf myBookshelf = gameUpdate.players().stream()
                 .filter(player -> player.nickname().equals(guiController.getMyNickname()))
                 .findFirst().orElseThrow().bookshelf();
-        updateBookshelf(myBookshelf, bookshelfGrid);
+        updateBookshelf(myBookshelf, bookshelfGrid, 65);
 
         // Update tokens
         HBox tokenRow = (HBox) primaryStage.getScene().lookup("#tokenRow");
@@ -149,19 +149,19 @@ public class GUI extends Application {
 
     }
 
-    static private void updateBookshelf(Bookshelf bookshelf, GridPane gridPane) {
+    static private void updateBookshelf(Bookshelf bookshelf, GridPane gridPane, int size) {
         for (int i = 0; i < Bookshelf.ROWS; i++) {
             for (int j = 0; j < Bookshelf.COLUMNS; j++) {
                 Tile t = bookshelf.getBookshelf()[i][j];
                 if (t == null) continue;
                 ImageView imageView = new ImageView();
                 imageView.setImage(new Image("/images/item_tiles/" + t.category().toString() + "_" + t.icon().toString() + ".png"));
-                imageView.setFitWidth(65);
-                imageView.setFitHeight(65);
+                imageView.setFitWidth(size);
+                imageView.setFitHeight(size);
                 int finalI = i;
                 int finalJ = j;
                 Platform.runLater(() -> {
-                    gridPane.add(imageView, finalI, finalJ);
+                    gridPane.add(imageView, finalJ, Bookshelf.ROWS - finalI);
                 });
             }
         }
@@ -174,6 +174,34 @@ public class GUI extends Application {
 
     static public void showToast(String message) {
         Toast.makeText(primaryStage, message, 4000, 200, 200);
+    }
+
+    static public void openPlayerWindow(String nickname) {
+        PlayerUpdate playerUpdate = guiController.getGameUpdate().players().stream().filter(p -> nickname.equals(p.nickname())).findFirst().orElseThrow();
+
+        Stage newStage = new Stage();
+        newStage.setTitle(nickname + "'s bookshelf");
+        try {
+            Parent root = FXMLLoader.load(GUI.class.getResource("/fxml/player_view.fxml"));
+            Scene scene = new Scene(root);
+            newStage.setScene(scene);
+            newStage.show();
+            GridPane bookshelfGrid = (GridPane) newStage.getScene().lookup("#bookshelfGrid");
+            updateBookshelf(playerUpdate.bookshelf(), bookshelfGrid, 50);
+            HBox tokenRow = (HBox) newStage.getScene().lookup("#tokenRow");
+            if (guiController.getGameUpdate().players().get(0).nickname().equals(playerUpdate.nickname())) {
+                ImageView imageView = new ImageView();
+                imageView.setImage(new Image("/images/misc/firstplayertoken.png"));
+                imageView.setFitWidth(100);
+                imageView.setFitHeight(100);
+                tokenRow.getChildren().add(imageView);
+            }
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+
     }
 
     @Override

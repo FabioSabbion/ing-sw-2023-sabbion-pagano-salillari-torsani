@@ -14,18 +14,22 @@ public class GameViewController {
     GridPane bookshelfGrid;
     @FXML
     Button player1Button;
+    @FXML
+    Button player2Button;
+    @FXML
+    Button player3Button;
 
     @FXML
     protected void onPlayer1BtnPressed(ActionEvent event) {
-
+        GUI.openPlayerWindow(player1Button.getText());
     }
     @FXML
     protected void onPlayer2BtnPressed(ActionEvent event) {
-
+        GUI.openPlayerWindow(player2Button.getText());
     }
     @FXML
     protected void onPlayer3BtnPressed(ActionEvent event) {
-
+        GUI.openPlayerWindow(player3Button.getText());
     }
 
 }

@@ -101,4 +101,8 @@ public class GUIController implements ViewController {
     public State getCurrentState() {
         return currentState;
     }
+
+    public GameUpdate getGameUpdate() {
+        return gameUpdate;
+    }
 }

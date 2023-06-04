@@ -41,26 +41,12 @@
                         <Insets bottom="50.0" left="40.0" right="40.0" top="20.0" />
                      </padding>
                      <children>
-                        <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true" GridPane.rowIndex="5">
-                           <image>
-                              <Image url="" />
-                           </image>
-                        </ImageView>
-                        <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1" GridPane.rowIndex="5">
-                           <image>
-                              <Image url="" />
-                           </image>
-                        </ImageView>
-                        <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true" GridPane.rowIndex="4">
-                           <image>
-                              <Image url="" />
-                           </image>
-                        </ImageView>
+
                      </children>
                   </GridPane>
                   <ImageView fitWidth="360.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="" />
+                        <Image url="/images/boards/bookshelf.png" />
                      </image>
                   </ImageView>
                </children>
@@ -72,26 +58,12 @@
                <children>
                   <ImageView fitHeight="120.0" pickOnBounds="true">
                      <image>
-                        <Image url="" />
+                        <Image url="/images/misc/base_pagina2.jpg" />
                      </image>
                   </ImageView>
                   <HBox fx:id="tokenRow" alignment="CENTER" maxWidth="-Infinity" prefWidth="400.0" spacing="20.0" StackPane.alignment="CENTER">
                      <children>
-                        <ImageView fitHeight="70.0" fitWidth="70.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="" />
-                           </image>
-                        </ImageView>
-                        <ImageView fitHeight="70.0" fitWidth="70.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="" />
-                           </image>
-                        </ImageView>
-                        <ImageView fitHeight="70.0" fitWidth="70.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="" />
-                           </image>
-                        </ImageView>
+
                      </children>
                   </HBox>
                </children>
