@@ -28,10 +28,7 @@ import javafx.stage.Stage;
 
 import java.awt.print.Book;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 public class GUI extends Application {
     static private GUIController guiController;
@@ -87,7 +84,7 @@ public class GUI extends Application {
 
             Text endingText = (Text) primaryStage.getScene().lookup("#endingText");
             StringBuilder stringBuilder = new StringBuilder();
-            for (var entry : playerPoints.entrySet()) {
+            for (var entry : playerPoints.entrySet().stream().sorted(Comparator.comparingInt(Map.Entry::getValue)).toList()) {
                 stringBuilder.append(entry.getKey());
                 stringBuilder.append("\t\t");
                 stringBuilder.append(entry.getValue());
