@@ -270,7 +270,7 @@ public class GUI extends Application {
 
     static public void showToast(String message) {
         Platform.runLater(() -> {
-            Toast.makeText(primaryStage, message, 4000, 200, 200);
+            Toast.makeText(primaryStage, message, 3000, 200, 200);
         });
     }
 

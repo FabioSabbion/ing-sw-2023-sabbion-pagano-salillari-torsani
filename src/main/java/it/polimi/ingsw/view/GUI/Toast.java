@@ -22,11 +22,11 @@ public final class Toast
         toastStage.initStyle(StageStyle.TRANSPARENT);
 
         Text text = new Text(toastMsg);
-        text.setFont(Font.font("Verdana", 40));
-        text.setFill(Color.RED);
+        text.setFont(Font.font("Verdana", 24));
+        text.setFill(Color.WHITE);
 
         StackPane root = new StackPane(text);
-        root.setStyle("-fx-background-radius: 20; -fx-background-color: rgba(0, 0, 0, 0.2); -fx-padding: 50px;");
+        root.setStyle("-fx-background-radius: 20; -fx-background-color: rgba(0, 0, 0, 0.7); -fx-padding: 30px;");
         root.setOpacity(0);
 
         Scene scene = new Scene(root);
