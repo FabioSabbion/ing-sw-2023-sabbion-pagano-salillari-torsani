@@ -1,15 +1,20 @@
 package it.polimi.ingsw.view.GUI;
 
+import it.polimi.ingsw.distributed.CommonGoalCardUpdate;
 import it.polimi.ingsw.distributed.GameUpdate;
+import it.polimi.ingsw.distributed.PlayerUpdate;
 import it.polimi.ingsw.distributed.networking.ClientImpl;
 import it.polimi.ingsw.distributed.networking.Server;
+import it.polimi.ingsw.models.CommonGoalCard;
 import it.polimi.ingsw.models.Coordinates;
 import it.polimi.ingsw.models.LivingRoom;
 import it.polimi.ingsw.view.ViewController;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static java.lang.Integer.parseInt;
 
@@ -138,7 +143,41 @@ public class GUIController implements ViewController {
 
     @Override
     public void showEndingScreen() {
+        Map<String, Integer> playerPoints = new HashMap<>();
 
+        for (String player: this.gameUpdate.players().stream().map(PlayerUpdate::nickname).toList()) {
+            playerPoints.put(player, calculatePersonalGoalCardPoints(player));
+        }
+
+        for (CommonGoalCardUpdate card : this.gameUpdate.commonGoalCards()) {
+            var cardPoints = calculateCommonGoalCardPoints(card.commonGoalCardID());
+
+            for (String player : new ArrayList<>(playerPoints.keySet())) {
+                playerPoints.put(player, playerPoints.get(player) + cardPoints.get(player));
+            }
+        }
+        GUI.showScoreboardView(playerPoints);
+    }
+
+    public Map<String, Integer> calculateCommonGoalCardPoints(int cardID) {
+        Map<String, Integer> playerPoints = new HashMap<>();
+
+        CommonGoalCardUpdate commonGoalCard = this.gameUpdate.commonGoalCards().stream().filter(card -> card.commonGoalCardID() == cardID).findFirst().orElseThrow();
+
+        for (PlayerUpdate player : this.gameUpdate.players()) {
+            if (commonGoalCard.playerUpdateList().contains(player.nickname())){
+                playerPoints.put(player.nickname(), CommonGoalCard.points[this.gameUpdate.players().size()][commonGoalCard.playerUpdateList().indexOf(player.nickname())]);
+            }
+            else {
+                playerPoints.put(player.nickname(), 0);
+            }
+        }
+
+        return playerPoints;
+    }
+
+    public int calculatePersonalGoalCardPoints(String playerNickname) {
+        return this.gameUpdate.players().stream().filter(p -> p.nickname().equals(playerNickname)).findFirst().orElseThrow().personalGoalCard().point();
     }
 
     public boolean isMyTurn() {

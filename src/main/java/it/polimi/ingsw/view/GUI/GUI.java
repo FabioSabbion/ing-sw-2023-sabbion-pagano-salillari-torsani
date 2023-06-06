@@ -30,12 +30,13 @@ import java.awt.print.Book;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public class GUI extends Application {
     static private GUIController guiController;
     static private Stage primaryStage;
-    static private boolean checkFirstPlayer = false;
+    static private boolean checkGoalCards = false;
 
 
     static public void setNickname(String nickname) {
@@ -80,19 +81,43 @@ public class GUI extends Application {
         }
     }
 
+    static public void showScoreboardView(Map<String, Integer> playerPoints) {
+        try {
+            primaryStage.getScene().setRoot(FXMLLoader.load(GUI.class.getResource("/fxml/end_view.fxml")));
+
+            Text endingText = (Text) primaryStage.getScene().lookup("#endingText");
+            StringBuilder stringBuilder = new StringBuilder();
+            for (var entry : playerPoints.entrySet()) {
+                stringBuilder.append(entry.getKey());
+                stringBuilder.append("\t\t");
+                stringBuilder.append(entry.getValue());
+                stringBuilder.append("\n");
+            }
+            endingText.setText(stringBuilder.toString());
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     static public void updateGameView(GameUpdate gameUpdate) {
         System.out.println("UPDATE GUI");
-        int cgc1 = gameUpdate.commonGoalCards().get(0).commonGoalCardID();
-        int cgc2 = gameUpdate.commonGoalCards().get(1).commonGoalCardID();
-        PersonalGoalCardUpdate personalGoalCardUpdate = gameUpdate.players().stream().filter(playerUpdate -> playerUpdate.nickname().equals(guiController.getMyNickname())).toList().get(0).personalGoalCard();
 
-        ImageView commonGoalCardImage1 = (ImageView) primaryStage.getScene().lookup("#commonGoalCardImage1");
-        ImageView commonGoalCardImage2 = (ImageView) primaryStage.getScene().lookup("#commonGoalCardImage2");
-        ImageView personalGoalCardImage = (ImageView) primaryStage.getScene().lookup("#personalGoalCardImage");
+        if (!checkGoalCards) {
+            int cgc1 = gameUpdate.commonGoalCards().get(0).commonGoalCardID();
+            int cgc2 = gameUpdate.commonGoalCards().get(1).commonGoalCardID();
+            String pgc = gameUpdate.players().stream().filter(p -> p.nickname().equals(guiController.getMyNickname())).findFirst().orElseThrow().personalGoalCard().ID();
 
-        commonGoalCardImage1.setImage(new Image("/images/common_goal_cards/"+ (cgc1+1) +".jpg"));
-        commonGoalCardImage2.setImage(new Image("/images/common_goal_cards/"+ (cgc2+1) +".jpg"));
-        //personalGoalCardImage.setImage(new Image("/images/personal_goal_cards/"++".jpg"))
+            ImageView commonGoalCardImage1 = (ImageView) primaryStage.getScene().lookup("#commonGoalCardImage1");
+            ImageView commonGoalCardImage2 = (ImageView) primaryStage.getScene().lookup("#commonGoalCardImage2");
+            ImageView personalGoalCardImage = (ImageView) primaryStage.getScene().lookup("#personalGoalCardImage");
+
+            commonGoalCardImage1.setImage(new Image("/images/common_goal_cards/"+ (cgc1+1) +".jpg"));
+            commonGoalCardImage2.setImage(new Image("/images/common_goal_cards/"+ (cgc2+1) +".jpg"));
+            personalGoalCardImage.setImage(new Image("/images/personal_goal_cards/Personal_Goals"+pgc.charAt(3)+".png"));
+
+            checkGoalCards = true;
+        }
 
         // Update players buttons
         List<Button> playerButtons = new ArrayList<>();
