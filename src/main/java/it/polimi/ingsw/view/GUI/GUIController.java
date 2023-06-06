@@ -50,12 +50,8 @@ public class GUIController implements ViewController {
                     update.gameEnder(),
                     update.currentPlayer()
             );
-            if (countUpdate < 2){
-                countUpdate ++;
-            }else{
-                GUI.updateGameView(gameUpdate);
-                countUpdate = 0;
-            }
+
+            GUI.updateGameView(gameUpdate);
 
         }
 

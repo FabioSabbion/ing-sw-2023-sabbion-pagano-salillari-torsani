@@ -2,10 +2,12 @@ package it.polimi.ingsw.view.GUI;
 
 import it.polimi.ingsw.AppClientRMI;
 import it.polimi.ingsw.AppClientSocket;
+import it.polimi.ingsw.distributed.CommonGoalCardUpdate;
 import it.polimi.ingsw.distributed.GameUpdate;
 import it.polimi.ingsw.distributed.PersonalGoalCardUpdate;
 import it.polimi.ingsw.distributed.PlayerUpdate;
 import it.polimi.ingsw.models.Bookshelf;
+import it.polimi.ingsw.models.CommonGoalCard;
 import it.polimi.ingsw.models.Tile;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -79,6 +81,7 @@ public class GUI extends Application {
     }
 
     static public void updateGameView(GameUpdate gameUpdate) {
+        System.out.println("UPDATE GUI");
         int cgc1 = gameUpdate.commonGoalCards().get(0).commonGoalCardID();
         int cgc2 = gameUpdate.commonGoalCards().get(1).commonGoalCardID();
         PersonalGoalCardUpdate personalGoalCardUpdate = gameUpdate.players().stream().filter(playerUpdate -> playerUpdate.nickname().equals(guiController.getMyNickname())).toList().get(0).personalGoalCard();
@@ -87,7 +90,6 @@ public class GUI extends Application {
         ImageView commonGoalCardImage2 = (ImageView) primaryStage.getScene().lookup("#commonGoalCardImage2");
         ImageView personalGoalCardImage = (ImageView) primaryStage.getScene().lookup("#personalGoalCardImage");
 
-        // TODO: CHECK CORRESPONDENCE OF COMMON GOAL CARDS WITH CLI
         commonGoalCardImage1.setImage(new Image("/images/common_goal_cards/"+ (cgc1+1) +".jpg"));
         commonGoalCardImage2.setImage(new Image("/images/common_goal_cards/"+ (cgc2+1) +".jpg"));
         //personalGoalCardImage.setImage(new Image("/images/personal_goal_cards/"++".jpg"))
@@ -171,11 +173,30 @@ public class GUI extends Application {
 
         // Update tokens
         HBox tokenRow = (HBox) primaryStage.getScene().lookup("#tokenRow");
-        if (!checkFirstPlayer) {
-            checkFirstPlayer = true;
-            if (gameUpdate.players().get(0).nickname().equals(guiController.getMyNickname())) {
+        updateTokens(tokenRow, guiController.getMyNickname());
+
+    }
+
+    static private void updateTokens(HBox tokenRow, String nickname) {
+        Platform.runLater(() -> tokenRow.getChildren().clear());
+
+        // End game token
+        if (guiController.getGameUpdate().gameEnder() != null && guiController.getGameUpdate().gameEnder().nickname().equals(nickname)) {
+            ImageView imageView = new ImageView();
+            imageView.setImage(new Image("/images/tokens/end game.jpg"));
+            imageView.setFitWidth(100);
+            imageView.setFitHeight(100);
+            Platform.runLater(() -> {
+                tokenRow.getChildren().add(imageView);
+            });
+        }
+        // Scoring tokens
+        for (CommonGoalCardUpdate cgcu : guiController.getGameUpdate().commonGoalCards()) {
+            int index = cgcu.playerUpdateList().indexOf(nickname);
+            if (index != -1) {
+                int p = CommonGoalCard.points[guiController.getGameUpdate().players().size()][index];
                 ImageView imageView = new ImageView();
-                imageView.setImage(new Image("/images/misc/firstplayertoken.png"));
+                imageView.setImage(new Image("/images/tokens/scoring_" + p + ".jpg"));
                 imageView.setFitWidth(100);
                 imageView.setFitHeight(100);
                 Platform.runLater(() -> {
@@ -183,9 +204,16 @@ public class GUI extends Application {
                 });
             }
         }
-
-
-
+        // First player chair
+        if (guiController.getGameUpdate().players().get(0).nickname().equals(nickname)) {
+            ImageView imageView = new ImageView();
+            imageView.setImage(new Image("/images/misc/firstplayertoken.png"));
+            imageView.setFitWidth(100);
+            imageView.setFitHeight(100);
+            Platform.runLater(() -> {
+                tokenRow.getChildren().add(imageView);
+            });
+        }
     }
 
     static private void updateBookshelf(Bookshelf bookshelf, GridPane gridPane, int size) {
@@ -233,14 +261,9 @@ public class GUI extends Application {
             newStage.show();
             GridPane bookshelfGrid = (GridPane) newStage.getScene().lookup("#bookshelfGrid");
             updateBookshelf(playerUpdate.bookshelf(), bookshelfGrid, 50);
+
             HBox tokenRow = (HBox) newStage.getScene().lookup("#tokenRow");
-            if (guiController.getGameUpdate().players().get(0).nickname().equals(playerUpdate.nickname())) {
-                ImageView imageView = new ImageView();
-                imageView.setImage(new Image("/images/misc/firstplayertoken.png"));
-                imageView.setFitWidth(100);
-                imageView.setFitHeight(100);
-                tokenRow.getChildren().add(imageView);
-            }
+            updateTokens(tokenRow, nickname);
 
         } catch (IOException e) {
             throw new RuntimeException(e);

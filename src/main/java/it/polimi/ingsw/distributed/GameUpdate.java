@@ -43,11 +43,23 @@ public record GameUpdate(LivingRoom livingRoom, List<PlayerUpdate> players, List
             }
 
         }
+        List<CommonGoalCardUpdate> newCommonGoalCards = new ArrayList<>();
+
+        if (commonGoalCards != null) {
+            for (CommonGoalCardUpdate commonGoalCard : this.commonGoalCards) {
+                Optional<CommonGoalCardUpdate> match = commonGoalCards.stream().filter(c -> c.commonGoalCardID() == commonGoalCard.commonGoalCardID()).findFirst();
+                if (match.isPresent()) {
+                    newCommonGoalCards.add(match.get());
+                } else {
+                    newCommonGoalCards.add(commonGoalCard);
+                }
+            }
+        }
 
         return new GameUpdate(
             livingRoom != null ? livingRoom : this.livingRoom,
             newPlayerList,
-            commonGoalCards != null ? commonGoalCards : this.commonGoalCards,
+            newCommonGoalCards.isEmpty() ? this.commonGoalCards : newCommonGoalCards,
             gameEnder != null ? gameEnder : this.gameEnder,
             currentPlayer != null ? currentPlayer : this.currentPlayer
         );
