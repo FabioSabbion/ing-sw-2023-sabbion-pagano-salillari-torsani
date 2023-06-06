@@ -1,10 +1,13 @@
 package it.polimi.ingsw.distributed;
 
+import it.polimi.ingsw.models.Bookshelf;
 import it.polimi.ingsw.models.LivingRoom;
+import it.polimi.ingsw.view.GUI.GuiParts;
 
 import javax.annotation.Nullable;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,14 +30,18 @@ public record GameUpdate(LivingRoom livingRoom, List<PlayerUpdate> players, List
         this(livingRoom, players, commonGoalCards, gameEnder, currentPlayer, id++);
     }
 
-    public GameUpdate copyWith(LivingRoom livingRoom, List<PlayerUpdate> players, List<CommonGoalCardUpdate> commonGoalCards, PlayerUpdate gameEnder, PlayerUpdate currentPlayer) {
+    public GameUpdate copyWith(String myNickname, List<GuiParts> toRefresh, LivingRoom livingRoom, List<PlayerUpdate> players, List<CommonGoalCardUpdate> commonGoalCards, PlayerUpdate gameEnder, PlayerUpdate currentPlayer) {
         List<PlayerUpdate> newPlayerList = new ArrayList<>();
         for (int i = 0; i < this.players.size(); i++) {
             int finalI = i;
             if (players != null) {
                 Optional<PlayerUpdate> playerUpdateOptional = players.stream().filter(p -> p.nickname().equals(this.players.get(finalI).nickname())).findFirst();
                 if (playerUpdateOptional.isPresent()) {
-                    newPlayerList.add(playerUpdateOptional.get());
+                    PlayerUpdate playerUpdate = playerUpdateOptional.get();
+                    if (playerUpdate.nickname().equals(myNickname)) {
+                        toRefresh.add(GuiParts.BOOKSHELF);
+                    }
+                    newPlayerList.add(playerUpdate);
                 } else {
                     newPlayerList.add(this.players.get(i));
                 }
@@ -54,6 +61,10 @@ public record GameUpdate(LivingRoom livingRoom, List<PlayerUpdate> players, List
                     newCommonGoalCards.add(commonGoalCard);
                 }
             }
+        }
+
+        if (livingRoom != null) {
+            toRefresh.add(GuiParts.LIVING_ROOM);
         }
 
         return new GameUpdate(

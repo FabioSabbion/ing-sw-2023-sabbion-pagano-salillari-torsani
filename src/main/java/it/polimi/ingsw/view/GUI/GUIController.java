@@ -44,11 +44,14 @@ public class GUIController implements ViewController {
             gameUpdate = update;
             GUI.showGameView();
             currentState = State.GAME;
-            GUI.updateGameView(gameUpdate);
+            GUI.updateGameView(gameUpdate, null);
 
         } else {
             // update [gameUpdate] with changes
+            List<GuiParts> toRefresh = new ArrayList<>();
             this.gameUpdate = gameUpdate.copyWith(
+                    myNickname,
+                    toRefresh,
                     update.livingRoom(),
                     update.players(),
                     update.commonGoalCards(),
@@ -56,7 +59,7 @@ public class GUIController implements ViewController {
                     update.currentPlayer()
             );
 
-            GUI.updateGameView(gameUpdate);
+            GUI.updateGameView(gameUpdate, toRefresh);
 
         }
 
@@ -196,3 +199,4 @@ public class GUIController implements ViewController {
         return gameUpdate;
     }
 }
+

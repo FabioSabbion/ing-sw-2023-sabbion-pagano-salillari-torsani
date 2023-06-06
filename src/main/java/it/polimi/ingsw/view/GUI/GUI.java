@@ -36,7 +36,7 @@ import java.util.Optional;
 public class GUI extends Application {
     static private GUIController guiController;
     static private Stage primaryStage;
-    static private boolean checkGoalCards = false;
+    static private boolean checkFistTime = false;
 
 
     static public void setNickname(String nickname) {
@@ -100,10 +100,8 @@ public class GUI extends Application {
         }
     }
 
-    static public void updateGameView(GameUpdate gameUpdate) {
-        System.out.println("UPDATE GUI");
-
-        if (!checkGoalCards) {
+    static public void updateGameView(GameUpdate gameUpdate, List<GuiParts> toRefresh) {
+        if (!checkFistTime) {
             int cgc1 = gameUpdate.commonGoalCards().get(0).commonGoalCardID();
             int cgc2 = gameUpdate.commonGoalCards().get(1).commonGoalCardID();
             String pgc = gameUpdate.players().stream().filter(p -> p.nickname().equals(guiController.getMyNickname())).findFirst().orElseThrow().personalGoalCard().ID();
@@ -116,85 +114,90 @@ public class GUI extends Application {
             commonGoalCardImage2.setImage(new Image("/images/common_goal_cards/"+ (cgc2+1) +".jpg"));
             personalGoalCardImage.setImage(new Image("/images/personal_goal_cards/Personal_Goals"+pgc.charAt(3)+".png"));
 
-            checkGoalCards = true;
-        }
+            // Update players buttons
+            List<Button> playerButtons = new ArrayList<>();
+            playerButtons.add((Button) primaryStage.getScene().lookup("#player1Button"));
+            playerButtons.add((Button) primaryStage.getScene().lookup("#player2Button"));
+            playerButtons.add((Button) primaryStage.getScene().lookup("#player3Button"));
+            List<PlayerUpdate> playerUpdates = new ArrayList<>(gameUpdate.players());
+            playerUpdates.removeIf(p -> p.nickname().equals(guiController.getMyNickname()));
+            int c;
+            for (c = 0; c < playerUpdates.size(); c++) {
+                int finalC = c;
+                Platform.runLater(() -> {
+                    playerButtons.get(finalC).setText(playerUpdates.get(finalC).nickname());
+                });
+            }
+            for (int j = c; j < 3; j++) {
+                int finalJ = j;
+                Platform.runLater(() -> {
+                    playerButtons.get(finalJ).setVisible(false);
+                });
+            }
 
-        // Update players buttons
-        List<Button> playerButtons = new ArrayList<>();
-        playerButtons.add((Button) primaryStage.getScene().lookup("#player1Button"));
-        playerButtons.add((Button) primaryStage.getScene().lookup("#player2Button"));
-        playerButtons.add((Button) primaryStage.getScene().lookup("#player3Button"));
-        List<PlayerUpdate> playerUpdates = new ArrayList<>(gameUpdate.players());
-        playerUpdates.removeIf(p -> p.nickname().equals(guiController.getMyNickname()));
-        int c;
-        for (c = 0; c < playerUpdates.size(); c++) {
-            int finalC = c;
-            Platform.runLater(() -> {
-                playerButtons.get(finalC).setText(playerUpdates.get(finalC).nickname());
-            });
-        }
-        for (int j = c; j < 3; j++) {
-            int finalJ = j;
-            Platform.runLater(() -> {
-                playerButtons.get(finalJ).setVisible(false);
-            });
+            checkFistTime = true;
         }
 
         // Update Living Room
-        GridPane livingRoomGrid = (GridPane) primaryStage.getScene().lookup("#livingRoomGrid");
+        if (toRefresh == null || toRefresh.contains(GuiParts.LIVING_ROOM)) {
+            GridPane livingRoomGrid = (GridPane) primaryStage.getScene().lookup("#livingRoomGrid");
 
-        Platform.runLater(() -> {
-            livingRoomGrid.getChildren().clear();
-        });
+            Platform.runLater(() -> {
+                livingRoomGrid.getChildren().clear();
+            });
 
-        for (int i = 0; i < 9; i++) {
-            for (int j = 0; j < 9; j++) {
-                int finalI = i;
-                int finalJ = j;
-                Tile t = gameUpdate.livingRoom().getBoard()[j][i];
 
-                ImageView imageView = new ImageView();
-                if (t != null) {
-                    imageView.setImage(new Image("/images/item_tiles/" + t.category().toString() + "_" + t.icon().toString() + ".png"));
-                } else {
-                    imageView.setImage(new Image("/images/item_tiles/empty_tile.png"));
-                }
+            for (int i = 0; i < 9; i++) {
+                for (int j = 0; j < 9; j++) {
+                    int finalI = i;
+                    int finalJ = j;
+                    Tile t = gameUpdate.livingRoom().getBoard()[j][i];
 
-                imageView.setFitWidth(55);
-                imageView.setFitHeight(55);
+                    ImageView imageView = new ImageView();
+                    if (t != null) {
+                        imageView.setImage(new Image("/images/item_tiles/" + t.category().toString() + "_" + t.icon().toString() + ".png"));
+                    } else {
+                        imageView.setImage(new Image("/images/item_tiles/empty_tile.png"));
+                    }
 
-                Rectangle border = new Rectangle(imageView.getFitWidth(), imageView.getFitHeight());
-                border.setFill(Color.TRANSPARENT);
-                border.setStrokeWidth(2.0);
-                // Wrap the ImageView and Rectangle inside a StackPane
-                StackPane stackPane = new StackPane();
-                stackPane.getChildren().addAll(imageView, border);
+                    imageView.setFitWidth(55);
+                    imageView.setFitHeight(55);
 
-                if (t != null) {
-                    stackPane.setOnMouseClicked(value -> {
-                        if (guiController.isMyTurn()) {
-                            if (border.getStroke() == null && guiController.pickTile(finalJ, finalI)) {
-                                border.setStroke(Color.YELLOW);
-                            } else {
-                                guiController.depositTile(finalJ, finalI);
-                                border.setStroke(null);
+                    Rectangle border = new Rectangle(imageView.getFitWidth(), imageView.getFitHeight());
+                    border.setFill(Color.TRANSPARENT);
+                    border.setStrokeWidth(2.0);
+                    // Wrap the ImageView and Rectangle inside a StackPane
+                    StackPane stackPane = new StackPane();
+                    stackPane.getChildren().addAll(imageView, border);
+
+                    if (t != null) {
+                        stackPane.setOnMouseClicked(value -> {
+                            if (guiController.isMyTurn()) {
+                                if (border.getStroke() == null && guiController.pickTile(finalJ, finalI)) {
+                                    border.setStroke(Color.YELLOW);
+                                } else {
+                                    guiController.depositTile(finalJ, finalI);
+                                    border.setStroke(null);
+                                }
                             }
-                        }
+                        });
+                    }
+
+                    Platform.runLater(() -> {
+                        livingRoomGrid.add(stackPane, finalI, finalJ);
                     });
                 }
-
-                Platform.runLater(() -> {
-                    livingRoomGrid.add(stackPane, finalI, finalJ);
-                });
             }
         }
 
-        // Update Bookshelf
-        GridPane bookshelfGrid = (GridPane) primaryStage.getScene().lookup("#bookshelfGrid");
-        Bookshelf myBookshelf = gameUpdate.players().stream()
-                .filter(player -> player.nickname().equals(guiController.getMyNickname()))
-                .findFirst().orElseThrow().bookshelf();
-        updateBookshelf(myBookshelf, bookshelfGrid, 65);
+        if (toRefresh == null || toRefresh.contains(GuiParts.BOOKSHELF)) {
+            // Update Bookshelf
+            GridPane bookshelfGrid = (GridPane) primaryStage.getScene().lookup("#bookshelfGrid");
+            Bookshelf myBookshelf = gameUpdate.players().stream()
+                    .filter(player -> player.nickname().equals(guiController.getMyNickname()))
+                    .findFirst().orElseThrow().bookshelf();
+            updateBookshelf(myBookshelf, bookshelfGrid, 65);
+        }
 
         // Update tokens
         HBox tokenRow = (HBox) primaryStage.getScene().lookup("#tokenRow");
