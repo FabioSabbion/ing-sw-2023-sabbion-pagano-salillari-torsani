@@ -21,6 +21,8 @@ public class GUIController implements ViewController {
     private GameUpdate gameUpdate;
     private List<Coordinates> currentPickedTiles = new ArrayList<>();
 
+    private int countUpdate = 0;
+
     @Override
     public void updatedPlayerList(List<String> players) {
         if (currentState != State.LOBBY) {
@@ -37,6 +39,8 @@ public class GUIController implements ViewController {
             gameUpdate = update;
             GUI.showGameView();
             currentState = State.GAME;
+            GUI.updateGameView(gameUpdate);
+
         } else {
             // update [gameUpdate] with changes
             this.gameUpdate = gameUpdate.copyWith(
@@ -46,13 +50,19 @@ public class GUIController implements ViewController {
                     update.gameEnder(),
                     update.currentPlayer()
             );
+            if (countUpdate < 2){
+                countUpdate ++;
+            }else{
+                GUI.updateGameView(gameUpdate);
+                countUpdate = 0;
+            }
+
         }
 
         if (isMyTurn()) {
             currentPickedTiles = new ArrayList<>();
         }
 
-        GUI.updateGameView(gameUpdate);
 
     }
 
