@@ -31,5 +31,25 @@ public class GameViewController {
     protected void onPlayer3BtnPressed(ActionEvent event) {
         GUI.openPlayerWindow(player3Button.getText());
     }
+    @FXML
+    protected void onC1ButtonPressed(ActionEvent event) {
+        GUI.selectColumn(0);
+    }
+    @FXML
+    protected void onC2ButtonPressed(ActionEvent event) {
+        GUI.selectColumn(1);
+    }
+    @FXML
+    protected void onC3ButtonPressed(ActionEvent event) {
+        GUI.selectColumn(2);
+    }
+    @FXML
+    protected void onC4ButtonPressed(ActionEvent event) {
+        GUI.selectColumn(3);
+    }
+    @FXML
+    protected void onC5ButtonPressed(ActionEvent event) {
+        GUI.selectColumn(4);
+    }
 
 }

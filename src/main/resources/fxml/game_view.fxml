@@ -63,11 +63,11 @@
                      <children>
                         <HBox prefHeight="100.0" prefWidth="200.0" spacing="25.0">
                            <children>
-                              <Button fx:id="c1Button" mnemonicParsing="false" prefHeight="40.0" prefWidth="50.0" text="C1" />
-                              <Button fx:id="c2Button" mnemonicParsing="false" prefHeight="40.0" prefWidth="50.0" text="C2" />
-                              <Button fx:id="c3Button" mnemonicParsing="false" prefHeight="40.0" prefWidth="50.0" text="C3" />
-                              <Button fx:id="c4Button" mnemonicParsing="false" prefHeight="40.0" prefWidth="50.0" text="C4" />
-                              <Button fx:id="c5Button" mnemonicParsing="false" prefHeight="40.0" prefWidth="50.0" text="C5" />
+                              <Button fx:id="c1Button" mnemonicParsing="false" prefHeight="40.0" prefWidth="50.0" text="C1" onAction="#onC1ButtonPressed" />
+                              <Button fx:id="c2Button" mnemonicParsing="false" prefHeight="40.0" prefWidth="50.0" text="C2" onAction="#onC2ButtonPressed"/>
+                              <Button fx:id="c3Button" mnemonicParsing="false" prefHeight="40.0" prefWidth="50.0" text="C3" onAction="#onC3ButtonPressed"/>
+                              <Button fx:id="c4Button" mnemonicParsing="false" prefHeight="40.0" prefWidth="50.0" text="C4" onAction="#onC4ButtonPressed"/>
+                              <Button fx:id="c5Button" mnemonicParsing="false" prefHeight="40.0" prefWidth="50.0" text="C5" onAction="#onC5ButtonPressed"/>
                            </children>
                            <VBox.margin>
                               <Insets left="50.0" />
@@ -130,7 +130,7 @@
                               <Image url="/images/placeholders/placeholder200x150.png" />
                            </image>
                         </ImageView>
-                     </children></VBox>
+                      </children></VBox>
                </children>
             </HBox>
             <StackPane prefHeight="150.0" prefWidth="200.0">

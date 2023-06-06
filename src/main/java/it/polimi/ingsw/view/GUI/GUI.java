@@ -10,6 +10,7 @@ import it.polimi.ingsw.models.Tile;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -17,6 +18,9 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
@@ -29,7 +33,8 @@ import java.util.Optional;
 public class GUI extends Application {
     static private GUIController guiController;
     static private Stage primaryStage;
-    static private State currentState;
+    static private boolean checkFirstPlayer = false;
+
 
     static public void setNickname(String nickname) {
         guiController.setNickname(nickname);
@@ -110,21 +115,49 @@ public class GUI extends Application {
 
         // Update Living Room
         GridPane livingRoomGrid = (GridPane) primaryStage.getScene().lookup("#livingRoomGrid");
+
+        Platform.runLater(() -> {
+            livingRoomGrid.getChildren().clear();
+        });
+
         for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 9; j++) {
-                Tile t = gameUpdate.livingRoom().getBoard()[j][i];
-                if (t == null) continue;
-                ImageView imageView = new ImageView();
-                imageView.setImage(new Image("/images/item_tiles/" + t.category().toString() + "_" + t.icon().toString() + ".png"));
-                imageView.setFitWidth(55);
-                imageView.setFitHeight(55);
                 int finalI = i;
                 int finalJ = j;
-                imageView.setOnMouseClicked(value -> {
-                    System.out.println("Clicked on tile " + finalJ + "," + finalI);
-                });
+                Tile t = gameUpdate.livingRoom().getBoard()[j][i];
+
+                ImageView imageView = new ImageView();
+                if (t != null) {
+                    imageView.setImage(new Image("/images/item_tiles/" + t.category().toString() + "_" + t.icon().toString() + ".png"));
+                } else {
+                    imageView.setImage(new Image("/images/item_tiles/empty_tile.png"));
+                }
+
+                imageView.setFitWidth(55);
+                imageView.setFitHeight(55);
+
+                Rectangle border = new Rectangle(imageView.getFitWidth(), imageView.getFitHeight());
+                border.setFill(Color.TRANSPARENT);
+                border.setStrokeWidth(2.0);
+                // Wrap the ImageView and Rectangle inside a StackPane
+                StackPane stackPane = new StackPane();
+                stackPane.getChildren().addAll(imageView, border);
+
+                if (t != null) {
+                    stackPane.setOnMouseClicked(value -> {
+                        if (guiController.isMyTurn()) {
+                            if (border.getStroke() == null && guiController.pickTile(finalJ, finalI)) {
+                                border.setStroke(Color.YELLOW);
+                            } else {
+                                guiController.depositTile(finalJ, finalI);
+                                border.setStroke(null);
+                            }
+                        }
+                    });
+                }
+
                 Platform.runLater(() -> {
-                    livingRoomGrid.add(imageView, finalI, finalJ);
+                    livingRoomGrid.add(stackPane, finalI, finalJ);
                 });
             }
         }
@@ -138,13 +171,19 @@ public class GUI extends Application {
 
         // Update tokens
         HBox tokenRow = (HBox) primaryStage.getScene().lookup("#tokenRow");
-        if (gameUpdate.players().get(0).nickname().equals(guiController.getMyNickname())) {
-            ImageView imageView = new ImageView();
-            imageView.setImage(new Image("/images/misc/firstplayertoken.png"));
-            imageView.setFitWidth(100);
-            imageView.setFitHeight(100);
-            tokenRow.getChildren().add(imageView);
+        if (!checkFirstPlayer) {
+            checkFirstPlayer = true;
+            if (gameUpdate.players().get(0).nickname().equals(guiController.getMyNickname())) {
+                ImageView imageView = new ImageView();
+                imageView.setImage(new Image("/images/misc/firstplayertoken.png"));
+                imageView.setFitWidth(100);
+                imageView.setFitHeight(100);
+                Platform.runLater(() -> {
+                    tokenRow.getChildren().add(imageView);
+                });
+            }
         }
+
 
 
     }
@@ -167,13 +206,19 @@ public class GUI extends Application {
         }
     }
 
+    static public void selectColumn(int c) {
+        guiController.chooseColumn(c);
+    }
+
     static public void setNumPlayers(int numPlayers) {
         guiController.setNumPlayers(numPlayers);
         showLobbyView(List.of(guiController.getMyNickname()));
     }
 
     static public void showToast(String message) {
-        Toast.makeText(primaryStage, message, 4000, 200, 200);
+        Platform.runLater(() -> {
+            Toast.makeText(primaryStage, message, 4000, 200, 200);
+        });
     }
 
     static public void openPlayerWindow(String nickname) {
@@ -207,7 +252,6 @@ public class GUI extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         GUI.primaryStage = primaryStage;
-        currentState = State.WELCOME;
         Parent root = FXMLLoader.load(GUI.class.getResource("/fxml/welcome_page.fxml"));
 
         Scene scene = new Scene(root);

@@ -3,9 +3,12 @@ package it.polimi.ingsw.view.GUI;
 import it.polimi.ingsw.distributed.GameUpdate;
 import it.polimi.ingsw.distributed.networking.ClientImpl;
 import it.polimi.ingsw.distributed.networking.Server;
+import it.polimi.ingsw.models.Coordinates;
+import it.polimi.ingsw.models.LivingRoom;
 import it.polimi.ingsw.view.ViewController;
 
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 import java.util.List;
 
 import static java.lang.Integer.parseInt;
@@ -16,6 +19,7 @@ public class GUIController implements ViewController {
     private String myNickname;
     private State currentState;
     private GameUpdate gameUpdate;
+    private List<Coordinates> currentPickedTiles = new ArrayList<>();
 
     @Override
     public void updatedPlayerList(List<String> players) {
@@ -29,14 +33,27 @@ public class GUIController implements ViewController {
 
     @Override
     public void updateGame(GameUpdate update) {
-        // TODO: update gameUpdate with changes
         if (currentState != State.GAME) {
             gameUpdate = update;
             GUI.showGameView();
             currentState = State.GAME;
+        } else {
+            // update [gameUpdate] with changes
+            this.gameUpdate = gameUpdate.copyWith(
+                    update.livingRoom(),
+                    update.players(),
+                    update.commonGoalCards(),
+                    update.gameEnder(),
+                    update.currentPlayer()
+            );
+        }
+
+        if (isMyTurn()) {
+            currentPickedTiles = new ArrayList<>();
         }
 
         GUI.updateGameView(gameUpdate);
+
     }
 
     @Override
@@ -76,6 +93,30 @@ public class GUIController implements ViewController {
         }
     }
 
+    public boolean pickTile(int x, int y) {
+        if (currentPickedTiles.size() == 3) return false;
+
+        currentPickedTiles.add(new Coordinates(x,y));
+        return true;
+    }
+
+    public void depositTile(int x, int y) {
+        currentPickedTiles.remove(new Coordinates(x,y));
+    }
+
+    public void chooseColumn(int c) {
+        if (currentPickedTiles.isEmpty()) {
+            GUI.showToast("You must pick at least one tile");
+            return;
+        }
+
+        try {
+            server.playerMove(currentPickedTiles, c, client);
+        } catch (RemoteException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
     @Override
     public void getPlayerChoice(boolean yourTurn, String menuChoice) {
 
@@ -92,6 +133,10 @@ public class GUIController implements ViewController {
     @Override
     public void showEndingScreen() {
 
+    }
+
+    public boolean isMyTurn() {
+        return gameUpdate.currentPlayer().nickname().equals(myNickname);
     }
 
     public String getMyNickname() {
