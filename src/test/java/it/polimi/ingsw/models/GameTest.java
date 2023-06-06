@@ -40,15 +40,15 @@ class GameTest {
                     new MutablePair<>(Category.BOOKS, new Coordinates(1, 1)),
                     new MutablePair<>(Category.PLANTS, new Coordinates(2, 2))
                 )
-            )
-        );
+            ),
+                "");
         PersonalGoalCard personalGoalCard2 = new PersonalGoalCard(new ArrayList<>(Arrays.asList(
                     new MutablePair<>(Category.GAMES, new Coordinates(0, 1)),
                     new MutablePair<>(Category.BOOKS, new Coordinates(1, 2)),
                     new MutablePair<>(Category.PLANTS, new Coordinates(2, 4))
                 )
-            )
-        );
+            ),
+                "");
 
         // Create players
         Player player1 = new Player("fabio", personalGoalCard1);
