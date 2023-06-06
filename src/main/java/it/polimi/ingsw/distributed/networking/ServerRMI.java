@@ -3,6 +3,8 @@ package it.polimi.ingsw.distributed.networking;
 import it.polimi.ingsw.distributed.Lobby;
 import it.polimi.ingsw.distributed.exceptions.LobbyException;
 import it.polimi.ingsw.models.Coordinates;
+import it.polimi.ingsw.models.exceptions.NotEnoughCellsException;
+import it.polimi.ingsw.models.exceptions.PickTilesException;
 
 import java.rmi.RemoteException;
 import java.rmi.server.RMIClientSocketFactory;
@@ -46,7 +48,7 @@ public class ServerRMI extends UnicastRemoteObject implements Server {
             var gameData = Lobby.getInstance().getNicknameController(client);
 
             gameData.getRight().update(coordinates, column, gameData.getLeft());
-        } catch (LobbyException e) {
+        } catch (LobbyException | PickTilesException | NotEnoughCellsException e) {
             client.serverError(e.getMessage());
         }
     }

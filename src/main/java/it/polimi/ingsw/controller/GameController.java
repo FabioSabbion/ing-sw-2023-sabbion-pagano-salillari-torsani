@@ -23,7 +23,7 @@ public class GameController {
         this.id = ID++;
     }
 
-    private void gameTurn(List<Coordinates> coordinatesList, int column) {
+    private void gameTurn(List<Coordinates> coordinatesList, int column) throws PickTilesException, NotEnoughCellsException {
         this.playerAction(coordinatesList, column);
         this.updateCommonGoalPoints();
 
@@ -39,21 +39,14 @@ public class GameController {
         }
     }
 
-    private void playerAction(List<Coordinates> coordinatesList, int column) {
-        try {
-            List<Tile> tiles = this.game.getLivingRoom().chooseTiles(coordinatesList);
-            this.game.getCurrentPlayer().getBookshelf().insertTiles(column, tiles);
-            this.game.getLivingRoom().removeTiles(coordinatesList);
+    private void playerAction(List<Coordinates> coordinatesList, int column) throws PickTilesException, NotEnoughCellsException {
+        List<Tile> tiles = this.game.getLivingRoom().chooseTiles(coordinatesList);
+        this.game.getCurrentPlayer().getBookshelf().insertTiles(column, tiles);
+        this.game.getLivingRoom().removeTiles(coordinatesList);
 
-            Arrays.stream(this.game.getCommonGoalCards()).forEach(commonGoalCard ->
-                    commonGoalCard.checkGoal(this.game.getCurrentPlayer())
-            );
-
-
-        } catch (PickTilesException | NotEnoughCellsException e) {
-            throw new RuntimeException(e);
-        }
-
+        Arrays.stream(this.game.getCommonGoalCards()).forEach(commonGoalCard ->
+                commonGoalCard.checkGoal(this.game.getCurrentPlayer())
+        );
     }
 
     /**
@@ -75,7 +68,7 @@ public class GameController {
         return results;
     }
 
-    public void update(List<Coordinates> coordinatesList, int column, String player) {
+    public void update(List<Coordinates> coordinatesList, int column, String player) throws PickTilesException, NotEnoughCellsException {
         if (player.equals(game.getCurrentPlayer().getNickname())) {
             this.gameTurn(coordinatesList, column);
         }
