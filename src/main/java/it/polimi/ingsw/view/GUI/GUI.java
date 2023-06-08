@@ -200,6 +200,13 @@ public class GUI extends Application {
         HBox tokenRow = (HBox) primaryStage.getScene().lookup("#tokenRow");
         updateTokens(tokenRow, guiController.getMyNickname());
 
+        // Update Info Box
+        Text infoText = (Text) primaryStage.getScene().lookup("#infoText");
+        if (gameUpdate.currentPlayer().nickname().equals(guiController.getMyNickname())) {
+            infoText.setText("Now is your turn");
+        } else {
+            infoText.setText(gameUpdate.currentPlayer().nickname() + " is now playing his turn");
+        }
     }
 
     static private void updateTokens(HBox tokenRow, String nickname) {
