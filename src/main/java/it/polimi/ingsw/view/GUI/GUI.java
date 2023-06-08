@@ -253,7 +253,7 @@ public class GUI extends Application {
                 int finalI = i;
                 int finalJ = j;
                 Platform.runLater(() -> {
-                    gridPane.add(imageView, finalJ, Bookshelf.ROWS - finalI);
+                    gridPane.add(imageView, finalJ, Bookshelf.ROWS - finalI - 1);
                 });
             }
         }
