@@ -115,7 +115,7 @@
                            </children></HBox>
                      </children>
                   </VBox>
-                  <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="30.0">
+                  <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="25.0">
                      <children>
                          <Text fx:id="infoText" strokeType="OUTSIDE" strokeWidth="0.0" textAlignment="CENTER">
                              <font>
@@ -137,6 +137,7 @@
                               <Image url="/images/placeholders/placeholder200x150.png" />
                            </image>
                         </ImageView>
+                         <Button id="openChatButton" maxHeight="300.0" maxWidth="200.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="100.0" text="Chat" />
                       </children></VBox>
                </children>
             </HBox>
