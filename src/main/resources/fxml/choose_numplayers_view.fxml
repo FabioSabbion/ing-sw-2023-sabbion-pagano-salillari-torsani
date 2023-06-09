@@ -10,7 +10,7 @@
 <?import javafx.scene.text.Text?>
 
 
-<StackPane fx:controller="it.polimi.ingsw.view.GUI.NumPlayersViewController" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
+<StackPane fx:controller="it.polimi.ingsw.view.GUI.NumPlayersViewController" stylesheets="/fxml/common.css" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <ImageView fitWidth="600.0" pickOnBounds="true" preserveRatio="true">
          <image>
@@ -26,17 +26,17 @@
             </Text>
             <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="30.0">
                <children>
-                  <Button fx:id="choose2Button" mnemonicParsing="false" prefHeight="60.0" prefWidth="60.0" text="2" onAction="#numPlayer2">
+                  <Button fx:id="choose2Button" styleClass="hover-button" mnemonicParsing="false" prefHeight="60.0" prefWidth="60.0" text="2" onAction="#numPlayer2">
                      <font>
                         <Font size="24.0" />
                      </font>
                   </Button>
-                  <Button fx:id="choose3Button" mnemonicParsing="false" prefHeight="60.0" prefWidth="60.0" text="3" onAction="#numPlayer3">
+                  <Button fx:id="choose3Button" styleClass="hover-button" mnemonicParsing="false" prefHeight="60.0" prefWidth="60.0" text="3" onAction="#numPlayer3">
                      <font>
                         <Font size="24.0" />
                      </font>
                   </Button>
-                  <Button fx:id="choose4Button" mnemonicParsing="false" prefHeight="60.0" prefWidth="60.0" text="4" onAction="#numPlayer4">
+                  <Button fx:id="choose4Button" styleClass="hover-button" mnemonicParsing="false" prefHeight="60.0" prefWidth="60.0" text="4" onAction="#numPlayer4">
                      <font>
                         <Font size="24.0" />
                      </font>
