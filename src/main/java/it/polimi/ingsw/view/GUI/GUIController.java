@@ -119,6 +119,10 @@ public class GUIController implements ViewController {
     }
 
     public void chooseColumn(int c) {
+        if (!gameUpdate.currentPlayer().nickname().equals(myNickname)) {
+            GUI.showToast("It is not your turn");
+            return;
+        }
         if (currentPickedTiles.isEmpty()) {
             GUI.showToast("You must pick at least one tile");
             return;
