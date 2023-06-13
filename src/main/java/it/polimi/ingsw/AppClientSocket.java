@@ -33,7 +33,5 @@ public class AppClientSocket {
 
 
         viewController.start(client, serverStub);
-
-        System.out.println("Terminating client");
     }
 }

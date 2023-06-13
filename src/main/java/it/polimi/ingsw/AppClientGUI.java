@@ -6,12 +6,10 @@ import java.util.Scanner;
 
 public class AppClientGUI {
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("Select your connection type (rmi - socket)...");
-        String connectionType = scanner.nextLine().toLowerCase();
-        while(!connectionType.equals("rmi") && !connectionType.equals(("socket"))){
-            System.out.println("You must enter a valid choice! Try Again");
-            connectionType = scanner.nextLine().toLowerCase();
+        String connectionType = args[0].toLowerCase();
+        if(!connectionType.equals("rmi") && !connectionType.equals(("socket"))){
+            System.out.println("Invalid argument.\nValid values are \n - socket \n - rmi");
+            System.exit(-1);
         }
 
         String[] connectionArgs = {connectionType};
