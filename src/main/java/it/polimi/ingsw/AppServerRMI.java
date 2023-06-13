@@ -12,7 +12,7 @@ public class AppServerRMI extends Thread {
     public void run() {
         try {
             ServerRMI server = new ServerRMI();
-            Registry registry = LocateRegistry.getRegistry();
+            Registry registry = LocateRegistry.createRegistry(1099);
             registry.rebind("server", server);
             System.out.println("RMI Server started");
         } catch (RemoteException e) {
