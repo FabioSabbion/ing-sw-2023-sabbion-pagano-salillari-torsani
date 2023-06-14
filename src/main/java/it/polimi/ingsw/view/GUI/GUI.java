@@ -325,12 +325,13 @@ public class GUI extends Application {
     public void init() throws Exception {
         super.init();
         String connectionType = getParameters().getRaw().get(0);
+        String IP = getParameters().getRaw().get(1);
         guiController = new GUIController();
 
         if (connectionType.equals("socket")) {
-            AppClientSocket.start(guiController);
+            AppClientSocket.start(guiController, IP);
         } else {
-            AppClientRMI.start(guiController);
+            AppClientRMI.start(guiController, IP);
         }
 
     }

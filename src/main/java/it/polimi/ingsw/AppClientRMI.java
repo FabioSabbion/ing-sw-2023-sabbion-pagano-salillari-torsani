@@ -10,8 +10,8 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 
 public class AppClientRMI {
-    public static void start(ViewController viewController) throws RemoteException, NotBoundException {
-        Registry registry = LocateRegistry.getRegistry();
+    public static void start(ViewController viewController, String IP) throws RemoteException, NotBoundException {
+        Registry registry = LocateRegistry.getRegistry(IP);
         Server server = (Server) registry.lookup("server");
 
         ClientImpl client = new ClientImpl();

@@ -9,8 +9,8 @@ import it.polimi.ingsw.view.ViewController;
 import java.rmi.RemoteException;
 
 public class AppClientSocket {
-    public static void start(ViewController viewController) throws RemoteException {
-        ServerStub serverStub = new ServerStub("localhost", 4445);
+    public static void start(ViewController viewController, String IP) throws RemoteException {
+        ServerStub serverStub = new ServerStub(IP, 4445);
         ClientImpl client = new ClientImpl();
         new Thread() {
             @Override
