@@ -2,19 +2,20 @@ package it.polimi.ingsw.view.GUI;
 
 import it.polimi.ingsw.distributed.CommonGoalCardUpdate;
 import it.polimi.ingsw.distributed.GameUpdate;
+import it.polimi.ingsw.distributed.Lobby;
 import it.polimi.ingsw.distributed.PlayerUpdate;
 import it.polimi.ingsw.distributed.networking.ClientImpl;
 import it.polimi.ingsw.distributed.networking.Server;
 import it.polimi.ingsw.models.CommonGoalCard;
 import it.polimi.ingsw.models.Coordinates;
-import it.polimi.ingsw.models.LivingRoom;
+import it.polimi.ingsw.models.Message;
 import it.polimi.ingsw.view.ViewController;
 
 import java.rmi.RemoteException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import static java.lang.Integer.parseInt;
 
@@ -25,11 +26,40 @@ public class GUIController implements ViewController {
     private State currentState;
     private GameUpdate gameUpdate;
     private List<Coordinates> currentPickedTiles = new ArrayList<>();
-
-    private int countUpdate = 0;
+    private List<String> offlinePlayers = new ArrayList<>();
 
     @Override
     public void updatedPlayerList(List<String> players) {
+        if (currentState == State.GAME) {
+            if ((this.gameUpdate.players().size() - players.size()) < offlinePlayers.size() && offlinePlayers.size() != 0){
+                //Means someone has reconnected
+
+                for (String updatedPlayer: players) {
+                    if (offlinePlayers.contains(updatedPlayer)){
+                        serverError(updatedPlayer + " has reconnected");
+                        offlinePlayers.remove(updatedPlayer);
+                    }
+                }
+            } else {
+                this.offlinePlayers = new ArrayList<>(this.gameUpdate.players().stream().map(PlayerUpdate::nickname).toList());
+                this.offlinePlayers.removeAll(players);
+
+                for (String offlinePlayer: offlinePlayers) {
+                    serverError(offlinePlayer + " has disconnected");
+                }
+
+                if (this.gameUpdate.players().size() - offlinePlayers.size() == 1){
+                    ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
+                    executorService.schedule(() -> {
+                        serverError("You are the only player left!" +
+                                " After %d seconds you will win if no one reconnects".formatted(Lobby.seconds));
+                        // Shutdown the executor service
+                        executorService.shutdown();
+                    }, 3500, TimeUnit.MILLISECONDS);
+                }
+            }
+            return;
+        }
         if (currentState != State.LOBBY) {
             GUI.showLobbyView(players);
             currentState = State.LOBBY;
@@ -164,6 +194,11 @@ public class GUIController implements ViewController {
             }
         }
         GUI.showScoreboardView(playerPoints);
+    }
+
+    @Override
+    public void receiveMessages(List<Message> messages) {
+
     }
 
     public Map<String, Integer> calculateCommonGoalCardPoints(int cardID) {
