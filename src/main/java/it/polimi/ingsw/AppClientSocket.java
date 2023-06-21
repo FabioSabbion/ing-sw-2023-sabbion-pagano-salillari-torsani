@@ -6,6 +6,7 @@ import it.polimi.ingsw.view.GUI.GUI;
 import it.polimi.ingsw.view.GUI.GUIController;
 import it.polimi.ingsw.view.ViewController;
 
+import java.io.IOException;
 import java.rmi.RemoteException;
 
 public class AppClientSocket {
@@ -15,7 +16,8 @@ public class AppClientSocket {
         new Thread() {
             @Override
             public void run() {
-                while(true) {
+                boolean toRun = true;
+                while(toRun) {
                     try {
                         serverStub.receive(client);
                     } catch (RemoteException e) {
@@ -26,6 +28,13 @@ public class AppClientSocket {
                             System.err.println("Cannot close connection with server. Halting...");
                         }
                         System.exit(1);
+                    } catch (IOException e) {
+                        if (this.isInterrupted()) {
+                            toRun = false;
+                        } else {
+                            System.out.println("Connection fallen");
+                            throw new RuntimeException(e);
+                        }
                     }
                 }
             }

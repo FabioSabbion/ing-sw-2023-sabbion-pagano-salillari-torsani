@@ -11,6 +11,8 @@ import it.polimi.ingsw.controller.events.ViewEvent;
 import it.polimi.ingsw.distributed.exceptions.LobbyException;
 import it.polimi.ingsw.distributed.networking.Client;
 import it.polimi.ingsw.models.*;
+import it.polimi.ingsw.models.exceptions.NotEnoughCellsException;
+import it.polimi.ingsw.models.exceptions.PickTilesException;
 import it.polimi.ingsw.utils.Observer;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
@@ -341,7 +343,7 @@ public class Lobby {
         }
     }
 
-    public void updateController(Client client, List<Coordinates> coordinatesList, int column) throws LobbyException {
+    public void updateController(Client client, List<Coordinates> coordinatesList, int column) throws LobbyException, PickTilesException, NotEnoughCellsException {
         var gameData = this.getNicknameController(client);
 
         var offlinePlayers = Arrays.stream(gameData.getRight().game.getPlayers())
