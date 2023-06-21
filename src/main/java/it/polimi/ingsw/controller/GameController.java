@@ -4,26 +4,29 @@ import it.polimi.ingsw.models.*;
 import it.polimi.ingsw.models.exceptions.NotEnoughCellsException;
 import it.polimi.ingsw.models.exceptions.PickTilesException;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class GameController {
-    public Game game;
-    public int id;
+    public final Game game;
+    public final Chat chat;
+    public final int id;
     public static int ID = 0;
 
     public GameController(Game game, int id) {
         this.game = game;
         this.id = id;
+        this.chat = new Chat();
     }
+
     public GameController(List<String> nicknames) {
         this.game = Game.createEmptyGame(nicknames);
         this.id = ID++;
+        this.chat = new Chat();
     }
 
-    private void gameTurn(List<Coordinates> coordinatesList, int column) {
+    private void gameTurn(List<Coordinates> coordinatesList, int column, List<String> offlineNicknames) {
         this.playerAction(coordinatesList, column);
         this.updateCommonGoalPoints();
 
@@ -32,10 +35,14 @@ public class GameController {
 
         this.game.getLivingRoom().fillBoardIfNeeded(this.game.getPlayers().length, this.game.getRemainingTiles());
 
-        this.game.nextPlayer();
+        this.game.nextPlayer(offlineNicknames);
 
-        if (prevPlayer.getBookshelf().isFull()) {
+        if (prevPlayer.getBookshelf().isFull() && this.game.getGameEnder() != null) {
             this.game.setGameEnder(prevPlayer);
+
+            if (prevPlayer.getNickname().equals(this.game.getCurrentPlayer().getNickname())) {
+                this.game.emitGameState(true);
+            }
         }
     }
 
@@ -45,11 +52,6 @@ public class GameController {
             this.game.getCurrentPlayer().getBookshelf().insertTiles(column, tiles);
             this.game.getLivingRoom().removeTiles(coordinatesList);
 
-            Arrays.stream(this.game.getCommonGoalCards()).forEach(commonGoalCard ->
-                    commonGoalCard.checkGoal(this.game.getCurrentPlayer())
-            );
-
-
         } catch (PickTilesException | NotEnoughCellsException e) {
             throw new RuntimeException(e);
         }
@@ -58,6 +60,7 @@ public class GameController {
 
     /**
      * Updates the Players who have completed each {@link CommonGoalCard}
+     *
      * @return Current common goal points for each player
      */
     private Map<Player, Integer> updateCommonGoalPoints() {
@@ -66,8 +69,9 @@ public class GameController {
 
         Map<Player, Integer> results = new HashMap<>();
 
-        for (var commonGoal: commonGoals) {
-            for (var player: players) {
+        for (var commonGoal : commonGoals) {
+            for (var player : players) {
+
                 results.put(player, results.getOrDefault(player, 0) + commonGoal.checkGoal(player));
             }
         }
@@ -75,9 +79,10 @@ public class GameController {
         return results;
     }
 
-    public void update(List<Coordinates> coordinatesList, int column, String player) {
+    public void update(List<Coordinates> coordinatesList, int column, String player, List<String> offlineNicknames) {
         if (player.equals(game.getCurrentPlayer().getNickname())) {
-            this.gameTurn(coordinatesList, column);
+            this.gameTurn(coordinatesList, column, offlineNicknames);
         }
     }
 }
+

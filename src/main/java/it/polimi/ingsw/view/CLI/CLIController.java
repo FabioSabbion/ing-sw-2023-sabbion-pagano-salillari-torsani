@@ -2,13 +2,11 @@ package it.polimi.ingsw.view.CLI;
 
 import it.polimi.ingsw.distributed.CommonGoalCardUpdate;
 import it.polimi.ingsw.distributed.GameUpdate;
+import it.polimi.ingsw.distributed.Lobby;
 import it.polimi.ingsw.distributed.PlayerUpdate;
 import it.polimi.ingsw.distributed.networking.ClientImpl;
 import it.polimi.ingsw.distributed.networking.Server;
-import it.polimi.ingsw.models.Bookshelf;
-import it.polimi.ingsw.models.CommonGoalCard;
-import it.polimi.ingsw.models.Coordinates;
-import it.polimi.ingsw.models.LivingRoom;
+import it.polimi.ingsw.models.*;
 import it.polimi.ingsw.models.exceptions.NotEnoughCellsException;
 import it.polimi.ingsw.models.exceptions.PickTilesException;
 import it.polimi.ingsw.view.CLI.utils.ASCIIArt;
@@ -16,6 +14,7 @@ import it.polimi.ingsw.view.CLI.utils.Color;
 import it.polimi.ingsw.view.ViewController;
 
 import java.rmi.RemoteException;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 import static java.lang.Integer.parseInt;
@@ -31,9 +30,12 @@ public class CLIController implements ViewController {
     private CLI cli;
     private State state;
     private PlayerTurn playerTurn;
+    private boolean gameFinished = false;
+    private final SortedMap<Integer, Message> chatMessages = new TreeMap<>();
 
     String viewingPlayerNickname;
     private final List<String> menuNotifications = new ArrayList<>();
+    private List<String> offlinePlayers = new ArrayList<>();
 
     public CLIController(ClientImpl client, Server server) {
         this.client = client;
@@ -48,7 +50,9 @@ public class CLIController implements ViewController {
         WAITING,
         ASK_NUM_PLAYERS,
         GET_PLAYER_CHOICE,
-        YOUR_TURN;
+        YOUR_TURN,
+        END_GAME,
+        CHAT;
 
     }
 
@@ -60,7 +64,7 @@ public class CLIController implements ViewController {
 
         System.out.println("Enter a nickname");
 
-        while (true) {
+        while (!this.state.equals(State.END_GAME)) {
             this.inputHandler(scanner.nextLine());
         }
     }
@@ -78,11 +82,16 @@ public class CLIController implements ViewController {
                 case YOUR_TURN -> {
                     playerTurn.inputHandler(input);
                 }
+                case CHAT -> {
+                    this.sendMessage(input);
+                }
             }
         } catch (RemoteException e) {
             throw new RuntimeException(e);
         }
     }
+
+
 
 
     @Override
@@ -108,38 +117,161 @@ public class CLIController implements ViewController {
 
         switch (menuChoice.toLowerCase()) {
             case "help", "menu", "1" -> {
-                cli.showMenu(yourTurn, menuNotifications);
+                cli.showMenu(yourTurn, menuNotifications, gameFinished);
             }
             case "main", "2" -> {
                 cli.showMain(currentPlayer);
 
             }
             case "showPlayers", "3" -> {
-                cli.showPlayers(this.players);
+                cli.showPlayers(this.players, this.offlinePlayers);
             }
             case "CommonGoalCards", "4" -> {
                 cli.showCommonGoalCards();
             }
             case "scoreboard", "5" -> {
-                cli.showScoreboard();
+                if (!gameFinished)
+                    cli.showScoreboard();
+                else
+                    this.showFinalScoreBoard();
             }
-            case "play", "6" -> {
-                if (yourTurn) {
+            case "chat", "6" -> {
+                this.openChat();
+            }
+            case "play", "7", "quit" -> {
+                if (yourTurn && !gameFinished && !menuChoice.equalsIgnoreCase("quit")) {
                     playerTurn = new PlayerTurn();
                     this.changeState(State.YOUR_TURN);
+                } else if (gameFinished) {
+                    System.out.println(Color.YELLOW.escape() + "Thanks for playing!" + Color.RESET);
+                    this.changeState(State.END_GAME);
                 } else System.out.println("It's not your turn! Please enter a valid option...");
             }
             default -> System.out.println("That is not a valid option! Enter a valid one");
         }
     }
 
+    /**
+     * Open the chat and let you send a message
+     */
+    private void openChat() {
+
+        System.out.println(Color.PURPLE.escape() + "Chat messages\n" + Color.RESET);
+
+        for (Message message: this.chatMessages.values()) {
+            System.out.println("- ["
+                    + message.timestamp().format(DateTimeFormatter.ofPattern("HH:mm:ss"))
+                    + "] " + (message.to() == null ? "@All " : "")
+                    + (message.from().equals(viewingPlayerNickname) ? "You" : message.from()) + ": " + message.message());
+        }
+
+        System.out.println(
+                Color.PURPLE.escape() + "To send a message enter " +
+                Color.RED.escape() + "PlayerName" +
+                Color.PURPLE.escape() + "/" +
+                Color.RED.escape() + "@All" +
+                Color.PURPLE.escape() + "'" +
+                Color.RED.escape() + " message" +
+                Color.PURPLE.escape() + "'" +
+                Color.RESET);
+        System.out.println(
+                Color.PURPLE.escape() + "To go back to the menu enter '" +
+                Color.RED.escape() + "back" +
+                Color.PURPLE.escape() + "'" +
+                Color.RESET);
+
+        this.changeState(State.CHAT);
+    }
+
+    private void sendMessage(String input) {
+        String[] splitInput = input.split(" ");
+
+        if (splitInput.length == 1) {
+            if (splitInput[0].equals("back")){
+                this.changeState(State.GET_PLAYER_CHOICE);
+                this.cli.showMenu(viewingPlayerNickname.equals(currentPlayer.nickname()), menuNotifications, gameFinished);
+            } else
+                this.serverError("Wrong formatting for the message!");
+
+            return;
+        }
+
+        String recipient = splitInput[0];
+        String message = input.substring(recipient.length() + 1);
+
+
+        List<String> players = new ArrayList<>(this.players.keySet());
+
+        if (recipient.equals(viewingPlayerNickname)){
+            this.serverError("It is pointless to send a message to yourself! Try Again");
+            return;
+        }
+
+        if (!players.contains(recipient) && !recipient.equals("@All")){
+            this.serverError("There's no such message recipient! Try Again");
+            return;
+        }
+
+        try {
+            this.server.sendMessageTo(recipient.equals("@All") ? null : recipient, message, this.client);
+            System.out.println(Color.BLUE.escape() + "Message was successfully sent!" + Color.RESET);
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
+        }
+
+        this.cli.showMenu(viewingPlayerNickname.equals(currentPlayer.nickname()), menuNotifications, gameFinished);
+        this.changeState(State.GET_PLAYER_CHOICE);
+    }
 
     @Override
-    public void updatedPlayerList(List<String> players) {
-        players.stream().forEach(System.out::println);
+    public void receiveMessages(List<Message> messages){
+        for (Message message: messages){
+           chatMessages.put(message.id(), message);
+        }
     }
 
 
+    /**
+     * Receives the current players in the game and communicate them to the online players through menuNotifications
+     * @param players
+     */
+    @Override
+    public void updatedPlayerList(List<String> players) {
+        if (this.players != null){
+
+            if ((this.players.size() - players.size()) < offlinePlayers.size() && offlinePlayers.size() != 0){
+                //Means someone has reconnected
+
+                for (String updatedPlayer: players) {
+                    if (offlinePlayers.contains(updatedPlayer)){
+                        menuNotifications.add(Color.RED.escape() + updatedPlayer + " has reconnected");
+
+                        offlinePlayers.remove(updatedPlayer);
+                    }
+                }
+            } else {
+                this.offlinePlayers = new ArrayList<>(this.players.keySet());
+                this.offlinePlayers.removeAll(players);
+
+                for (String offlinePlayer: offlinePlayers) {
+                    menuNotifications.add(Color.RED.escape() + offlinePlayer + " has disconnected" + Color.RESET);
+                }
+
+                if (this.players.keySet().size() - offlinePlayers.size() == 1){
+                    menuNotifications.add(Color.RED.escape() + ("You are the only player left!" +
+                            " After %d seconds you will win if no one reconnects").formatted(Lobby.seconds) + Color.RESET);
+                }
+            }
+
+            cli.showPlayerTurn(currentPlayer, menuNotifications, gameFinished);
+        }
+    }
+
+
+    /**
+     * Updates the CLI and communicates the updates with the viewingPlayer through menuNotification
+     * @param update
+     */
     @Override
     public void updateGame(GameUpdate update) {
         this.livingRoom = update.livingRoom() == null ? this.livingRoom : update.livingRoom();
@@ -211,11 +343,11 @@ public class CLIController implements ViewController {
                     + (this.gameEnder.nickname().equals(viewingPlayerNickname) ? "You have filled your" : (this.gameEnder.nickname() + " has filled his"))
                     + " bookshelf. The game is ending" + Color.RESET);
 
-            cli.showPlayerTurn(currentPlayer, menuNotifications);
+            cli.showPlayerTurn(currentPlayer, menuNotifications, gameFinished);
         }
 
         if (updatedCurrent) {
-            cli.showPlayerTurn(currentPlayer, menuNotifications);
+            cli.showPlayerTurn(currentPlayer, menuNotifications, gameFinished);
             menuNotifications.clear();
             this.changeState(State.GET_PLAYER_CHOICE);
         }
@@ -311,6 +443,13 @@ public class CLIController implements ViewController {
 
     @Override
     public void showEndingScreen() {
+        String winningPlayer = this.showFinalScoreBoard();
+
+        this.gameFinished = true;
+        cli.showEndScreen(winningPlayer);
+    }
+
+    private String showFinalScoreBoard() {
         Map<String, Integer> playerPoints = new HashMap<>();
 
         for (String player: new ArrayList<>(this.players.keySet())) {
@@ -325,7 +464,7 @@ public class CLIController implements ViewController {
             }
         }
 
-
+        System.out.print("\n".repeat(60));
         System.out.println(Color.BLUE.escape() + ASCIIArt.scoreBoard + Color.RESET);
 
         System.out.println(Color.BLUE.escape() + "\n Final Results are:" + Color.RESET);
@@ -334,10 +473,8 @@ public class CLIController implements ViewController {
             System.out.println("- " + player + ": " + playerPoints.get(player));
         }
 
-        int maxPoint = playerPoints.entrySet().stream().map(p -> p.getValue()).mapToInt(x -> x).max().getAsInt();
-        String winningPlayer = playerPoints.entrySet().stream().filter(p -> p.getValue() == maxPoint).findFirst().get().getKey();
-
-        cli.showEndScreen(winningPlayer);
+        int maxPoint = playerPoints.values().stream().mapToInt(x -> x).max().getAsInt();
+        return playerPoints.entrySet().stream().filter(p -> p.getValue() == maxPoint).findFirst().get().getKey();
     }
 
 
@@ -356,7 +493,7 @@ public class CLIController implements ViewController {
         }
 
         public PlayerTurn() {
-            System.out.println("How many tiles do you want? (1 - 3)");
+            System.out.println("How many tiles do you want? (1 - 3) (enter 'back' to go back to the menu)");
             this.state = TurnState.NUM_TILES;
             this.rowLivingRoom = -1;
             this.colLivingRoom = -1;
@@ -372,7 +509,11 @@ public class CLIController implements ViewController {
         public void inputHandler(String input) {
 
             try {
-
+                if (input.equalsIgnoreCase("back")){
+                    CLIController.this.changeState(State.GET_PLAYER_CHOICE);
+                    CLIController.this.cli.showMenu(viewingPlayerNickname.equals(currentPlayer.nickname()), CLIController.this.menuNotifications, CLIController.this.gameFinished);
+                    return;
+                }
                 int inputInt = Integer.parseInt(input);
 
                 switch (this.state) {
@@ -417,20 +558,15 @@ public class CLIController implements ViewController {
             }
         }
 
-
-        void getNumTiles() {
-            this.changeState(TurnState.NUM_TILES);
-        }
-
         void getRowLivingRoom() {
             cli.showMain(currentPlayer);
-            System.out.println("\nChoose Row");
+            System.out.println("\nChoose Row (enter 'back' to go back to the menu)");
             this.changeState(TurnState.ROW_LIVING_ROOM);
         }
 
         void getColumnLivingRoom() {
             cli.showMain(currentPlayer);
-            System.out.println("\nChoose Column");
+            System.out.println("\nChoose Column (enter 'back' to go back to the menu)");
             this.changeState(TurnState.COL_LIVING_ROOM);
         }
 
@@ -448,7 +584,7 @@ public class CLIController implements ViewController {
 
         private void getColumnBookshelf() {
             cli.showMain(currentPlayer);
-            System.out.printf("Choose your column (0-%d)\n", Bookshelf.COLUMNS - 1);
+            System.out.printf("Choose your column (0-%d) (enter 'back' to go back to the menu)\n", Bookshelf.COLUMNS - 1);
             this.changeState(TurnState.COL_BOOKSHELF);
         }
 

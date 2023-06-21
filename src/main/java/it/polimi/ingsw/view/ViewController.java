@@ -1,6 +1,7 @@
 package it.polimi.ingsw.view;
 
 import it.polimi.ingsw.distributed.GameUpdate;
+import it.polimi.ingsw.models.Message;
 
 import java.util.List;
 
@@ -15,4 +16,5 @@ public interface ViewController {
 
     void getPlayerChoice(boolean yourTurn, String menuChoice);
     void showEndingScreen();
+    void receiveMessages(List<Message> messages);
 }

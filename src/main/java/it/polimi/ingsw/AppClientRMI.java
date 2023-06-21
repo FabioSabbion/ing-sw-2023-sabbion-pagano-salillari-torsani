@@ -8,6 +8,7 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.rmi.server.UnicastRemoteObject;
 
 public class AppClientRMI {
     public static void start() throws RemoteException, NotBoundException {
@@ -18,5 +19,7 @@ public class AppClientRMI {
 
         CLIController cliController = new CLIController(client, server);
         cliController.start();
+        registry.unbind("server");
+        UnicastRemoteObject.unexportObject(client, true);
     }
 }

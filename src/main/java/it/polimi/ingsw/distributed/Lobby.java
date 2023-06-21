@@ -6,24 +6,25 @@ import com.google.common.collect.Maps;
 import it.polimi.ingsw.GamePersistence;
 import it.polimi.ingsw.GameUpdateToFile;
 import it.polimi.ingsw.controller.GameController;
+import it.polimi.ingsw.controller.events.MessageEvent;
 import it.polimi.ingsw.controller.events.ViewEvent;
 import it.polimi.ingsw.distributed.exceptions.LobbyException;
 import it.polimi.ingsw.distributed.networking.Client;
-import it.polimi.ingsw.models.CommonGoalCard;
-import it.polimi.ingsw.models.CommonGoalCardFactory;
-import it.polimi.ingsw.models.Game;
-import it.polimi.ingsw.models.Player;
+import it.polimi.ingsw.models.*;
 import it.polimi.ingsw.utils.Observer;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
+import javax.annotation.Nullable;
 import java.rmi.RemoteException;
 import java.util.*;
 
 public class Lobby {
+    public static final int seconds = 30;
     Map<String, Client> waitingPlayers;
     final BiMap<Client, String> clientNickname;
-    Map<String, GameController> nicknameController;
+    final Map<String, GameController> nicknameController;
+    final Map<String, Thread> lastSurvivingWinner;
     GamePersistence persistence = new GamePersistence();
     enum State {
         WAITING_FOR_GAME,
@@ -35,6 +36,7 @@ public class Lobby {
     static private Lobby instance;
 
     private Lobby() {
+        lastSurvivingWinner = new HashMap<>();
         clientNickname = Maps.synchronizedBiMap(HashBiMap.create());
 
         this.nicknameController = new HashMap<>();
@@ -49,27 +51,11 @@ public class Lobby {
                             client.getKey().keepAlive();
                         } catch (RemoteException e) {
                             removableClients.add(client.getKey());
-
-                            System.out.println("Client disconnected");
                         }
                     }
-
-                    Client waitingClient = null;
 
                     for (var client: removableClients) {
-                        var disconnected = clientNickname.remove(client);
-
-                        if (this.state == State.CREATING_GAME && waitingPlayers != null) {
-                            waitingClient = waitingPlayers.remove(disconnected);
-                        }
-                    }
-
-                    if (waitingClient != null) {
-                        this.updatedWaitingPlayers();
-                        if (waitingPlayers.isEmpty()) {
-                            this.waitingPlayers = null;
-                            this.state = State.WAITING_FOR_GAME;
-                        }
+                        removeDisconnectedClient(client);
                     }
                 }
 
@@ -81,6 +67,122 @@ public class Lobby {
             }
         })).start();
     }
+
+    public synchronized void removeDisconnectedClient(Client client) {
+        var disconnected = clientNickname.remove(client);
+        Client waitingClient = null;
+
+        if (this.state == State.CREATING_GAME && waitingPlayers != null) {
+            waitingClient = waitingPlayers.remove(disconnected);
+        }
+
+        if (waitingClient != null) {
+            this.updatedWaitingPlayers();
+            if (waitingPlayers.isEmpty()) {
+                this.waitingPlayers = null;
+                this.state = State.WAITING_FOR_GAME;
+            }
+        } else if (nicknameController.containsKey(disconnected)){
+            var remainedClients = updatedPlayerList(disconnected);
+
+//            Skip current client if he disconnected with no reason
+            if (remainedClients.size() > 0 && nicknameController.get(disconnected).game.getCurrentPlayer().getNickname().equals(disconnected)) {
+                List<String> offlineClients = Arrays.stream(nicknameController.get(disconnected).game.getPlayers())
+                        .map(Player::getNickname)
+                        .filter(player -> !clientNickname.containsValue(player))
+                        .toList();
+
+                nicknameController.get(disconnected).game.nextPlayer(offlineClients);
+            }
+        }
+    }
+
+    /**
+     * Will send to all connected players of the same controller the update
+     * @param nickname of the player that is triggering the update
+     * @return remaining connected clients of the same controller
+     */
+    private List<String> updatedPlayerList(String nickname) {
+        var clientWithTheSameController = Arrays.stream(nicknameController.get(nickname).game.getPlayers())
+                .map(Player::getNickname).toList();
+
+        List<String> remainedClients = clientWithTheSameController
+                .stream()
+                .filter(clientNickname::containsValue)
+                .toList();
+
+        switch (remainedClients.size()) {
+            case 0 -> {
+                nicknameController.get(nickname).game.emitGameState(true);
+            }
+            case 1 -> {
+                this.setLastSurvivingWinner(remainedClients.get(0));
+            }
+            default -> {
+                remainedClients.forEach(connectedClient -> {
+                    synchronized (lastSurvivingWinner) {
+                        if (lastSurvivingWinner.containsKey(connectedClient))
+                            lastSurvivingWinner.get(connectedClient).interrupt();
+                    }
+                });
+            }
+        }
+
+        remainedClients.stream().map(player -> clientNickname.inverse().get(player)).forEach(client1 -> {
+            try {
+                client1.updatedPlayerList(remainedClients);
+            } catch (RemoteException e) {
+                removeDisconnectedClient(client1);
+            }
+        });
+
+        return remainedClients;
+    }
+
+
+    public void setLastSurvivingWinner(String lastClient) {
+        var threadForTimer = new Thread(() -> {
+            try {
+
+                Thread.sleep(seconds * 1000);
+
+                Game playerGame = null;
+                synchronized (nicknameController) {
+
+                    if (!nicknameController.containsKey(lastClient)) {
+                        return;
+                    }
+
+                    playerGame = nicknameController.get(lastClient).game;
+
+                    List<String> connectedClients = Arrays.stream(nicknameController.get(lastClient).game.getPlayers())
+                            .map(Player::getNickname)
+                            .filter(clientNickname::containsValue)
+                            .toList();
+
+
+
+                    if(connectedClients.size() > 1) {
+                        System.err.println(connectedClients);
+                        return;
+                    }
+                }
+
+                if(playerGame != null) {
+                    playerGame.emitGameState(true);
+                }
+            } catch (InterruptedException ignored) {
+            }
+        });
+
+
+        synchronized (lastSurvivingWinner) {
+            lastSurvivingWinner.put(lastClient, threadForTimer);
+        }
+
+        threadForTimer.start();
+    }
+
     public synchronized void setNickname(String nickname, Client client) throws LobbyException {
         System.out.println("New nickname from client " + nickname);
 
@@ -94,11 +196,15 @@ public class Lobby {
                 // Nickname already in use => send error
                 throw new LobbyException("Nickname already in use");
             } else {
+                GameController controller = nicknameController.get(nickname);
 //                Nickname not connected to any client, connecting to controller
                 clientNickname.put(client, nickname);
 
-                this.setClientListener(client, nicknameController.get(nickname));
-                nicknameController.get(nickname).game.emitGameState();
+                this.setClientListener(client, controller);
+
+                this.updatedPlayerList(nickname);
+                controller.game.emitGameState();
+                controller.chat.emitAllMessages();
             }
         } else if(this.state == State.CREATING_GAME) {
             if (clientNickname.containsValue(nickname)) {
@@ -118,6 +224,8 @@ public class Lobby {
                 System.err.println("Same number of player");
                 this.state = State.WAITING_FOR_GAME;
                 this.numPlayer = -1;
+
+                System.err.println("Waiting players: " + this.waitingPlayers);
 
                 var controller = new GameController(this.waitingPlayers.keySet().stream().toList());
 
@@ -148,9 +256,7 @@ public class Lobby {
 
                 System.out.println("Creating game");
             } catch (RemoteException e) {
-                this.waitingPlayers = null;
-                this.state = State.WAITING_FOR_GAME;
-                System.out.println("Client not reachable");
+                removeDisconnectedClient(client);
             }
         }
     }
@@ -160,7 +266,7 @@ public class Lobby {
             try {
                 oldConnections.getValue().updatedPlayerList(this.waitingPlayers.keySet().stream().toList());
             } catch (RemoteException e) {
-                System.out.println("Error");
+                removeDisconnectedClient(oldConnections.getValue());
             }
         }
     }
@@ -188,6 +294,34 @@ public class Lobby {
                     }
                 } catch (RemoteException e) {
                     controller.game.deleteObserver(this);
+                    removeDisconnectedClient(client);
+                }
+            }
+        });
+
+        controller.chat.addObserver(new Observer<List<Message>, MessageEvent>() {
+            @Override
+            public void update(List<Message> value, MessageEvent eventType) {
+                if (!clientNickname.containsKey(client)) {
+                    controller.chat.deleteObserver(this);
+                    return;
+                }
+
+                if (eventType == MessageEvent.SINGLE_MESSAGE
+                        && !(value.get(0).to() == null
+                        || Objects.equals(value.get(0).to(), clientNickname.get(client))
+                        || Objects.equals(value.get(0).from(), clientNickname.get(client)))) {
+                    return;
+                }
+
+                try {
+                    client.sendMessagesUpdate(value.stream().filter(message ->
+                            message.to() == null
+                                    || Objects.equals(message.to(), clientNickname.get(client))
+                                    || Objects.equals(message.from(), clientNickname.get(client))).toList());
+                } catch (RemoteException e) {
+                    controller.chat.deleteObserver(this);
+                    removeDisconnectedClient(client);
                 }
             }
         });
@@ -207,7 +341,27 @@ public class Lobby {
         }
     }
 
-    public Pair<String, GameController> getNicknameController(Client client) throws LobbyException {
+    public void updateController(Client client, List<Coordinates> coordinatesList, int column) throws LobbyException {
+        var gameData = this.getNicknameController(client);
+
+        var offlinePlayers = Arrays.stream(gameData.getRight().game.getPlayers())
+                .map(Player::getNickname)
+                .filter(player -> !this.clientNickname.containsValue(player))
+                .toList();
+
+        if (gameData.getRight().game.getPlayers().length - offlinePlayers.size() == 1) {
+//            we will assume that the last remaining player is this player, if something weird has happened we have to fix it
+            synchronized (this.lastSurvivingWinner) {
+                if(!this.lastSurvivingWinner.containsKey(this.clientNickname.get(client))) {
+                    this.setLastSurvivingWinner(this.clientNickname.get(client));
+                }
+            }
+        }
+
+        gameData.getRight().update(coordinatesList, column, gameData.getLeft(), offlinePlayers);
+    }
+
+    private Pair<String, GameController> getNicknameController(Client client) throws LobbyException {
         if (!this.clientNickname.containsKey(client)
                 || !this.nicknameController.containsKey(this.clientNickname.get(client))) {
             throw new LobbyException("Client not found in any controller");
@@ -281,5 +435,11 @@ public class Lobby {
                 }
             }
         });
+    }
+
+    public void sendMessage(Client client, @Nullable String to, String message) {
+        String from = clientNickname.get(client);
+
+        nicknameController.get(from).chat.sendMessage(message, from, to);
     }
 }

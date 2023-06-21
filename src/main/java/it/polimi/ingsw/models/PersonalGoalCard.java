@@ -6,7 +6,8 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
-import java.io.FileReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -75,7 +76,8 @@ public class PersonalGoalCard implements GoalCard, Serializable {
     public static void reloadJson(){
         JSONParser parser = new JSONParser();
         try {
-            jsonFile = (JSONObject) parser.parse(new FileReader("src/main/java/it/polimi/ingsw/models/settings/PersonalGoalCards.json"));
+            InputStream path = PersonalGoalCard.class.getResourceAsStream("/settings/PersonalGoalCards.json");
+            jsonFile = (JSONObject) parser.parse(new InputStreamReader(path));
             } catch (Exception e) {
             e.printStackTrace();
         }

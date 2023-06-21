@@ -4,16 +4,18 @@ import it.polimi.ingsw.distributed.networking.ClientImpl;
 import it.polimi.ingsw.distributed.networking.ServerStub;
 import it.polimi.ingsw.view.CLI.CLIController;
 
+import java.io.IOException;
 import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 
 public class AppClientSocket {
     public static void start() throws RemoteException {
         ServerStub serverStub = new ServerStub("localhost", 4445);
         ClientImpl client = new ClientImpl();
-        new Thread() {
-            @Override
+        Thread thread = new Thread() {
             public void run() {
-                while(true) {
+            boolean toRun = true;
+                while (toRun) {
                     try {
                         serverStub.receive(client);
                     } catch (RemoteException e) {
@@ -24,15 +26,27 @@ public class AppClientSocket {
                             System.err.println("Cannot close connection with server. Halting...");
                         }
                         System.exit(1);
+                    } catch (IOException e) {
+                        if (this.isInterrupted()) {
+                            toRun = false;
+                        } else {
+                            System.out.println("Connection fallen");
+                            throw new RuntimeException(e);
+                        }
                     }
                 }
             }
-        }.start();
+        };
 
+        thread.start();
 
         CLIController cliController = new CLIController(client, serverStub);
         cliController.start();
 
         System.out.println("Terminating client");
+
+        thread.interrupt();
+        serverStub.close();
+        UnicastRemoteObject.unexportObject(client, true);
     }
 }
