@@ -90,6 +90,7 @@ public class GamePersistence {
     }
 
     public void saveGames(GameUpdateToFile gameUpdateToFile, int ID) {
+
         if (updateMap.containsKey(ID)) {
             var oldUpdate = updateMap.get(ID);
 
@@ -233,6 +234,7 @@ public class GamePersistence {
 
                                 return true;
                             } catch (NumberFormatException | DateTimeParseException e) {
+                                System.err.println("Error in files parsing " + e.getMessage());
                                 return false;
                             }
                         }
@@ -262,7 +264,7 @@ public class GamePersistence {
             });
         }
 
-        GameController.ID = this.updateMap.keySet().stream().mapToInt(a -> a).max().orElseGet(() -> 0);
+        GameController.ID = this.updateMap.keySet().stream().mapToInt(a -> a).max().orElseGet(() -> -1) + 1;
 
         Lobby.getInstance().loadLobbyFromUpdates(updateMap);
     }

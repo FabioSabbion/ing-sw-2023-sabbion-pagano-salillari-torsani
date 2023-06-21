@@ -2,14 +2,18 @@ package it.polimi.ingsw.distributed.networking;
 
 import it.polimi.ingsw.controller.events.EventType;
 import it.polimi.ingsw.distributed.GameUpdate;
+import it.polimi.ingsw.distributed.MessageUpdate;
 import it.polimi.ingsw.models.Coordinates;
+import it.polimi.ingsw.models.Message;
 
+import javax.annotation.Nullable;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.net.Socket;
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ServerStub implements Server{
@@ -72,7 +76,16 @@ public class ServerStub implements Server{
         }
     }
 
-    public void receive(Client client) throws RemoteException {
+    @Override
+    public void sendMessageTo(@Nullable String to, String message, Client client) throws RemoteException {
+        try {
+            oos.writeObject(new SocketMessage(EventType.MESSAGE_EVENT, new MessageUpdate(to, message)));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void receive(Client client) throws RemoteException, IOException {
         SocketMessage message;
         try {
             message = (SocketMessage) ois.readObject();
@@ -98,6 +111,10 @@ public class ServerStub implements Server{
                 case GAME_END -> {
                     GameUpdate gameUpdate = (GameUpdate) message.data;
                     client.showEndingScoreboard(gameUpdate);
+                }
+                case MESSAGE_EVENT -> {
+                    List<Message> messageList = (ArrayList<Message>) message.data;
+                    client.sendMessagesUpdate(messageList);
                 }
             }
         } catch (IOException e) {

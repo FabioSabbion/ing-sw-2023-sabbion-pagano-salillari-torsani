@@ -3,6 +3,7 @@ package it.polimi.ingsw.view;
 import it.polimi.ingsw.distributed.GameUpdate;
 import it.polimi.ingsw.distributed.networking.ClientImpl;
 import it.polimi.ingsw.distributed.networking.Server;
+import it.polimi.ingsw.models.Message;
 
 import java.util.List;
 
@@ -20,4 +21,5 @@ public interface ViewController {
     void start(ClientImpl client, Server server);
 
     void showEndingScreen();
+    void receiveMessages(List<Message> messages);
 }

@@ -41,17 +41,20 @@ public class CLI {
         printer.print("\n\nWelcome to MyShelfie!");
     }
 
-    public void showMenu(boolean yourTurn, List<String> menuNotification){
+    public void showMenu(boolean yourTurn, List<String> menuNotification, boolean gameFinished){
         String choices = """
                 Menu:
                 1. 'help'/'menu' -> show all commands
                 2. 'main' -> show the main view (LivingRoom, PersonalGoalCard, Bookshelf)
                 3. 'showPlayers' -> shows players' bookshelf and respective points
                 4. 'CommonGoalCards' -> outputs the game commonGoalCards
-                5. 'scoreboard' -> view scoreboard""";
+                5. 'scoreboard' -> view scoreboard
+                6. 'chat -> open chat""";
 
-        if (yourTurn) {
-            choices += "\n6. 'play' -> 'play your turn";
+        if (yourTurn && !gameFinished) {
+            choices += "\n7. 'play' -> 'play your turn";
+        } else if (gameFinished) {
+            choices += "\n7. 'quit' -> 'end your game";
         }
 
 
@@ -81,7 +84,7 @@ public class CLI {
     }
 
 
-    public void showPlayers(Map<String, PlayerUpdate> playerMap){
+    public void showPlayers(Map<String, PlayerUpdate> playerMap, List<String> offlinePlayers){
 
         String concatBookshelves = "";
 
@@ -99,6 +102,11 @@ public class CLI {
             else {
                 printer.print("- " + player);
             }
+        }
+
+        printer.print("\n Offline Players:");
+        for (String offlinePlayer : offlinePlayers) {
+            printer.print("- " + offlinePlayer);
         }
     }
 
@@ -169,7 +177,7 @@ public class CLI {
         setRenderBookshelves(players);
     }
 
-    public void showPlayerTurn(PlayerUpdate currentPlayer, List<String> menuNotification){
+    public void showPlayerTurn(PlayerUpdate currentPlayer, List<String> menuNotification, boolean gameFinished){
         printer.clearScreen();
         boolean yourTurn = viewingPlayer.nickname().equals(currentPlayer.nickname());
         if(!yourTurn) {
@@ -178,7 +186,7 @@ public class CLI {
         else{
             printer.print(Color.BLUE.escape() + "Now is your turn" + Color.RESET);
         }
-        this.showMenu(yourTurn, menuNotification);
+        this.showMenu(yourTurn, menuNotification, gameFinished);
     }
 
     public void showEndScreen(String winningPlayer){
@@ -188,6 +196,8 @@ public class CLI {
         } else {
             printer.print(Color.RED.escape() + ASCIIArt.gameOver + Color.RESET);
         }
+
+        printer.print(Color.YELLOW.escape() + "\n\n\n You can look at your menu by typing the same commands. To end the game enter 'quit'" + Color.RESET);
     }
 
 

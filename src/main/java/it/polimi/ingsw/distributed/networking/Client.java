@@ -1,6 +1,7 @@
 package it.polimi.ingsw.distributed.networking;
 
 import it.polimi.ingsw.distributed.GameUpdate;
+import it.polimi.ingsw.models.Message;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
@@ -13,4 +14,5 @@ public interface Client extends Remote {
     void askNumPlayers() throws RemoteException;
     void keepAlive() throws RemoteException;
     void showEndingScoreboard(GameUpdate gameUpdate) throws RemoteException;
+    void sendMessagesUpdate(List<Message> messageList) throws RemoteException;
 }

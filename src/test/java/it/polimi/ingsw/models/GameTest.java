@@ -1,5 +1,8 @@
 package it.polimi.ingsw.models;
 
+import it.polimi.ingsw.GameUpdateToFile;
+import it.polimi.ingsw.controller.events.ViewEvent;
+import it.polimi.ingsw.utils.Observer;
 import org.apache.commons.lang3.tuple.MutablePair;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -7,6 +10,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -16,11 +20,11 @@ class GameTest {
     @DisplayName("Check current player is changed correctly")
     void nextPlayer() {
         assertEquals(game.getPlayers()[0], game.getCurrentPlayer());
-        game.nextPlayer();
+        game.nextPlayer(new ArrayList<>());
         assertEquals(game.getPlayers()[1], game.getCurrentPlayer());
-        game.nextPlayer();
-        game.nextPlayer();
-        game.nextPlayer();
+        game.nextPlayer(new ArrayList<>());
+        game.nextPlayer(new ArrayList<>());
+        game.nextPlayer(new ArrayList<>());
         assertEquals(game.getPlayers()[0], game.getCurrentPlayer());
     }
 
@@ -30,6 +34,41 @@ class GameTest {
         assertFalse(game.isEnded());
         game.setGameEnder(game.getPlayers()[0]);
         assertTrue(game.isEnded());
+    }
+
+    @Test
+    @DisplayName("Checking if createEmptyGame creates a game correctly")
+    void createEmptyGame() {
+        this.game = Game.createEmptyGame(List.of("Andri", "Lp"));
+
+        var players = game.getPlayers();
+
+        assertEquals(players[0].getNickname(), "Andri");
+        assertEquals(players[1].getNickname(), "Lp");
+    }
+
+    @Test
+    @DisplayName("Checking if the emit state emits everything or nullifies something")
+    void emitState() {
+        this.game.addObserver(new Observer<GameUpdateToFile, ViewEvent>() {
+            @Override
+            public void update(GameUpdateToFile value, ViewEvent eventType) {
+                assertNotNull(value.remainingTiles());
+                assertNotNull(value.update());
+                assertNotNull(value.update().players());
+                assertNotNull(value.update().commonGoalCards());
+                assertNotNull(value.update().currentPlayer());
+                assertNotNull(value.update().livingRoom());
+
+                value.update().players().forEach(playerUpdate -> {
+                    assertNotNull(playerUpdate.nickname());
+                    assertNotNull(playerUpdate.personalGoalCard());
+                    assertNotNull(playerUpdate.bookshelf());
+                });
+            }
+        });
+
+        this.game.emitGameState();
     }
 
     @BeforeEach
@@ -68,6 +107,5 @@ class GameTest {
 
         // Create game
         this.game = new Game(players, commonGoalCards, new ArrayList<>(), livingRoom, players[0]);
-
     }
 }
