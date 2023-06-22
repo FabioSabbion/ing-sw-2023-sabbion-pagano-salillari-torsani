@@ -28,6 +28,9 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.StrokeType;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
@@ -88,20 +91,36 @@ public class GUI extends Application {
 
     }
 
-    static public void showScoreboardView(Map<String, Integer> playerPoints) {
+    static public void showScoreboardView(Map<String, Integer> playerPoints, String winner) {
         try {
             primaryStage.getScene().setRoot(FXMLLoader.load(GUI.class.getResource("/fxml/end_view.fxml")));
-
-            Text endingText = (Text) primaryStage.getScene().lookup("#endingText");
-            StringBuilder stringBuilder = new StringBuilder();
+            primaryStage.setWidth(1100.0);
+            Text winnerText = (Text) primaryStage.getScene().lookup("#winnerText");
+            winnerText.setText(winner.equals(guiController.getMyNickname()) ? "You won the game!" : winner + " has won the game");
+            GridPane scoreTable = (GridPane) primaryStage.getScene().lookup("#scoreTable");
+            int row = 0;
             for (var entry : playerPoints.entrySet().stream().sorted(Comparator.comparingInt(Map.Entry::getValue)).toList()) {
-                stringBuilder.append(entry.getKey());
-                stringBuilder.append("\t\t");
-                stringBuilder.append(entry.getValue());
-                stringBuilder.append("\n");
-            }
-            endingText.setText(stringBuilder.toString());
+                Text text1 = new Text();
+                Text text2 = new Text();
 
+                text1.setText(entry.getKey());
+                text2.setText(entry.getValue().toString());
+
+                text1.setFont(Font.font(null, FontWeight.BOLD, 36.0));
+                text1.setFill(Color.WHITE);
+                text1.setStroke(Color.BLACK);
+                text1.setStrokeWidth(1.5);
+                text2.setFont(Font.font(null, FontWeight.BOLD, 36.0));
+                text2.setFill(Color.WHITE);
+                text2.setStroke(Color.BLACK);
+                text2.setStrokeWidth(1.5);
+                int finalRow = row;
+                Platform.runLater(() -> {
+                    scoreTable.add(text1, 0, finalRow);
+                    scoreTable.add(text2, 1, finalRow);
+                });
+                row++;
+            }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
