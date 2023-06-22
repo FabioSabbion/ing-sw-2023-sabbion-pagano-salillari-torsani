@@ -38,7 +38,7 @@ public class GameController {
 
         this.game.nextPlayer(offlineNicknames);
 
-        if (prevPlayer.getBookshelf().isFull() && this.game.getGameEnder() != null) {
+        if (prevPlayer.getBookshelf().isFull() && this.game.getGameEnder() == null) {
             this.game.setGameEnder(prevPlayer);
 
             if (prevPlayer.getNickname().equals(this.game.getCurrentPlayer().getNickname())) {
