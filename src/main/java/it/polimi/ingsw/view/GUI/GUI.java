@@ -8,14 +8,19 @@ import it.polimi.ingsw.distributed.PersonalGoalCardUpdate;
 import it.polimi.ingsw.distributed.PlayerUpdate;
 import it.polimi.ingsw.models.Bookshelf;
 import it.polimi.ingsw.models.CommonGoalCard;
+import it.polimi.ingsw.models.Message;
 import it.polimi.ingsw.models.Tile;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
@@ -28,12 +33,14 @@ import javafx.stage.Stage;
 
 import java.awt.print.Book;
 import java.io.IOException;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 public class GUI extends Application {
     static private GUIController guiController;
     static private Stage primaryStage;
     static private boolean checkFistTime = false;
+    static private Stage chatStage;
 
 
     static public void setNickname(String nickname) {
@@ -67,6 +74,7 @@ public class GUI extends Application {
     }
 
     static public void showGameView() {
+
         try {
             primaryStage.getScene().setRoot(FXMLLoader.load(GUI.class.getResource("/fxml/game_view.fxml")));
             primaryStage.setWidth(1400.0);
@@ -76,6 +84,8 @@ public class GUI extends Application {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
+
     }
 
     static public void showScoreboardView(Map<String, Integer> playerPoints) {
@@ -301,7 +311,55 @@ public class GUI extends Application {
             throw new RuntimeException(e);
         }
 
+    }
 
+    static public void sendMessage(String to, String text) {
+        guiController.sendMessage(to, text);
+    }
+
+    static public void addMessages(List<Message> messages) {
+        if (chatStage == null) return;
+
+        TextArea messagesTextArea = (TextArea) chatStage.getScene().lookup("#MessageHistory");
+        StringBuilder stringBuilder = new StringBuilder();
+        for (Message m : messages) {
+            stringBuilder.append("[").append(m.timestamp().format(DateTimeFormatter.ofPattern("HH:mm:ss"))).append("]").append(" (").append(m.to() != null ? (m.to().equals(guiController.getMyNickname()) ? m.from() : m.to()) : "Everyone").append(") ").append(m.from().equals(guiController.getMyNickname()) ? "You" : m.from()).append(": ").append(m.message()).append("\n");
+        }
+
+        messagesTextArea.appendText(stringBuilder.toString());
+    }
+
+    static public void openChatWindow() {
+        if (chatStage != null) return;
+
+        Stage newStage = new Stage();
+        chatStage = newStage;
+        newStage.setTitle("Chat");
+        newStage.setResizable(false);
+        try {
+            Parent root = FXMLLoader.load(GUI.class.getResource("/fxml/chat_view.fxml"));
+            Scene scene = new Scene(root);
+            newStage.setScene(scene);
+            newStage.setOnCloseRequest(value -> {
+                chatStage = null;
+            });
+            newStage.show();
+            TextArea messagesTextArea = (TextArea) chatStage.getScene().lookup("#MessageHistory");
+            StringBuilder stringBuilder = new StringBuilder();
+            for (Message m : guiController.getMessages()) {
+                stringBuilder.append("[").append(m.timestamp().format(DateTimeFormatter.ofPattern("HH:mm:ss"))).append("]").append(" (").append(m.to() != null ? (m.to().equals(guiController.getMyNickname()) ? m.from() : m.to()) : "Everyone").append(") ").append(m.from().equals(guiController.getMyNickname()) ? "You" : m.from()).append(": ").append(m.message()).append("\n");
+            }
+
+            messagesTextArea.setText(stringBuilder.toString());
+            ChoiceBox<String> choiceBox = (ChoiceBox<String>) chatStage.getScene().lookup("#targetMenu");
+            List<String> playerList = new ArrayList<>(guiController.getGameUpdate().players().stream().map(PlayerUpdate::nickname).filter(nickname -> !nickname.equals(guiController.getMyNickname())).toList());
+            playerList.add(0, "Everyone");
+            ObservableList<String> options = FXCollections.observableArrayList(playerList);
+            choiceBox.setItems(options);
+            choiceBox.setValue("Everyone");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override

@@ -51,5 +51,9 @@ public class GameViewController {
     protected void onC5ButtonPressed(ActionEvent event) {
         GUI.selectColumn(4);
     }
+    @FXML
+    protected void onChatButtonPressed(ActionEvent event) {
+        GUI.openChatWindow();
+    }
 
 }

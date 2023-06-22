@@ -167,7 +167,7 @@
                               <Image url="/images/placeholders/placeholder200x150.png" />
                            </image>
                         </ImageView>
-                         <Button id="openChatButton" maxHeight="300.0" maxWidth="200.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="100.0" text="Chat" />
+                         <Button id="openChatButton" maxHeight="300.0" maxWidth="200.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="100.0" text="Chat" onAction="#onChatButtonPressed" />
                       </children></VBox>
                </children>
             </HBox>

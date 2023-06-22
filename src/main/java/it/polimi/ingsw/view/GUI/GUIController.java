@@ -27,6 +27,7 @@ public class GUIController implements ViewController {
     private GameUpdate gameUpdate;
     private List<Coordinates> currentPickedTiles = new ArrayList<>();
     private List<String> offlinePlayers = new ArrayList<>();
+    private List<Message> messages = new ArrayList<>();
 
     @Override
     public void updatedPlayerList(List<String> players) {
@@ -141,6 +142,7 @@ public class GUIController implements ViewController {
         if (currentPickedTiles.size() == 3) return false;
 
         currentPickedTiles.add(new Coordinates(x,y));
+
         return true;
     }
 
@@ -198,7 +200,16 @@ public class GUIController implements ViewController {
 
     @Override
     public void receiveMessages(List<Message> messages) {
+        this.messages.addAll(messages);
+        GUI.addMessages(messages);
+    }
 
+    public void sendMessage(String to, String message) {
+        try {
+            server.sendMessageTo(to.equals("Everyone") ? null : to, message, client);
+        } catch (RemoteException e) {
+            serverError(e.getMessage());
+        }
     }
 
     public Map<String, Integer> calculateCommonGoalCardPoints(int cardID) {
@@ -236,6 +247,10 @@ public class GUIController implements ViewController {
 
     public GameUpdate getGameUpdate() {
         return gameUpdate;
+    }
+
+    public List<Message> getMessages() {
+        return messages;
     }
 }
 
