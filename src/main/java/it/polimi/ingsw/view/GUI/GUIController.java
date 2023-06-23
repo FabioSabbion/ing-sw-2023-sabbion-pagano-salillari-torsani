@@ -195,6 +195,11 @@ public class GUIController implements ViewController {
                 playerPoints.put(player, playerPoints.get(player) + cardPoints.get(player));
             }
         }
+
+        if (this.gameUpdate.gameEnder() != null) {
+            playerPoints.put(this.gameUpdate.gameEnder().nickname(), playerPoints.get(this.gameUpdate.gameEnder().nickname())+1);
+        }
+
         String winner;
         if (offlinePlayers.size() == gameUpdate.players().size() - 1) {
             winner = myNickname;
