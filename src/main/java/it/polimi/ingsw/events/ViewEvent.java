@@ -1,4 +1,4 @@
-package it.polimi.ingsw.controller.events;
+package it.polimi.ingsw.events;
 
 public enum ViewEvent {
     LOBBY_UPDATE,

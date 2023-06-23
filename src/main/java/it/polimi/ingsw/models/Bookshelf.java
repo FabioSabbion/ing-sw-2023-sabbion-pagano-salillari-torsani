@@ -1,14 +1,13 @@
 package it.polimi.ingsw.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import it.polimi.ingsw.controller.events.ViewEvent;
+import it.polimi.ingsw.events.ViewEvent;
 import it.polimi.ingsw.models.exceptions.NotEnoughCellsException;
 import it.polimi.ingsw.models.exceptions.PickTilesException;
 import it.polimi.ingsw.utils.Observable;
 
 import java.io.Serializable;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static java.lang.Math.abs;
 

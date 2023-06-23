@@ -1,6 +1,6 @@
 package it.polimi.ingsw.distributed.networking;
 
-import it.polimi.ingsw.controller.events.EventType;
+import it.polimi.ingsw.events.EventType;
 
 import java.io.Serializable;
 

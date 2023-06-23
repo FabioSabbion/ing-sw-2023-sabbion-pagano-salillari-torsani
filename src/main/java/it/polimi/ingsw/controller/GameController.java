@@ -36,14 +36,15 @@ public class GameController {
 
         this.game.getLivingRoom().fillBoardIfNeeded(this.game.getPlayers().length, this.game.getRemainingTiles());
 
-        this.game.nextPlayer(offlineNicknames);
-
         if (prevPlayer.getBookshelf().isFull() && this.game.getGameEnder() == null) {
             this.game.setGameEnder(prevPlayer);
+        }
 
-            if (prevPlayer.getNickname().equals(this.game.getCurrentPlayer().getNickname())) {
-                this.game.emitGameState(true);
-            }
+        this.game.nextPlayer(offlineNicknames);
+
+        if (prevPlayer.getNickname().equals(this.game.getCurrentPlayer().getNickname()) &&
+            this.game.getGameEnder() != null) {
+            this.game.emitGameState(true);
         }
     }
 

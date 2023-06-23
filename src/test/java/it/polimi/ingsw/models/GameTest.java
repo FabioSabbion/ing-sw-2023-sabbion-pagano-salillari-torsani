@@ -1,7 +1,7 @@
 package it.polimi.ingsw.models;
 
 import it.polimi.ingsw.GameUpdateToFile;
-import it.polimi.ingsw.controller.events.ViewEvent;
+import it.polimi.ingsw.events.ViewEvent;
 import it.polimi.ingsw.utils.Observer;
 import org.apache.commons.lang3.tuple.MutablePair;
 import org.junit.jupiter.api.BeforeEach;
