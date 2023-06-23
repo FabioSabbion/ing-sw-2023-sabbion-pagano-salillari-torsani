@@ -464,7 +464,8 @@ public class CLIController implements ViewController {
             }
         }
 
-        playerPoints.put(gameEnder.nickname(), playerPoints.get(gameEnder.nickname()) + 1 );
+        if (gameEnder != null)
+            playerPoints.put(gameEnder.nickname(), playerPoints.get(gameEnder.nickname()) + 1 );
 
         System.out.print("\n".repeat(60));
         System.out.println(Color.BLUE.escape() + ASCIIArt.scoreBoard + Color.RESET);
