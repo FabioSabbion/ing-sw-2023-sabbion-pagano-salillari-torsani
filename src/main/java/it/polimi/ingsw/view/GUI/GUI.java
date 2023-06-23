@@ -11,6 +11,8 @@ import it.polimi.ingsw.models.Message;
 import it.polimi.ingsw.models.Tile;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
@@ -29,6 +31,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -40,6 +43,9 @@ public class GUI extends Application {
     static private Stage primaryStage;
     static private boolean checkFirstTime = false;
     static private Stage chatStage;
+    static private int screenWidth;
+    static private int screenHeight;
+    static final double ASPECT_RATIO = 1400.0 / 800.0;
 
 
     static public void setNickname(String nickname) {
@@ -76,13 +82,26 @@ public class GUI extends Application {
 
         try {
             primaryStage.getScene().setRoot(FXMLLoader.load(GUI.class.getResource("/fxml/game_view.fxml")));
-            primaryStage.setWidth(1400.0);
-            primaryStage.setHeight(800.0);
+
+            int width = (int) (screenHeight * ASPECT_RATIO * 0.95);
+            int height = (int) (screenHeight * 0.95);
+
+            double factor = height / 800.0;
+
+            primaryStage.setWidth(width);
+            primaryStage.setHeight(height);
+            StackPane stackPane = (StackPane) primaryStage.getScene().lookup("#stackPane");
+            stackPane.setScaleX(factor);
+            stackPane.setScaleY(factor);
+
             primaryStage.setX(0);
             primaryStage.setY(0);
-            Platform.runLater(() -> {
-                primaryStage.setResizable(true);
-            });
+
+            // Platform.runLater(() -> {
+            //     primaryStage.setResizable(true);
+            // });
+            // primaryStage.widthProperty().addListener(new ResizeListener(primaryStage));
+            // primaryStage.heightProperty().addListener(new ResizeListener(primaryStage));
 
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -421,6 +440,9 @@ public class GUI extends Application {
         primaryStage.setOnCloseRequest(event -> {
             System.exit(0);
         });
+
+        screenWidth = (int) Screen.getPrimary().getBounds().getWidth();
+        screenHeight = (int) Screen.getPrimary().getBounds().getHeight();
     }
 
     @Override
@@ -440,6 +462,36 @@ public class GUI extends Application {
 
     public static void main(String[] args) {
         launch(args);
+    }
+
+    static private void setScalingFactor(Stage stage) {
+        double widthFactor = stage.getWidth() / 1400.0;
+        double heightFactor = stage.getHeight() / 800.0;
+
+        double factor = Math.min(widthFactor, heightFactor);
+
+
+        StackPane stackPane = (StackPane) stage.getScene().lookup("#stackPane");
+        stackPane.setScaleX(factor);
+        stackPane.setScaleY(factor);
+
+        //stage.setRenderScaleX(factor);
+        //stage.setRenderScaleY(factor);
+
+    }
+
+    static private class ResizeListener implements ChangeListener<Number> {
+
+        private final Stage stage;
+
+        public ResizeListener(Stage stage) {
+            this.stage = stage;
+        }
+
+        @Override
+        public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+            setScalingFactor(stage);
+        }
     }
 }
 
