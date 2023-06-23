@@ -27,6 +27,11 @@ public class PersonalGoalCard implements GoalCard, Serializable {
         this.cardID = cardID;
     }
 
+    /**
+     * checks whether the player has obtained points in the {@link PersonalGoalCard}
+     * @param player The player to check
+     * @return the points obtained
+     */
     public int checkGoal(Player player) {
         int counterCorrect = 0;
 
