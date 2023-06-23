@@ -354,6 +354,7 @@ public class GUI extends Application {
             newStage.setScene(scene);
             newStage.getIcons().add(new Image("/images/publisher/Icon 50x50px.png"));
             newStage.show();
+            newStage.setResizable(false);
             GridPane bookshelfGrid = (GridPane) newStage.getScene().lookup("#bookshelfGrid");
             updateBookshelf(playerUpdate.bookshelf(), bookshelfGrid, 50);
 
