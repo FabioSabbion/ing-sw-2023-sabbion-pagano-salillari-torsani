@@ -169,6 +169,11 @@ public class CLI {
 
         printer.print(Color.BLUE.escape() + "Your PersonalGoalCard points:" + Color.RESET);
         printer.print(String.valueOf(yourPersonalGoalCardPoint));
+
+        if (controller.gameEnder != null) {
+            printer.print(Color.BLUE.escape() + "GameEnder point:" + Color.RESET);
+            printer.print("1");
+        }
     }
 
 

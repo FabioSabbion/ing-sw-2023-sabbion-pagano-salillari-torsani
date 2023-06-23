@@ -444,6 +444,7 @@ public class CLIController implements ViewController {
     @Override
     public void showEndingScreen() {
         String winningPlayer = this.showFinalScoreBoard();
+        winningPlayer = this.gameEnder != null ? winningPlayer : this.viewingPlayerNickname;
 
         this.gameFinished = true;
         cli.showEndScreen(winningPlayer);
