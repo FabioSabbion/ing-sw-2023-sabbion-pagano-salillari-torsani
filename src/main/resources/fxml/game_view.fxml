@@ -152,11 +152,29 @@
                                  <Font size="16.0" />
                              </font>
                          </Text>
-                        <ImageView fx:id="personalGoalCardImage" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="/images/placeholders/placeholder200x150.png" />
-                           </image>
-                        </ImageView>
+                         <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="30.0">
+                             <children>
+                                 <ImageView fx:id="personalGoalCardImage" fitHeight="150.0" fitWidth="136.0" pickOnBounds="true" preserveRatio="true">
+                                     <image>
+                                         <Image url="/images/placeholders/placeholder200x150.png" />
+                                     </image>
+                                 </ImageView>
+                                 <StackPane prefHeight="150.0" prefWidth="200.0">
+                                     <children>
+                                         <ImageView fitHeight="58.0" fitWidth="58.0" pickOnBounds="true" preserveRatio="true">
+                                             <image>
+                                                 <Image url="/images/tokens/scoring_back_EMPTY.jpg" />
+                                             </image>
+                                         </ImageView>
+                                         <Text fx:id="personalPointsText" fill="#f8b066" strokeType="OUTSIDE" strokeWidth="0.0" text="0" textAlignment="CENTER">
+                                             <font>
+                                                 <Font size="24.0" />
+                                             </font>
+                                         </Text>
+                                     </children>
+                                 </StackPane>
+                             </children>
+                         </HBox>
                         <ImageView fx:id="commonGoalCardImage1" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
                            <image>
                               <Image url="/images/placeholders/placeholder200x150.png" />

@@ -4,7 +4,6 @@ import it.polimi.ingsw.AppClientRMI;
 import it.polimi.ingsw.AppClientSocket;
 import it.polimi.ingsw.distributed.CommonGoalCardUpdate;
 import it.polimi.ingsw.distributed.GameUpdate;
-import it.polimi.ingsw.distributed.PersonalGoalCardUpdate;
 import it.polimi.ingsw.distributed.PlayerUpdate;
 import it.polimi.ingsw.models.Bookshelf;
 import it.polimi.ingsw.models.CommonGoalCard;
@@ -15,7 +14,6 @@ import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -28,13 +26,11 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-import javafx.scene.shape.StrokeType;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
-import java.awt.print.Book;
 import java.io.IOException;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -42,7 +38,7 @@ import java.util.*;
 public class GUI extends Application {
     static private GUIController guiController;
     static private Stage primaryStage;
-    static private boolean checkFistTime = false;
+    static private boolean checkFirstTime = false;
     static private Stage chatStage;
 
 
@@ -84,10 +80,13 @@ public class GUI extends Application {
             primaryStage.setHeight(800.0);
             primaryStage.setX(0);
             primaryStage.setY(0);
+            Platform.runLater(() -> {
+                primaryStage.setResizable(true);
+            });
+
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
 
     }
 
@@ -144,7 +143,7 @@ public class GUI extends Application {
     }
 
     static public void updateGameView(GameUpdate gameUpdate, List<GuiParts> toRefresh) {
-        if (!checkFistTime) {
+        if (!checkFirstTime) {
             int cgc1 = gameUpdate.commonGoalCards().get(0).commonGoalCardID();
             int cgc2 = gameUpdate.commonGoalCards().get(1).commonGoalCardID();
             String pgc = gameUpdate.players().stream().filter(p -> p.nickname().equals(guiController.getMyNickname())).findFirst().orElseThrow().personalGoalCard().ID();
@@ -178,7 +177,7 @@ public class GUI extends Application {
                 });
             }
 
-            checkFistTime = true;
+            checkFirstTime = true;
         }
 
         // Update Living Room
@@ -253,6 +252,12 @@ public class GUI extends Application {
         } else {
             infoText.setText(gameUpdate.currentPlayer().nickname() + " is now playing his turn");
         }
+
+        // Update Personal Goal Card points
+        Text personalPointsText = (Text) primaryStage.getScene().lookup("#personalPointsText");
+        int points = guiController.getGameUpdate().players().stream().filter(p -> p.nickname().equals(guiController.getMyNickname())).findFirst().orElseThrow().personalGoalCard().point();
+        personalPointsText.setText(String.valueOf(points));
+
     }
 
     static private void updateTokens(HBox tokenRow, String nickname) {
