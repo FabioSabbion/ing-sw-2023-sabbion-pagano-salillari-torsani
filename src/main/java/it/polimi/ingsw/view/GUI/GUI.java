@@ -83,16 +83,8 @@ public class GUI extends Application {
         try {
             primaryStage.getScene().setRoot(FXMLLoader.load(GUI.class.getResource("/fxml/game_view.fxml")));
 
-            int width = (int) (screenHeight * ASPECT_RATIO * 0.95);
-            int height = (int) (screenHeight * 0.95);
-
-            double factor = height / 800.0;
-
-            primaryStage.setWidth(width);
-            primaryStage.setHeight(height);
-            StackPane stackPane = (StackPane) primaryStage.getScene().lookup("#stackPane");
-            stackPane.setScaleX(factor);
-            stackPane.setScaleY(factor);
+            primaryStage.setWidth(1400.0);
+            primaryStage.setHeight(800.0);
 
             primaryStage.setX(0);
             primaryStage.setY(0);
