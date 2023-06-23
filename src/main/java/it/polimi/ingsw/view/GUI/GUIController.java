@@ -233,8 +233,8 @@ public class GUIController implements ViewController {
     public void showEndingScreen() {
         Map<String, Integer> playerPoints = new HashMap<>();
 
-        for (String player: this.gameUpdate.players().stream().map(PlayerUpdate::nickname).toList()) {
-            playerPoints.put(player, calculatePersonalGoalCardPoints(player));
+        for (PlayerUpdate player: this.gameUpdate.players()) {
+            playerPoints.put(player.nickname(), calculatePersonalGoalCardPoints(player.nickname()) + player.bookshelf().getPoints());
         }
 
         for (CommonGoalCardUpdate card : this.gameUpdate.commonGoalCards()) {
