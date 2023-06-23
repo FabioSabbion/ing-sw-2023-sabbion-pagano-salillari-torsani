@@ -16,7 +16,9 @@ public class ChatViewController {
     protected void onSendButtonPressed(ActionEvent event) {
         String text = messageField.getText();
         String to = targetMenu.getValue();
-        GUI.sendMessage(to, text);
+        if (!text.isBlank()) {
+            GUI.sendMessage(to, text.trim());
+        }
         messageField.setText("");
     }
 }
