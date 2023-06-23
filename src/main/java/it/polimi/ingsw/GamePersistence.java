@@ -28,6 +28,7 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
 public class GamePersistence {
+    static public final boolean ENABLED = false;
     private static final class PairSerializer extends JsonSerializer<Pair> {
 
         @Override
@@ -54,6 +55,10 @@ public class GamePersistence {
     }
 
     public void removeGames(int id) {
+        if (!ENABLED) {
+            return;
+        }
+
         Path path = Paths.get(GamePersistence.path);
 
         if (!Files.exists(path) || !Files.isDirectory(path)) {
@@ -90,6 +95,9 @@ public class GamePersistence {
     }
 
     public void saveGames(GameUpdateToFile gameUpdateToFile, int ID) {
+        if (!ENABLED) {
+            return;
+        }
 
         if (updateMap.containsKey(ID)) {
             var oldUpdate = updateMap.get(ID);
@@ -214,6 +222,10 @@ public class GamePersistence {
     }
 
     public void loadOldGames() {
+        if (!ENABLED) {
+            return;
+        }
+
         Path path = Paths.get(GamePersistence.path);
 
         if (Files.exists(path) && Files.isDirectory(path)) {
