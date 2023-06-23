@@ -34,13 +34,22 @@ public class CLI {
         updateAll(livingRoom, players, currentPlayer);
     }
 
-
+    /**
+     * Shows the initial MyShelfie logo
+     */
     public static void initialScreen() {
         printer.clearScreen();
         printer.print(Color.YELLOW.escape() + ASCIIArt.myShelfieLogo + Color.RESET);
         printer.print("\n\nWelcome to MyShelfie!");
     }
 
+    /**
+     * Shows the player all the possible choices in the menu. If it's the viewing player turn, it shows the 'play' option.
+     * If the game is finished it lets you quit the game.
+     * @param yourTurn: a boolean value indicating whether it is or not the viewing player's turn.
+     * @param menuNotification: a list of <code>String</code> with all the notifications.
+     * @param gameFinished: a boolean value indicating whether the game is finished.
+     */
     public void showMenu(boolean yourTurn, List<String> menuNotification, boolean gameFinished){
         String choices = """
                 Menu:
@@ -67,23 +76,34 @@ public class CLI {
         }
     }
 
+    /**
+     * Sets the PersonalGoalCard render
+     */
     private void setRenderPersonalGoalCard(){
         renderPersonalGoalCard = CLIRenderer.renderPersonalGoalCard(viewingPlayer.personalGoalCard());
     }
 
-
+    /**
+     * Sets the Bookshelves renders
+     */
     private void setRenderBookshelves(List<PlayerUpdate> players){
         for (PlayerUpdate player : players) {
             this.renderBookshelves.put(player.nickname(), CLIRenderer.renderBookshelf(player.bookshelf()));
         }
     }
 
-
+    /**
+     * Sets the LivingRoom render
+     */
     public void setLivingRoom(LivingRoom livingRoom){
         this.renderLivingRoom = CLIRenderer.renderLivingRoom(livingRoom);
     }
 
-
+    /**
+     * Shows all the players' bookshelves and the offline players.
+     * @param playerMap
+     * @param offlinePlayers
+     */
     public void showPlayers(Map<String, PlayerUpdate> playerMap, List<String> offlinePlayers){
 
         String concatBookshelves = "";
@@ -110,13 +130,20 @@ public class CLI {
         }
     }
 
-
+    /**
+     * Sets the CommonGoalCards' renders
+     * @param commonGoalCards
+     */
     public void setRenderCommonGoalCards(List<CommonGoalCardUpdate> commonGoalCards){
         for (var commonGoalCard : commonGoalCards) {
             this.renderCommonGoalCards.put(commonGoalCard, CLIRenderer.renderCommonGoalCard(commonGoalCard));
         }
     }
 
+    /**
+     * Shows the main view of the viewing player, consisting of the LivingRoom, the PersonalGoalCard, and the Bookshelf
+     * @param currentPlayer: the current player in the game
+     */
     public void showMain(PlayerUpdate currentPlayer){
         printer.clearScreen();
         String main = renderLivingRoom;
@@ -137,6 +164,9 @@ public class CLI {
         }
     }
 
+    /**
+     * Shows all the CommonGoalCards and their respective descriptions
+     */
     public void showCommonGoalCards(){
         printer.clearScreen();
 
@@ -149,6 +179,9 @@ public class CLI {
         }
     }
 
+    /**
+     * Shows the partial scoreboard, consisting of your PersonalGoalCard point and all the players' CommonGoalCards points
+     */
     public void showScoreboard(){
         List<String> players = new ArrayList<>(controller.players.keySet());
         printer.clearScreen();
@@ -176,12 +209,23 @@ public class CLI {
         }
     }
 
-
+    /**
+     * Updates the CLI
+     * @param livingRoom
+     * @param players
+     * @param currentPlayer
+     */
     public void updateAll(LivingRoom livingRoom, List<PlayerUpdate> players, PlayerUpdate currentPlayer){
         setLivingRoom(livingRoom);
         setRenderBookshelves(players);
     }
 
+    /**
+     * It shows the viewingPlayer who is currently playing
+     * @param currentPlayer
+     * @param menuNotification
+     * @param gameFinished
+     */
     public void showPlayerTurn(PlayerUpdate currentPlayer, List<String> menuNotification, boolean gameFinished){
         printer.clearScreen();
         boolean yourTurn = viewingPlayer.nickname().equals(currentPlayer.nickname());
@@ -194,6 +238,10 @@ public class CLI {
         this.showMenu(yourTurn, menuNotification, gameFinished);
     }
 
+    /**
+     * Shows whether you have won or lost
+     * @param winningPlayer: the winner of the game
+     */
     public void showEndScreen(String winningPlayer){
 
         if (winningPlayer.equals(viewingPlayer.nickname())){
