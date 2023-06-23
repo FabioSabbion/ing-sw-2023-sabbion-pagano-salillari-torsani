@@ -19,6 +19,9 @@ import java.util.concurrent.TimeUnit;
 
 import static java.lang.Integer.parseInt;
 
+/**
+ * extends the ViewController class, implementing methods to control the GUI
+ */
 public class GUIController implements ViewController {
     private Server server;
     private ClientImpl client;
@@ -29,6 +32,10 @@ public class GUIController implements ViewController {
     private List<String> offlinePlayers = new ArrayList<>();
     private List<Message> messages = new ArrayList<>();
 
+    /**
+     * updates the list of players following a connection/disconnection
+     * @param players the list of the players' nicknames
+     */
     @Override
     public void updatedPlayerList(List<String> players) {
         if (currentState == State.GAME) {
@@ -69,6 +76,10 @@ public class GUIController implements ViewController {
         }
     }
 
+    /**
+     * calls a method on the GUI in order to update the windows of the game
+     * @param update a GameUpdate object containing the game params to be updated
+     */
     @Override
     public void updateGame(GameUpdate update) {
         if (currentState != State.GAME) {
@@ -101,17 +112,28 @@ public class GUIController implements ViewController {
 
     }
 
+    /**
+     * shows an error message in the GUI by calling the GUI's showToast method
+     * @param message the body of the message
+     */
     @Override
     public void serverError(String message) {
         GUI.showToast(message);
     }
 
+    /**
+     * asks the number of players to the user by calling the GUI's showNumPlayersView method
+     */
     @Override
     public void askNumPlayers() {
         GUI.showNumPlayersView();
         currentState = State.ASKNUMPLAYERS;
     }
 
+    /**
+     * sets the number of players by calling the server's setNumPlayers method
+     * @param numPlayers the number if players in the game
+     */
     public void setNumPlayers(int numPlayers) {
         try {
             server.setNumPlayers(numPlayers, client);
@@ -122,6 +144,10 @@ public class GUIController implements ViewController {
         }
     }
 
+    /**
+     * sets the player's nickname by calling the server's setNickname method
+     * @param nickname the user's nickname
+     */
     @Override
     public void setNickname(String nickname) {
         try {
@@ -138,6 +164,12 @@ public class GUIController implements ViewController {
         }
     }
 
+    /**
+     * controls if the number of tiles is legit and calls the currentPickedTiles' add method
+     * @param x a coordinate int
+     * @param y a coordinate int
+     * @return boolean
+     */
     public boolean pickTile(int x, int y) {
         if (currentPickedTiles.size() == 3) return false;
 
@@ -146,10 +178,19 @@ public class GUIController implements ViewController {
         return true;
     }
 
+    /**
+     * deposits the tile of coordinates x, y by calling the currentPickedTiles' remove method
+     * @param x a coordinate int
+     * @param y a coordinate int
+     */
     public void depositTile(int x, int y) {
         currentPickedTiles.remove(new Coordinates(x,y));
     }
 
+    /**
+     * checks if the column of choice, the turn and the number of tiles are legit and calls the server's playerMove
+     * @param c the column index
+     */
     public void chooseColumn(int c) {
         if (!gameUpdate.currentPlayer().nickname().equals(myNickname)) {
             GUI.showToast("It is not your turn");
@@ -172,6 +213,11 @@ public class GUIController implements ViewController {
 
     }
 
+    /**
+     * starts the client by passing him the view
+     * @param client a ClientImpl object
+     * @param server a Server object
+     */
     @Override
     public void start(ClientImpl client, Server server) {
         this.client = client;
@@ -180,6 +226,9 @@ public class GUIController implements ViewController {
         client.run(this);
     }
 
+    /**
+     * determines the winner and the players' points, then calls the GUI's showScoreboardView method
+     */
     @Override
     public void showEndingScreen() {
         Map<String, Integer> playerPoints = new HashMap<>();
@@ -209,12 +258,21 @@ public class GUIController implements ViewController {
         GUI.showScoreboardView(playerPoints, winner);
     }
 
+    /**
+     * receives a list of messages and calls the GUI's addMessages method
+     * @param messages the list of messages to be added to the chat_view.fxml
+     */
     @Override
     public void receiveMessages(List<Message> messages) {
         this.messages.addAll(messages);
         GUI.addMessages(messages);
     }
 
+    /**
+     * sends a message to one or all players by calling the server's sendMessage method
+     * @param to the nickname of the recipient
+     * @param message the body of the message
+     */
     public void sendMessage(String to, String message) {
         try {
             server.sendMessageTo(to.equals("Everyone") ? null : to, message, client);
@@ -223,6 +281,11 @@ public class GUIController implements ViewController {
         }
     }
 
+    /**
+     * calculates the points of a player's CommonGoalCards
+     * @param cardID an int determining the card's ID
+     * @return playerPoints
+     */
     public Map<String, Integer> calculateCommonGoalCardPoints(int cardID) {
         Map<String, Integer> playerPoints = new HashMap<>();
 
@@ -240,26 +303,50 @@ public class GUIController implements ViewController {
         return playerPoints;
     }
 
+    /**
+     * calculates the points of a player's PersonalGoalCard
+     * @param playerNickname the nickname of the player you wish to calculate the points of
+     * @return
+     */
     public int calculatePersonalGoalCardPoints(String playerNickname) {
         return this.gameUpdate.players().stream().filter(p -> p.nickname().equals(playerNickname)).findFirst().orElseThrow().personalGoalCard().point();
     }
 
+    /**
+     * determines whether it's the user's turn
+     * @return whether it's my turn
+     */
     public boolean isMyTurn() {
         return gameUpdate.currentPlayer().nickname().equals(myNickname);
     }
 
+    /**
+     * @return user's nickname
+     */
     public String getMyNickname() {
         return myNickname;
     }
 
+    /**
+     *
+     * @return game's current state
+     */
     public State getCurrentState() {
         return currentState;
     }
 
+    /**
+     *
+     * @return gameUpdate
+     */
     public GameUpdate getGameUpdate() {
         return gameUpdate;
     }
 
+    /**
+     *
+     * @return a list of messages
+     */
     public List<Message> getMessages() {
         return messages;
     }

@@ -7,6 +7,9 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 
+/**
+ * controller for the game_view.fxml that defines the responses to the various events in the GUI
+ */
 public class GameViewController {
     @FXML
     GridPane livingRoomGrid;

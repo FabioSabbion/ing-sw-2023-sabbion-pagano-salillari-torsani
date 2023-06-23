@@ -12,8 +12,19 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Duration;
 
+/**
+ * shows the error messages on the GUI
+ */
 public final class Toast
 {
+    /**
+     * generates the text to show
+     * @param ownerStage the stage on which to show the message on
+     * @param toastMsg the text of the message
+     * @param toastDelay the delay of the Toast
+     * @param fadeInDelay the fade in animation duration
+     * @param fadeOutDelay the fade out animation duration
+     */
     public static void makeText(Stage ownerStage, String toastMsg, int toastDelay, int fadeInDelay, int fadeOutDelay)
     {
         Stage toastStage=new Stage();

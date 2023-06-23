@@ -38,6 +38,9 @@ import java.io.IOException;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
+/**
+ * main class that dinamically builds and orchestrates the GUI using javafx
+ */
 public class GUI extends Application {
     static private GUIController guiController;
     static private Stage primaryStage;
@@ -47,11 +50,17 @@ public class GUI extends Application {
     static private int screenHeight;
     static final double ASPECT_RATIO = 1400.0 / 800.0;
 
-
+    /**
+     * sets a player's nickname by calling the guiController
+     * @param nickname the nickname of the user
+     */
     static public void setNickname(String nickname) {
         guiController.setNickname(nickname);
     }
 
+    /**
+     * shows the choose_numplayers_view.fxml window that allows to choose the number of players
+     */
     static public void showNumPlayersView(){
         try {
             primaryStage.getScene().setRoot(FXMLLoader.load(GUI.class.getResource("/fxml/choose_numplayers_view.fxml")));
@@ -60,6 +69,10 @@ public class GUI extends Application {
         }
     }
 
+    /**
+     * shows the lobby window, lobby_page.fxml, with a list of the names of the connected players
+     * @param players the list of the players in the game
+     */
     static public void showLobbyView(List<String> players){
         try {
             primaryStage.getScene().setRoot(FXMLLoader.load(GUI.class.getResource("/fxml/lobby_page.fxml")));
@@ -69,6 +82,10 @@ public class GUI extends Application {
         }
     }
 
+    /**
+     * updates the list of players in the lobby
+     * @param players the list of the players in the lobby
+     */
     static public void updateLobby(List<String> players) {
         Text text = (Text) primaryStage.getScene().lookup("#playersText");
         String s = "";
@@ -78,6 +95,9 @@ public class GUI extends Application {
         text.setText(s);
     }
 
+    /**
+     * shows the game_view.fxml window to play the game, and determines its width and height
+     */
     static public void showGameView() {
 
         try {
@@ -109,6 +129,11 @@ public class GUI extends Application {
 
     }
 
+    /**
+     * shows the end_view.fxml window, that shows the points of all the players and the winner
+     * @param playerPoints a map associating a player's nickname to its points
+     * @param winner a string containing the winner's nickname
+     */
     static public void showScoreboardView(Map<String, Integer> playerPoints, String winner) {
         Platform.runLater(() -> {
             try {
@@ -161,6 +186,11 @@ public class GUI extends Application {
 
     }
 
+    /**
+     * updates the game_view.fxml window, following an action from any of the players
+     * @param gameUpdate a GameUpdate object containing the updated game params
+     * @param toRefresh a list of GuiParts to refresh
+     */
     static public void updateGameView(GameUpdate gameUpdate, List<GuiParts> toRefresh) {
         if (!checkFirstTime) {
             int cgc1 = gameUpdate.commonGoalCards().get(0).commonGoalCardID();
@@ -279,6 +309,11 @@ public class GUI extends Application {
 
     }
 
+    /**
+     * updates the tokens images in the game_view.fxml window, following various actions throughout the game
+     * @param tokenRow an HBox object containing the token images
+     * @param nickname the nickname of the current player
+     */
     static private void updateTokens(HBox tokenRow, String nickname) {
         Platform.runLater(() -> tokenRow.getChildren().clear());
 
@@ -318,6 +353,12 @@ public class GUI extends Application {
         }
     }
 
+    /**
+     * updates the player's bookshelf after an action
+     * @param bookshelf the current player's Bookshelf
+     * @param gridPane a GridPane object
+     * @param size the size of the imageView
+     */
     static private void updateBookshelf(Bookshelf bookshelf, GridPane gridPane, int size) {
         for (int i = 0; i < Bookshelf.ROWS; i++) {
             for (int j = 0; j < Bookshelf.COLUMNS; j++) {
@@ -336,21 +377,37 @@ public class GUI extends Application {
         }
     }
 
+    /**
+     * sends the selected column to the guiController
+     * @param c the column index
+     */
     static public void selectColumn(int c) {
         guiController.chooseColumn(c);
     }
 
+    /**
+     * sends the number of players to the guiController
+     * @param numPlayers the number of players
+     */
     static public void setNumPlayers(int numPlayers) {
         guiController.setNumPlayers(numPlayers);
         showLobbyView(List.of(guiController.getMyNickname()));
     }
 
+    /**
+     * shows the warning messages as Toast
+     * @param message a string containing the message to show
+     */
     static public void showToast(String message) {
         Platform.runLater(() -> {
             Toast.makeText(primaryStage, message, 3000, 200, 200);
         });
     }
 
+    /**
+     * opens the player_view.fxml windows, allowing to see the other player's bookshelves
+     * @param nickname the nickname of the player
+     */
     static public void openPlayerWindow(String nickname) {
         PlayerUpdate playerUpdate = guiController.getGameUpdate().players().stream().filter(p -> nickname.equals(p.nickname())).findFirst().orElseThrow();
 
@@ -374,10 +431,19 @@ public class GUI extends Application {
 
     }
 
+    /**
+     * sends a chat message to the guiController
+     * @param to the nickname of the recipient
+     * @param text the text of the message to send
+     */
     static public void sendMessage(String to, String text) {
         guiController.sendMessage(to, text);
     }
 
+    /**
+     * adds the message history to the MessageHistory TextArea inside the chat_viwe.fxml
+     * @param messages a list of messages to show
+     */
     static public void addMessages(List<Message> messages) {
         if (chatStage == null) return;
 
@@ -390,6 +456,10 @@ public class GUI extends Application {
         messagesTextArea.appendText(stringBuilder.toString());
     }
 
+    /**
+     * opens the chat_view.fxml, allowing a player to see the previous messages and to send a private message or a
+     * broadcast message to everyone
+     */
     static public void openChatWindow() {
         if (chatStage != null) return;
 
@@ -424,6 +494,11 @@ public class GUI extends Application {
         }
     }
 
+    /**
+     * opens the welcome_page.fxml window, initializing the primaryStage and effectively starting the game
+     * @param primaryStage the stage on which the game is being played on
+     * @throws Exception
+     */
     @Override
     public void start(Stage primaryStage) throws Exception {
         GUI.primaryStage = primaryStage;
@@ -445,6 +520,10 @@ public class GUI extends Application {
         screenHeight = (int) Screen.getPrimary().getBounds().getHeight();
     }
 
+    /**
+     * initializes the connection and creates a new guiController
+     * @throws Exception
+     */
     @Override
     public void init() throws Exception {
         super.init();
@@ -464,6 +543,10 @@ public class GUI extends Application {
         launch(args);
     }
 
+    /**
+     * sets the scaling factor in order to adapt the game_view.fxml window to the user's screen
+     * @param stage
+     */
     static private void setScalingFactor(Stage stage) {
         double widthFactor = stage.getWidth() / 1400.0;
         double heightFactor = stage.getHeight() / 800.0;
