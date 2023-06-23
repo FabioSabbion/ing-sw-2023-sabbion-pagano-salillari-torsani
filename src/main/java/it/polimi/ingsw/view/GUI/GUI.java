@@ -92,38 +92,55 @@ public class GUI extends Application {
     }
 
     static public void showScoreboardView(Map<String, Integer> playerPoints, String winner) {
-        try {
-            primaryStage.getScene().setRoot(FXMLLoader.load(GUI.class.getResource("/fxml/end_view.fxml")));
-            primaryStage.setWidth(1100.0);
-            Text winnerText = (Text) primaryStage.getScene().lookup("#winnerText");
-            winnerText.setText(winner.equals(guiController.getMyNickname()) ? "You won the game!" : winner + " has won the game");
-            GridPane scoreTable = (GridPane) primaryStage.getScene().lookup("#scoreTable");
-            int row = 0;
-            for (var entry : playerPoints.entrySet().stream().sorted(Comparator.comparingInt(Map.Entry::getValue)).toList()) {
-                Text text1 = new Text();
-                Text text2 = new Text();
+        Platform.runLater(() -> {
+            try {
+                Stage scoreboardStage = new Stage();
 
-                text1.setText(entry.getKey());
-                text2.setText(entry.getValue().toString());
-
-                text1.setFont(Font.font(null, FontWeight.BOLD, 36.0));
-                text1.setFill(Color.WHITE);
-                text1.setStroke(Color.BLACK);
-                text1.setStrokeWidth(1.5);
-                text2.setFont(Font.font(null, FontWeight.BOLD, 36.0));
-                text2.setFill(Color.WHITE);
-                text2.setStroke(Color.BLACK);
-                text2.setStrokeWidth(1.5);
-                int finalRow = row;
-                Platform.runLater(() -> {
-                    scoreTable.add(text1, 0, finalRow);
-                    scoreTable.add(text2, 1, finalRow);
+                Parent root = FXMLLoader.load(GUI.class.getResource("/fxml/end_view.fxml"));
+                Scene scene = new Scene(root);
+                scoreboardStage.setScene(scene);
+                scoreboardStage.setResizable(false);
+                scoreboardStage.setWidth(900.0);
+                scoreboardStage.setHeight(800.0);
+                scoreboardStage.setTitle("Scoreboard");
+                scoreboardStage.getIcons().add(new Image("/images/publisher/Icon 50x50px.png"));
+                scoreboardStage.setOnCloseRequest((value) -> {
+                    primaryStage.close();
+                    System.exit(0);
                 });
-                row++;
+
+                scoreboardStage.show();
+
+                Text winnerText = (Text) scoreboardStage.getScene().lookup("#winnerText");
+                winnerText.setText(winner.equals(guiController.getMyNickname()) ? "You won the game!" : winner + " has won the game");
+                GridPane scoreTable = (GridPane) scoreboardStage.getScene().lookup("#scoreTable");
+                int row = 0;
+                for (var entry : playerPoints.entrySet().stream().sorted(Comparator.comparingInt(Map.Entry::getValue)).toList()) {
+                    Text text1 = new Text();
+                    Text text2 = new Text();
+
+                    text1.setText(entry.getKey());
+                    text2.setText(entry.getValue().toString());
+
+                    text1.setFont(Font.font(null, FontWeight.BOLD, 36.0));
+                    text1.setFill(Color.BLACK);
+                    // text1.setStroke(Color.BLACK);
+                    // text1.setStrokeWidth(1.5);
+                    text2.setFont(Font.font(null, FontWeight.BOLD, 36.0));
+                    text2.setFill(Color.BLACK);
+                    // text2.setStroke(Color.BLACK);
+                    // text2.setStrokeWidth(1.5);
+
+                    scoreTable.add(text1, 0, row);
+                    scoreTable.add(text2, 1, row);
+
+                    row++;
+                }
+            } catch (IOException e) {
+                throw new RuntimeException(e);
             }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        });
+
     }
 
     static public void updateGameView(GameUpdate gameUpdate, List<GuiParts> toRefresh) {
@@ -319,6 +336,7 @@ public class GUI extends Application {
             Parent root = FXMLLoader.load(GUI.class.getResource("/fxml/player_view.fxml"));
             Scene scene = new Scene(root);
             newStage.setScene(scene);
+            newStage.getIcons().add(new Image("/images/publisher/Icon 50x50px.png"));
             newStage.show();
             GridPane bookshelfGrid = (GridPane) newStage.getScene().lookup("#bookshelfGrid");
             updateBookshelf(playerUpdate.bookshelf(), bookshelfGrid, 50);
@@ -355,6 +373,7 @@ public class GUI extends Application {
         chatStage = newStage;
         newStage.setTitle("Chat");
         newStage.setResizable(false);
+        newStage.getIcons().add(new Image("/images/publisher/Icon 50x50px.png"));
         try {
             Parent root = FXMLLoader.load(GUI.class.getResource("/fxml/chat_view.fxml"));
             Scene scene = new Scene(root);
@@ -390,6 +409,7 @@ public class GUI extends Application {
 
         primaryStage.setTitle("MyShelfie");
         primaryStage.getIcons().add(new Image("/images/publisher/Icon 50x50px.png"));
+        primaryStage.setResizable(false);
         primaryStage.setScene(scene);
         primaryStage.show();
 
