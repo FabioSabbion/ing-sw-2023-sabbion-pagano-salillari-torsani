@@ -244,7 +244,7 @@ public class CLIController implements ViewController {
 
                 for (String updatedPlayer: players) {
                     if (offlinePlayers.contains(updatedPlayer)){
-                        menuNotifications.add(Color.RED.escape() + updatedPlayer + " has reconnected");
+                        menuNotifications.add(Color.RED.escape() + updatedPlayer + " has reconnected" + Color.RESET);
 
                         offlinePlayers.remove(updatedPlayer);
                     }
