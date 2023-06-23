@@ -165,7 +165,7 @@ public class GUI extends Application {
 
             commonGoalCardImage1.setImage(new Image("/images/common_goal_cards/"+ (cgc1+1) +".jpg"));
             commonGoalCardImage2.setImage(new Image("/images/common_goal_cards/"+ (cgc2+1) +".jpg"));
-            personalGoalCardImage.setImage(new Image("/images/personal_goal_cards/Personal_Goals"+pgc.charAt(3)+".png"));
+            personalGoalCardImage.setImage(new Image("/images/personal_goal_cards/Personal_Goals"+pgc.split("_")[1]+".png"));
 
             // Update players buttons
             List<Button> playerButtons = new ArrayList<>();
