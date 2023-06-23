@@ -535,7 +535,7 @@ public class CLIController implements ViewController {
         Map<String, Integer> playerPoints = new HashMap<>();
 
         for (String player: new ArrayList<>(this.players.keySet())) {
-            playerPoints.put(player, calculatePersonalGoalCardPoints(player));
+            playerPoints.put(player, calculatePersonalGoalCardPoints(player) + this.players.get(player).bookshelf().getPoints());
         }
 
         for (CommonGoalCardUpdate card : this.commonGoalCards) {
