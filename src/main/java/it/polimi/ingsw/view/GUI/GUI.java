@@ -360,7 +360,7 @@ public class GUI extends Application {
         TextArea messagesTextArea = (TextArea) chatStage.getScene().lookup("#MessageHistory");
         StringBuilder stringBuilder = new StringBuilder();
         for (Message m : messages) {
-            stringBuilder.append("[").append(m.timestamp().format(DateTimeFormatter.ofPattern("HH:mm:ss"))).append("]").append(" (").append(m.to() != null ? (m.to().equals(guiController.getMyNickname()) ? m.from() : m.to()) : "Everyone").append(") ").append(m.from().equals(guiController.getMyNickname()) ? "You" : m.from()).append(": ").append(m.message()).append("\n");
+            stringBuilder.append("[").append(m.timestamp().format(DateTimeFormatter.ofPattern("HH:mm:ss"))).append("]").append(m.to() != null ? (m.to().equals(guiController.getMyNickname()) ? " " : " (" + m.to() + ") ") : " (Everyone) ").append(m.from().equals(guiController.getMyNickname()) ? "You" : m.from()).append(": ").append(m.message()).append("\n");
         }
 
         messagesTextArea.appendText(stringBuilder.toString());
@@ -385,7 +385,7 @@ public class GUI extends Application {
             TextArea messagesTextArea = (TextArea) chatStage.getScene().lookup("#MessageHistory");
             StringBuilder stringBuilder = new StringBuilder();
             for (Message m : guiController.getMessages()) {
-                stringBuilder.append("[").append(m.timestamp().format(DateTimeFormatter.ofPattern("HH:mm:ss"))).append("]").append(" (").append(m.to() != null ? (m.to().equals(guiController.getMyNickname()) ? m.from() : m.to()) : "Everyone").append(") ").append(m.from().equals(guiController.getMyNickname()) ? "You" : m.from()).append(": ").append(m.message()).append("\n");
+                stringBuilder.append("[").append(m.timestamp().format(DateTimeFormatter.ofPattern("HH:mm:ss"))).append("]").append(m.to() != null ? (m.to().equals(guiController.getMyNickname()) ? " " : " (" + m.to() + ") ") : " (Everyone) ").append(m.from().equals(guiController.getMyNickname()) ? "You" : m.from()).append(": ").append(m.message()).append("\n");
             }
 
             messagesTextArea.setText(stringBuilder.toString());
