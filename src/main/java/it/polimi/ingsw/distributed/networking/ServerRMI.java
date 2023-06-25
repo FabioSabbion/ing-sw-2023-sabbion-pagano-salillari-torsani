@@ -76,7 +76,15 @@ public class ServerRMI extends UnicastRemoteObject implements Server {
     @Override
     public void sendMessageTo(@Nullable String to, String message, Client client) {
         executor.execute(() -> {
-            Lobby.getInstance().sendMessage(client, to, message);
+            try {
+                Lobby.getInstance().sendMessage(client, to, message);
+            } catch (LobbyException e) {
+                try {
+                    client.serverError(e.getMessage());
+                } catch (RemoteException ex) {
+                    Lobby.getInstance().removeDisconnectedClient(client);
+                }
+            }
         });
     }
 

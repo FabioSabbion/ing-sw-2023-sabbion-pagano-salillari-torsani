@@ -439,9 +439,13 @@ public class Lobby {
         });
     }
 
-    public void sendMessage(Client client, @Nullable String to, String message) {
+    public void sendMessage(Client client, @Nullable String to, String message) throws LobbyException {
         String from = clientNickname.get(client);
+        try {
+            nicknameController.get(from).chat.sendMessage(message, from, to);
+        } catch (NullPointerException e) {
+            throw new LobbyException("The game is ended, you cannot send messages");
+        }
 
-        nicknameController.get(from).chat.sendMessage(message, from, to);
     }
 }
