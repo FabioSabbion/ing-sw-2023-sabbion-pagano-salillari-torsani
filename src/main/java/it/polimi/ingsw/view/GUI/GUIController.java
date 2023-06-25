@@ -253,7 +253,7 @@ public class GUIController implements ViewController {
         if (offlinePlayers.size() == gameUpdate.players().size() - 1) {
             winner = myNickname;
         } else {
-            winner = playerPoints.entrySet().stream().max((a, b) -> b.getValue().compareTo(a.getValue())).orElseThrow().getKey();
+            winner = playerPoints.entrySet().stream().max((a, b) -> a.getValue().compareTo(b.getValue())).orElseThrow().getKey();
         }
         GUI.showScoreboardView(playerPoints, winner);
     }
