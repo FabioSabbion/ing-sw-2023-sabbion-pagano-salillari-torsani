@@ -150,7 +150,13 @@ public class GUI extends Application {
                 winnerText.setText(winner.equals(guiController.getMyNickname()) ? "You won the game!" : winner + " has won the game");
                 GridPane scoreTable = (GridPane) scoreboardStage.getScene().lookup("#scoreTable");
                 int row = 0;
-                for (var entry : playerPoints.entrySet().stream().sorted(Comparator.comparingInt(Map.Entry::getValue)).toList()) {
+                for (var entry : playerPoints.entrySet().stream().sorted((a,b) -> {
+                    if (a.getValue() < b.getValue())
+                        return 1;
+                    if (a.getValue().equals(b.getValue()))
+                        return 0;
+                    return -1;
+                }).toList()) {
                     Text text1 = new Text();
                     Text text2 = new Text();
 
