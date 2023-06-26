@@ -326,6 +326,7 @@ public class GUI extends Application {
             });
         }
         // Scoring tokens
+        int cgcIndex = 1;
         for (CommonGoalCardUpdate cgcu : guiController.getGameUpdate().commonGoalCards()) {
             int index = cgcu.playerUpdateList().indexOf(nickname);
             if (index != -1) {
@@ -334,10 +335,13 @@ public class GUI extends Application {
                 imageView.setImage(new Image("/images/tokens/scoring_" + p + ".jpg"));
                 imageView.setFitWidth(100);
                 imageView.setFitHeight(100);
+                ImageView commonGoalCardImage = (ImageView) primaryStage.getScene().lookup("#commonGoalCardImage"+cgcIndex);
                 Platform.runLater(() -> {
+                    commonGoalCardImage.setStyle("-fx-opacity: 0.5");
                     tokenRow.getChildren().add(imageView);
                 });
             }
+            cgcIndex++;
         }
         // First player chair
         if (guiController.getGameUpdate().players().get(0).nickname().equals(nickname)) {
