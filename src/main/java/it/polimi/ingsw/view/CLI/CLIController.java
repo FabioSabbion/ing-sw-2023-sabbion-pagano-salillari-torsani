@@ -297,6 +297,12 @@ public class CLIController implements ViewController {
 
             cli.showPlayerTurn(currentPlayer, menuNotifications, gameFinished);
         }
+
+        if (this.state.equals(State.WAITING)) {
+            for (String player : players){
+                System.out.println(player);
+            }
+        }
     }
 
 

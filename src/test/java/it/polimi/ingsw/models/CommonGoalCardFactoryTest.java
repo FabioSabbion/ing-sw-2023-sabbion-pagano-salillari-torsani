@@ -455,9 +455,88 @@ class CommonGoalCardFactoryTest {
 
     }
 
+    @Test
+    @DisplayName("Checking commonGoalCard 11")
+    void getCommonGoalCard11_v2() {
+        int numPlayer = 3;
+
+        var commonGoalCard = CommonGoalCardFactory.buildFromJson(numPlayer, 11);
+
+        System.out.println("Card:");
+        System.out.println(CommonGoalCardFactory.getASCIIForCard(11));
+
+        var player = new Player("andri", PersonalGoalCard.buildFromJson().get(0));
+
+        for (int i = 1; i < 6; i++) {
+            player.getBookshelf().getBookshelf()[i][0] = new Tile(Category.CATS, Icon.VARIATION1, Orientation.UP);
+        }
+
+        for (int i = 1; i < 5; i++) {
+            player.getBookshelf().getBookshelf()[i][1] = new Tile(Category.TROPHIES, Icon.VARIATION1, Orientation.UP);
+        }
+
+        for (int i = 1; i < 4; i++) {
+            player.getBookshelf().getBookshelf()[i][2] = new Tile(Category.FRAMES, Icon.VARIATION1, Orientation.UP);
+        }
+
+        for (int i = 1; i < 3; i++) {
+            player.getBookshelf().getBookshelf()[i][3] = new Tile(Category.BOOKS, Icon.VARIATION1, Orientation.UP);
+        }
+
+        for (int i = 1; i < 2; i++) {
+            player.getBookshelf().getBookshelf()[i][4] = new Tile(Category.PLANTS, Icon.VARIATION1, Orientation.UP);
+        }
+
+        for (int i = 0; i < 5; i++) {
+            player.getBookshelf().getBookshelf()[0][i] = new Tile(Category.PLANTS, Icon.VARIATION1, Orientation.UP);
+        }
 
 
+        System.out.println(CLIRenderer.renderBookshelf(player.getBookshelf()));
 
+        assertTrue(commonGoalCard.checkGoal(player) > 0);
 
+    }
 
+    @Test
+    @DisplayName("Checking commonGoalCard 11")
+    void getCommonGoalCard11_v3() {
+        int numPlayer = 3;
+
+        var commonGoalCard = CommonGoalCardFactory.buildFromJson(numPlayer, 11);
+
+        System.out.println("Card:");
+        System.out.println(CommonGoalCardFactory.getASCIIForCard(11));
+
+        var player = new Player("andri", PersonalGoalCard.buildFromJson().get(0));
+
+        for (int i = 1; i < 6; i++) {
+            player.getBookshelf().getBookshelf()[i][4] = new Tile(Category.CATS, Icon.VARIATION1, Orientation.UP);
+        }
+
+        for (int i = 1; i < 5; i++) {
+            player.getBookshelf().getBookshelf()[i][3] = new Tile(Category.TROPHIES, Icon.VARIATION1, Orientation.UP);
+        }
+
+        for (int i = 1; i < 4; i++) {
+            player.getBookshelf().getBookshelf()[i][2] = new Tile(Category.FRAMES, Icon.VARIATION1, Orientation.UP);
+        }
+
+        for (int i = 1; i < 3; i++) {
+            player.getBookshelf().getBookshelf()[i][1] = new Tile(Category.BOOKS, Icon.VARIATION1, Orientation.UP);
+        }
+
+        for (int i = 1; i < 2; i++) {
+            player.getBookshelf().getBookshelf()[i][0] = new Tile(Category.PLANTS, Icon.VARIATION1, Orientation.UP);
+        }
+
+        for (int i = 0; i < 5; i++) {
+            player.getBookshelf().getBookshelf()[0][i] = new Tile(Category.PLANTS, Icon.VARIATION1, Orientation.UP);
+        }
+
+        System.out.println(CLIRenderer.renderBookshelf(player.getBookshelf()));
+
+        assertTrue(commonGoalCard.checkGoal(player) > 0);
+
+    }
 }
