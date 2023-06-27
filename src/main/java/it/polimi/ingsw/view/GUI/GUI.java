@@ -32,6 +32,7 @@ import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.rmi.ConnectException;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
@@ -535,10 +536,15 @@ public class GUI extends Application {
         String IP = getParameters().getRaw().get(1);
         guiController = new GUIController();
 
-        if (connectionType.equals("socket")) {
-            AppClientSocket.start(guiController, IP);
-        } else {
-            AppClientRMI.start(guiController, IP);
+        try {
+            if (connectionType.equals("socket")) {
+                AppClientSocket.start(guiController, IP);
+            } else {
+                AppClientRMI.start(guiController, IP);
+            }
+        } catch (ConnectException e){
+            System.err.println("Server unreachable! Try again");
+            System.exit(0);
         }
 
     }
