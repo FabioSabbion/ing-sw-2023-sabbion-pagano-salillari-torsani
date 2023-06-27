@@ -20,8 +20,11 @@ import org.apache.commons.lang3.tuple.Pair;
 import javax.annotation.Nullable;
 import java.rmi.RemoteException;
 import java.util.*;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 public class Lobby {
+    private final Executor removeDisconnected = Executors.newSingleThreadExecutor();
     public static final int seconds = 30;
     Map<String, Client> waitingPlayers;
     final BiMap<Client, String> clientNickname;
@@ -71,32 +74,34 @@ public class Lobby {
     }
 
     public synchronized void removeDisconnectedClient(Client client) {
-        var disconnected = clientNickname.remove(client);
-        Client waitingClient = null;
+        this.removeDisconnected.execute(() -> {
+            var disconnected = clientNickname.remove(client);
+            Client waitingClient = null;
 
-        if (this.state == State.CREATING_GAME && waitingPlayers != null) {
-            waitingClient = waitingPlayers.remove(disconnected);
-        }
-
-        if (waitingClient != null) {
-            this.updatedWaitingPlayers();
-            if (waitingPlayers.isEmpty()) {
-                this.waitingPlayers = null;
-                this.state = State.WAITING_FOR_GAME;
+            if (this.state == State.CREATING_GAME && waitingPlayers != null) {
+                waitingClient = waitingPlayers.remove(disconnected);
             }
-        } else if (nicknameController.containsKey(disconnected)){
-            var remainedClients = updatedPlayerList(disconnected);
+
+            if (waitingClient != null) {
+                this.updatedWaitingPlayers();
+                if (waitingPlayers != null && waitingPlayers.isEmpty()) {
+                    this.waitingPlayers = null;
+                    this.state = State.WAITING_FOR_GAME;
+                }
+            } else if (nicknameController.containsKey(disconnected)){
+                var remainedClients = updatedPlayerList(disconnected);
 
 //            Skip current client if he disconnected with no reason
-            if (remainedClients.size() > 0 && nicknameController.get(disconnected).game.getCurrentPlayer().getNickname().equals(disconnected)) {
-                List<String> offlineClients = Arrays.stream(nicknameController.get(disconnected).game.getPlayers())
-                        .map(Player::getNickname)
-                        .filter(player -> !clientNickname.containsValue(player))
-                        .toList();
+                if (remainedClients.size() > 0 && nicknameController.get(disconnected).game.getCurrentPlayer().getNickname().equals(disconnected)) {
+                    List<String> offlineClients = Arrays.stream(nicknameController.get(disconnected).game.getPlayers())
+                            .map(Player::getNickname)
+                            .filter(player -> !clientNickname.containsValue(player))
+                            .toList();
 
-                nicknameController.get(disconnected).game.nextPlayer(offlineClients);
+                    nicknameController.get(disconnected).game.nextPlayer(offlineClients);
+                }
             }
-        }
+        });
     }
 
     /**
@@ -264,13 +269,16 @@ public class Lobby {
     }
 
     private void updatedWaitingPlayers() {
-        for (var oldConnections: this.waitingPlayers.entrySet()) {
+        final var waitingPlayersCopy = this.waitingPlayers.entrySet().stream().toList();
+        for (var oldConnections: waitingPlayersCopy) {
             try {
                 oldConnections.getValue().updatedPlayerList(this.waitingPlayers.keySet().stream().toList());
             } catch (RemoteException e) {
                 removeDisconnectedClient(oldConnections.getValue());
             }
         }
+
+
     }
 
     private void setClientListener(Client client, GameController controller) {
