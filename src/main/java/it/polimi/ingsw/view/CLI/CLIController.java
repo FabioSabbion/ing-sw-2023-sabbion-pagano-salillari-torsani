@@ -164,6 +164,7 @@ public class CLIController implements ViewController {
                 } else if (gameFinished) {
                     System.out.println(Color.YELLOW.escape() + "Thanks for playing!" + Color.RESET);
                     this.changeState(State.END_GAME);
+                    System.exit(0);
                 } else System.out.println("It's not your turn! Please enter a valid option...");
             }
             default -> System.out.println("That is not a valid option! Enter a valid one");
