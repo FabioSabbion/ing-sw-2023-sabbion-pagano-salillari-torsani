@@ -52,7 +52,7 @@ Complete Rules + TUI + GUI + RMI + Socket + 3 AF |30L|
 
 # Running the game
 ## Building the artifacts
-**inserire comando di maven**
+```mvn clean install```
 ## Server
 It is sufficient to run the server through the command
 ```java -jar server.jar``` which creates a RMI connection 
