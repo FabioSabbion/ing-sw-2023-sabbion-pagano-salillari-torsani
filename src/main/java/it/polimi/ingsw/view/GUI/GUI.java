@@ -336,7 +336,9 @@ public class GUI extends Application {
                 imageView.setFitHeight(100);
                 ImageView commonGoalCardImage = (ImageView) primaryStage.getScene().lookup("#commonGoalCardImage"+cgcIndex);
                 Platform.runLater(() -> {
-                    commonGoalCardImage.setStyle("-fx-opacity: 0.5");
+                    if (nickname.equals(guiController.getMyNickname())) {
+                        commonGoalCardImage.setStyle("-fx-opacity: 0.5");
+                    }
                     tokenRow.getChildren().add(imageView);
                 });
             }
