@@ -42,6 +42,19 @@ public class CommonGoalCardFactory {
     }
 
     /**
+     * gets the GUI path for the specified CommonGoalCard
+     * @param cardID the CommonGoalCard of which you wish to obtain the GUI path of
+     * @return the GUI path of the CommonGoalCard
+     */
+    public static String getGUIForCard(int cardID) {
+        if (jsonObjects.size() == 0) {
+            reloadJson();
+        }
+        JSONObject graphic = (JSONObject) jsonObjects.get(cardID).get("graphics");
+        return graphic.get("gui").toString();
+    }
+
+    /**
      * builds the CommonGoalCard from a JSON file
      * @param numPlayers the number of players in the game
      * @param cardID the ID of the CommonGoalCard
