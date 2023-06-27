@@ -12,6 +12,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.net.Socket;
+import java.rmi.ConnectException;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +23,7 @@ public class ServerStub implements Server{
 
     private Socket socket;
 
-    public ServerStub(String ip, int port) {
+    public ServerStub(String ip, int port) throws ConnectException {
         try {
             this.socket = new Socket(ip, port);
             try {
@@ -36,7 +37,7 @@ public class ServerStub implements Server{
                 throw new RemoteException("Cannot create input stream", e);
             }
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new ConnectException(e.getMessage());
         }
     }
 
