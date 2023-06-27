@@ -1,14 +1,13 @@
 package it.polimi.ingsw.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import it.polimi.ingsw.controller.events.ViewEvent;
+import it.polimi.ingsw.events.ViewEvent;
 import it.polimi.ingsw.models.exceptions.NotEnoughCellsException;
 import it.polimi.ingsw.models.exceptions.PickTilesException;
 import it.polimi.ingsw.utils.Observable;
 
 import java.io.Serializable;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static java.lang.Math.abs;
 
@@ -20,6 +19,7 @@ public class Bookshelf extends Observable<Bookshelf, ViewEvent> implements Seria
     public static final int ROWS = 6;
     public static final int COLUMNS = 5;
     private final Tile[][] bookshelf;
+    public static final int[] POINTS = {0, 0, 0, 2, 3, 5, 8};
 
     public Bookshelf() {
         this.bookshelf = new Tile[ROWS][COLUMNS];
@@ -88,28 +88,57 @@ public class Bookshelf extends Observable<Bookshelf, ViewEvent> implements Seria
      */
     @JsonIgnore
     public Map<Category, List<Integer>> getCloseTiles() {
-        Map<Category, List<List<Coordinates>>> groups = new HashMap<>();
+
+        boolean[][] visited = new boolean[ROWS][COLUMNS];
+        Map<Category, List<Integer>> groups = new HashMap<>();
+
         for (int i = 0; i < ROWS; i++) {
             for (int j = 0; j < COLUMNS; j++) {
-                if(this.bookshelf[i][j] == null) continue;
-                if(!groups.containsKey(this.bookshelf[i][j].category())){
-                    groups.put(this.bookshelf[i][j].category(), new ArrayList<>(List.of(new ArrayList<>(List.of(new Coordinates(i,j))))));
-                }
-                else{
-                    List<List<Coordinates>> temp = groups.get(this.bookshelf[i][j].category());
-                    for (List<Coordinates> l: temp) {
-                        for (Coordinates c: l) {
-                            if(abs(c.x - j) <= 1 || abs(c.y - i) <= 1){
-                                l.add(c);
-                                break;
-                            }
-                        }
+                if (!visited[i][j] && this.bookshelf[i][j] != null) {
+                    Category value = this.bookshelf[i][j].category();
+                    List<Coordinates> coordinates = new ArrayList<>();
+                    exploreGroup(visited, i, j, value, coordinates);
+
+                    if (groups.containsKey(value)) {
+                        groups.get(value).add(coordinates.size());
+                    } else {
+                        groups.put(value, new ArrayList<>(List.of(coordinates.size())));
                     }
                 }
             }
         }
-        return groups.entrySet().stream().map((e) -> Map.entry(e.getKey(), e.getValue().stream().map(List::size).toList()))
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+
+        return groups;
+    }
+
+    @JsonIgnore
+    private void exploreGroup(boolean[][] visited, int row, int col, Category value, List<Coordinates> coordinates) {
+
+        if (row < 0 || row >= ROWS || col < 0 || col >= COLUMNS || visited[row][col] || this.bookshelf[row][col] == null || this.bookshelf[row][col].category() != value) {
+            return;
+        }
+
+        visited[row][col] = true;
+        coordinates.add(new Coordinates(row, col));
+
+        exploreGroup(visited, row - 1, col, value, coordinates); // Up
+        exploreGroup(visited, row + 1, col, value, coordinates); // Down
+        exploreGroup(visited, row, col - 1, value, coordinates); // Left
+        exploreGroup(visited, row, col + 1, value, coordinates); // Right
+    }
+
+    @JsonIgnore
+    public int getPoints() {
+        Map<Category, List<Integer>> closedTiles = this.getCloseTiles();
+        int total = 0;
+
+        for (var entry : closedTiles.entrySet()) {
+            for (int num : entry.getValue()) {
+                total += Bookshelf.POINTS[Math.min(num, Bookshelf.POINTS.length-1)];
+            }
+        }
+
+        return total;
     }
 
     @Override

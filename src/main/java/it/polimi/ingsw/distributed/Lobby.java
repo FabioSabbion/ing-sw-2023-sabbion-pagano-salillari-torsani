@@ -6,11 +6,13 @@ import com.google.common.collect.Maps;
 import it.polimi.ingsw.GamePersistence;
 import it.polimi.ingsw.GameUpdateToFile;
 import it.polimi.ingsw.controller.GameController;
-import it.polimi.ingsw.controller.events.MessageEvent;
-import it.polimi.ingsw.controller.events.ViewEvent;
+import it.polimi.ingsw.events.MessageEvent;
+import it.polimi.ingsw.events.ViewEvent;
 import it.polimi.ingsw.distributed.exceptions.LobbyException;
 import it.polimi.ingsw.distributed.networking.Client;
 import it.polimi.ingsw.models.*;
+import it.polimi.ingsw.models.exceptions.NotEnoughCellsException;
+import it.polimi.ingsw.models.exceptions.PickTilesException;
 import it.polimi.ingsw.utils.Observer;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
@@ -341,7 +343,7 @@ public class Lobby {
         }
     }
 
-    public void updateController(Client client, List<Coordinates> coordinatesList, int column) throws LobbyException {
+    public void updateController(Client client, List<Coordinates> coordinatesList, int column) throws LobbyException, PickTilesException, NotEnoughCellsException {
         var gameData = this.getNicknameController(client);
 
         var offlinePlayers = Arrays.stream(gameData.getRight().game.getPlayers())
@@ -437,9 +439,13 @@ public class Lobby {
         });
     }
 
-    public void sendMessage(Client client, @Nullable String to, String message) {
+    public void sendMessage(Client client, @Nullable String to, String message) throws LobbyException {
         String from = clientNickname.get(client);
+        try {
+            nicknameController.get(from).chat.sendMessage(message, from, to);
+        } catch (NullPointerException e) {
+            throw new LobbyException("The game is ended, you cannot send messages");
+        }
 
-        nicknameController.get(from).chat.sendMessage(message, from, to);
     }
 }

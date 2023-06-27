@@ -34,7 +34,7 @@ public class ClientImpl extends UnicastRemoteObject implements Client {
     @Override
     public void updateGame(GameUpdate update) throws RemoteException {
         view.updateGame(update);
-        System.err.println("Game has been updated");
+        // System.err.println("Game has been updated");
     }
 
     @Override

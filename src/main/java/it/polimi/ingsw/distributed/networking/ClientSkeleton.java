@@ -1,12 +1,14 @@
 package it.polimi.ingsw.distributed.networking;
 
-import it.polimi.ingsw.controller.events.EventType;
+import it.polimi.ingsw.events.EventType;
 import it.polimi.ingsw.distributed.GameUpdate;
 import it.polimi.ingsw.distributed.Lobby;
 import it.polimi.ingsw.distributed.MessageUpdate;
 import it.polimi.ingsw.distributed.exceptions.LobbyException;
 import it.polimi.ingsw.models.Coordinates;
 import it.polimi.ingsw.models.Message;
+import it.polimi.ingsw.models.exceptions.NotEnoughCellsException;
+import it.polimi.ingsw.models.exceptions.PickTilesException;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -136,7 +138,7 @@ public class ClientSkeleton implements Client {
         } catch (IOException | ClassNotFoundException e) {
             // TODO: call method on Lobby to notify the client is disconnected
             //throw new RuntimeException(e);
-        } catch (LobbyException e) {
+        } catch (LobbyException | PickTilesException | NotEnoughCellsException e) {
             serverError(e.getMessage());
         }
 

@@ -20,11 +20,18 @@ public class PersonalGoalCard implements GoalCard, Serializable {
     private final int[] points = {0, 1, 2, 4, 6, 9, 12};
     private final List<MutablePair<Category, Coordinates>> positions;
     private static JSONObject jsonFile;
+    public final String cardID;
 
-    public PersonalGoalCard(List<MutablePair<Category, Coordinates>> positions) {
+    public PersonalGoalCard(List<MutablePair<Category, Coordinates>> positions, String cardID) {
         this.positions = positions;
+        this.cardID = cardID;
     }
 
+    /**
+     * checks whether the player has obtained points in the {@link PersonalGoalCard}
+     * @param player The player to check
+     * @return the points obtained
+     */
     public int checkGoal(Player player) {
         int counterCorrect = 0;
 
@@ -65,7 +72,7 @@ public class PersonalGoalCard implements GoalCard, Serializable {
                 positions.add(new MutablePair<>(category, coordinates));
             }
 
-            personalGoalCards.add(new PersonalGoalCard(positions));
+            personalGoalCards.add(new PersonalGoalCard(positions, pgId));
         }
         return personalGoalCards;
     }

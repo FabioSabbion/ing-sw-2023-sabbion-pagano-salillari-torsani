@@ -4,6 +4,7 @@ import it.polimi.ingsw.models.*;
 import it.polimi.ingsw.models.exceptions.NotEnoughCellsException;
 import it.polimi.ingsw.models.exceptions.PickTilesException;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,7 +27,7 @@ public class GameController {
         this.chat = new Chat();
     }
 
-    private void gameTurn(List<Coordinates> coordinatesList, int column, List<String> offlineNicknames) {
+    private void gameTurn(List<Coordinates> coordinatesList, int column, List<String> offlineNicknames) throws PickTilesException, NotEnoughCellsException  {
         this.playerAction(coordinatesList, column);
         this.updateCommonGoalPoints();
 
@@ -35,27 +36,26 @@ public class GameController {
 
         this.game.getLivingRoom().fillBoardIfNeeded(this.game.getPlayers().length, this.game.getRemainingTiles());
 
+        if (prevPlayer.getBookshelf().isFull() && this.game.getGameEnder() == null) {
+            this.game.setGameEnder(prevPlayer);
+        }
+
         this.game.nextPlayer(offlineNicknames);
 
-        if (prevPlayer.getBookshelf().isFull() && this.game.getGameEnder() != null) {
-            this.game.setGameEnder(prevPlayer);
-
-            if (prevPlayer.getNickname().equals(this.game.getCurrentPlayer().getNickname())) {
-                this.game.emitGameState(true);
-            }
+        if (prevPlayer.getNickname().equals(this.game.getCurrentPlayer().getNickname()) &&
+            this.game.getGameEnder() != null) {
+            this.game.emitGameState(true);
         }
     }
 
-    private void playerAction(List<Coordinates> coordinatesList, int column) {
-        try {
-            List<Tile> tiles = this.game.getLivingRoom().chooseTiles(coordinatesList);
-            this.game.getCurrentPlayer().getBookshelf().insertTiles(column, tiles);
-            this.game.getLivingRoom().removeTiles(coordinatesList);
+    private void playerAction(List<Coordinates> coordinatesList, int column) throws PickTilesException, NotEnoughCellsException {
+        List<Tile> tiles = this.game.getLivingRoom().chooseTiles(coordinatesList);
+        this.game.getCurrentPlayer().getBookshelf().insertTiles(column, tiles);
+        this.game.getLivingRoom().removeTiles(coordinatesList);
 
-        } catch (PickTilesException | NotEnoughCellsException e) {
-            throw new RuntimeException(e);
-        }
-
+        Arrays.stream(this.game.getCommonGoalCards()).forEach(commonGoalCard ->
+                commonGoalCard.checkGoal(this.game.getCurrentPlayer())
+        );
     }
 
     /**
@@ -79,7 +79,7 @@ public class GameController {
         return results;
     }
 
-    public void update(List<Coordinates> coordinatesList, int column, String player, List<String> offlineNicknames) {
+    public void update(List<Coordinates> coordinatesList, int column, String player, List<String> offlineNicknames) throws PickTilesException, NotEnoughCellsException {
         if (player.equals(game.getCurrentPlayer().getNickname())) {
             this.gameTurn(coordinatesList, column, offlineNicknames);
         }

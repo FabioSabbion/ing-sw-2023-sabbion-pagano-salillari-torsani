@@ -2,20 +2,22 @@ package it.polimi.ingsw;
 
 import it.polimi.ingsw.distributed.networking.ClientImpl;
 import it.polimi.ingsw.distributed.networking.ServerStub;
-import it.polimi.ingsw.view.CLI.CLIController;
+import it.polimi.ingsw.view.GUI.GUI;
+import it.polimi.ingsw.view.GUI.GUIController;
+import it.polimi.ingsw.view.ViewController;
 
 import java.io.IOException;
 import java.rmi.RemoteException;
-import java.rmi.server.UnicastRemoteObject;
 
 public class AppClientSocket {
-    public static void start() throws RemoteException {
-        ServerStub serverStub = new ServerStub("localhost", 4445);
+    public static void start(ViewController viewController, String IP) throws RemoteException {
+        ServerStub serverStub = new ServerStub(IP, 4445);
         ClientImpl client = new ClientImpl();
-        Thread thread = new Thread() {
+        new Thread() {
+            @Override
             public void run() {
-            boolean toRun = true;
-                while (toRun) {
+                boolean toRun = true;
+                while(toRun) {
                     try {
                         serverStub.receive(client);
                     } catch (RemoteException e) {
@@ -36,17 +38,9 @@ public class AppClientSocket {
                     }
                 }
             }
-        };
+        }.start();
 
-        thread.start();
 
-        CLIController cliController = new CLIController(client, serverStub);
-        cliController.start();
-
-        System.out.println("Terminating client");
-
-        thread.interrupt();
-        serverStub.close();
-        UnicastRemoteObject.unexportObject(client, true);
+        viewController.start(client, serverStub);
     }
 }

@@ -1,7 +1,7 @@
 package it.polimi.ingsw.models;
 
 import it.polimi.ingsw.GameUpdateToFile;
-import it.polimi.ingsw.controller.events.ViewEvent;
+import it.polimi.ingsw.events.ViewEvent;
 import it.polimi.ingsw.distributed.CommonGoalCardUpdate;
 import it.polimi.ingsw.distributed.GameUpdate;
 import it.polimi.ingsw.distributed.PlayerUpdate;
@@ -54,6 +54,11 @@ public class Game extends Observable<GameUpdateToFile, ViewEvent> {
         });
     }
 
+    /**
+     * creates a new empty game with the players specified
+     * @param nicknames the list of nicknames of the players in the game
+     * @return the {@link Game} created
+     */
     static public Game createEmptyGame(List<String> nicknames) {
         var personalGoalCards = PersonalGoalCard.buildFromJson();
 
@@ -133,10 +138,17 @@ public class Game extends Observable<GameUpdateToFile, ViewEvent> {
         }
     }
 
+    /**
+     * set the emitGameState of this object to false
+     */
     public void emitGameState() {
         this.emitGameState(false);
     }
 
+    /**
+     * emits the GameState of this object
+     * @param ending a boolean indicating whether the game is ending
+     */
     public void emitGameState(boolean ending) {
         GameUpdate gameUpdate = new GameUpdate(
                 this.livingRoom,
@@ -156,6 +168,10 @@ public class Game extends Observable<GameUpdateToFile, ViewEvent> {
         return (this.gameEnder != null && this.currentPlayer.equals(this.players[0]));
     }
 
+    /**
+     * sets the gameEnder
+     * @param gameEnder the player that ends the game
+     */
     public void setGameEnder(Player gameEnder) {
         this.gameEnder = gameEnder;
 

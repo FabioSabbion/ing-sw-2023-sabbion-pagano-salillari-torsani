@@ -1,6 +1,6 @@
 package it.polimi.ingsw.distributed.networking;
 
-import it.polimi.ingsw.controller.events.EventType;
+import it.polimi.ingsw.events.EventType;
 import it.polimi.ingsw.distributed.GameUpdate;
 import it.polimi.ingsw.distributed.MessageUpdate;
 import it.polimi.ingsw.models.Coordinates;
@@ -117,6 +117,10 @@ public class ServerStub implements Server{
                     client.sendMessagesUpdate(messageList);
                 }
             }
+        } catch (IOException e) {
+            // TODO: handle connection errors
+            client.serverError(e.getMessage());
+            throw new RuntimeException(e);
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         }

@@ -3,6 +3,8 @@ package it.polimi.ingsw.distributed.networking;
 import it.polimi.ingsw.distributed.Lobby;
 import it.polimi.ingsw.distributed.exceptions.LobbyException;
 import it.polimi.ingsw.models.Coordinates;
+import it.polimi.ingsw.models.exceptions.NotEnoughCellsException;
+import it.polimi.ingsw.models.exceptions.PickTilesException;
 
 import javax.annotation.Nullable;
 import java.rmi.RemoteException;
@@ -61,7 +63,7 @@ public class ServerRMI extends UnicastRemoteObject implements Server {
         executor.execute(() -> {
             try {
                 Lobby.getInstance().updateController(client, coordinates, column);
-            } catch (LobbyException e) {
+            } catch (LobbyException | PickTilesException | NotEnoughCellsException e) {
                 try {
                     client.serverError(e.getMessage());
                 } catch (RemoteException ex) {
@@ -74,7 +76,15 @@ public class ServerRMI extends UnicastRemoteObject implements Server {
     @Override
     public void sendMessageTo(@Nullable String to, String message, Client client) {
         executor.execute(() -> {
-            Lobby.getInstance().sendMessage(client, to, message);
+            try {
+                Lobby.getInstance().sendMessage(client, to, message);
+            } catch (LobbyException e) {
+                try {
+                    client.serverError(e.getMessage());
+                } catch (RemoteException ex) {
+                    Lobby.getInstance().removeDisconnectedClient(client);
+                }
+            }
         });
     }
 

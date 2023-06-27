@@ -13,6 +13,9 @@ import java.io.InputStreamReader;
 import java.util.*;
 import java.util.function.Predicate;
 
+/**
+ * a class to generate a CommonGoalCard from a JSON file
+ */
 public class CommonGoalCardFactory {
     private static final List<JSONObject> jsonObjects = new ArrayList<JSONObject>();
     private List<List<Coordinates>> schemas = new ArrayList<>();
@@ -25,6 +28,11 @@ public class CommonGoalCardFactory {
 
     private static final JSONParser parser = new JSONParser();
 
+    /**
+     * gets the ASCII for the specified CommonGoalCard
+     * @param cardID the CommonGoalCard of which you wish to obtain the ASCII of
+     * @return the ASCIIArt of the CommonGoalCard
+     */
     public static String getASCIIForCard(int cardID) {
         if (jsonObjects.size() == 0) {
             reloadJson();
@@ -33,6 +41,12 @@ public class CommonGoalCardFactory {
         return graphic.get("ascii").toString() + "\n" + graphic.get("description").toString();
     }
 
+    /**
+     * builds the CommonGoalCard from a JSON file
+     * @param numPlayers the number of players in the game
+     * @param cardID the ID of the CommonGoalCard
+     * @return the CommonGoalCard generated
+     */
     public static CommonGoalCard buildFromJson(int numPlayers, int cardID) {
         if (jsonObjects.size() == 0) {
             reloadJson();
@@ -87,6 +101,11 @@ public class CommonGoalCardFactory {
         return factory.buildCommonGoalCard(cardID);
     }
 
+    /**
+     * generates the CommonGoalCards for the number of players specified
+     * @param numPlayers the number of players in the game
+     * @return the CommonGoalCards generated
+     */
     public static CommonGoalCard[] getCommonGoalCard(int numPlayers) {
         Random rand = new Random();
         if (jsonObjects.size() == 0) {
@@ -109,6 +128,9 @@ public class CommonGoalCardFactory {
         return new CommonGoalCard[]{buildFromJson(numPlayers, first), buildFromJson(numPlayers, second)};
     }
 
+    /**
+     * reloads the JSON file
+     */
     public static void reloadJson() {
         try {
             InputStream path = CommonGoalCardFactory.class.getResourceAsStream("/settings/cgc.json");
@@ -123,6 +145,11 @@ public class CommonGoalCardFactory {
         }
     }
 
+    /**
+     * builds a CommonGoalCard
+     * @param cardID the ID of the CommonGoalCard I wish to generate
+     * @return the CommonGoalCard generated
+     */
     public CommonGoalCard buildCommonGoalCard(int cardID) {
         final Predicate<Bookshelf> controlFunction = new Predicate<Bookshelf>() {
             Set<Category> sameCategories = null;

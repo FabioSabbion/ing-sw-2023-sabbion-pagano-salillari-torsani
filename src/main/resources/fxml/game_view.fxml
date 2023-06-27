@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+<StackPane fx:controller="it.polimi.ingsw.view.GUI.GameViewController" fx:id="stackPane" stylesheets="/fxml/common.css" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1400.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <ImageView pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="/images/misc/sfondo parquet.jpg" />
+         </image>
+      </ImageView>
+      <VBox alignment="BOTTOM_CENTER" prefHeight="200.0" prefWidth="100.0" spacing="20.0">
+         <children>
+            <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="50.0">
+               <children>
+                  <StackPane prefHeight="150.0" prefWidth="200.0">
+                     <children>
+                         <ImageView fitHeight="573.0" fitWidth="637.0" pickOnBounds="true" preserveRatio="true">
+                             <image>
+                                 <Image url="/images/boards/livingroom.png" />
+                             </image>
+                         </ImageView>
+                        <GridPane fx:id="livingRoomGrid" alignment="CENTER">
+                          <columnConstraints>
+                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                          </columnConstraints>
+                          <rowConstraints>
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                          </rowConstraints>
+                           <padding>
+                              <Insets bottom="25.0" left="25.0" right="30.0" top="25.0" />
+                           </padding>
+                        </GridPane>
+
+                     </children>
+                  </StackPane>
+                  <VBox prefHeight="200.0" prefWidth="100.0">
+                     <children>
+                        <HBox prefHeight="100.0" prefWidth="200.0" spacing="25.0">
+                           <children>
+                              <Button fx:id="c1Button" styleClass="hover-button" mnemonicParsing="false" prefHeight="40.0" prefWidth="50.0" onAction="#onC1ButtonPressed">
+                                  <graphic>
+                                      <ImageView>
+                                          <Image url="/images/misc/arrow_downward.png" />
+                                      </ImageView>
+                                  </graphic>
+                              </Button>
+                              <Button fx:id="c2Button" styleClass="hover-button" mnemonicParsing="false" prefHeight="40.0" prefWidth="50.0" onAction="#onC2ButtonPressed">
+                                  <graphic>
+                                      <ImageView>
+                                          <Image url="/images/misc/arrow_downward.png" />
+                                      </ImageView>
+                                  </graphic>
+                              </Button>
+                              <Button fx:id="c3Button" styleClass="hover-button" mnemonicParsing="false" prefHeight="40.0" prefWidth="50.0" onAction="#onC3ButtonPressed">
+                                  <graphic>
+                                      <ImageView>
+                                          <Image url="/images/misc/arrow_downward.png" />
+                                      </ImageView>
+                                  </graphic>
+                              </Button>
+                              <Button fx:id="c4Button" styleClass="hover-button" mnemonicParsing="false" prefHeight="40.0" prefWidth="50.0" onAction="#onC4ButtonPressed">
+                                  <graphic>
+                                      <ImageView>
+                                          <Image url="/images/misc/arrow_downward.png" />
+                                      </ImageView>
+                                  </graphic>
+                              </Button>
+                              <Button fx:id="c5Button" styleClass="hover-button" mnemonicParsing="false" prefHeight="40.0" prefWidth="50.0" onAction="#onC5ButtonPressed">
+                               <graphic>
+                                   <ImageView>
+                                       <Image url="/images/misc/arrow_downward.png" />
+                                   </ImageView>
+                               </graphic>
+                              </Button>
+                           </children>
+                           <VBox.margin>
+                              <Insets left="50.0" />
+                           </VBox.margin>
+                        </HBox>
+                        <StackPane prefHeight="150.0" prefWidth="200.0">
+                           <children>
+                              <GridPane fx:id="bookshelfGrid" StackPane.alignment="CENTER">
+                                <columnConstraints>
+                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                </columnConstraints>
+                                <rowConstraints>
+                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                </rowConstraints>
+                                 <padding>
+                                    <Insets bottom="60.0" left="45.0" right="45.0" top="30.0" />
+                                 </padding>
+                                 <children>
+
+                                 </children>
+                              </GridPane>
+                              <ImageView fitHeight="505.0" fitWidth="452.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="/images/boards/bookshelf.png" />
+                                 </image>
+                              </ImageView>
+                           </children>
+                        </StackPane>
+                        <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="40.0">
+                           <children>
+                              <Button fx:id="player1Button" styleClass="hover-button" mnemonicParsing="false" prefHeight="50.0" prefWidth="100.0" text="Player 1" onAction="#onPlayer1BtnPressed" />
+                              <Button fx:id="player2Button" styleClass="hover-button" mnemonicParsing="false" prefHeight="50.0" prefWidth="100.0" text="Player 2" onAction="#onPlayer2BtnPressed" />
+                              <Button fx:id="player3Button" styleClass="hover-button" mnemonicParsing="false" prefHeight="50.0" prefWidth="100.0" text="Player 3" onAction="#onPlayer3BtnPressed" />
+                           </children></HBox>
+                     </children>
+                  </VBox>
+                  <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="25.0">
+                     <children>
+                         <Text fx:id="infoText" strokeType="OUTSIDE" strokeWidth="0.0" textAlignment="CENTER">
+                             <font>
+                                 <Font size="16.0" />
+                             </font>
+                         </Text>
+                         <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="30.0">
+                             <children>
+                                 <ImageView fx:id="personalGoalCardImage" fitHeight="150.0" fitWidth="136.0" pickOnBounds="true" preserveRatio="true">
+                                     <image>
+                                         <Image url="/images/placeholders/placeholder200x150.png" />
+                                     </image>
+                                 </ImageView>
+                                 <StackPane prefHeight="150.0" prefWidth="200.0">
+                                     <children>
+                                         <ImageView fitHeight="58.0" fitWidth="58.0" pickOnBounds="true" preserveRatio="true">
+                                             <image>
+                                                 <Image url="/images/tokens/scoring_back_EMPTY.jpg" />
+                                             </image>
+                                         </ImageView>
+                                         <Text fx:id="personalPointsText" fill="#f8b066" strokeType="OUTSIDE" strokeWidth="0.0" text="0" textAlignment="CENTER">
+                                             <font>
+                                                 <Font size="24.0" />
+                                             </font>
+                                         </Text>
+                                     </children>
+                                 </StackPane>
+                             </children>
+                         </HBox>
+                        <ImageView fx:id="commonGoalCardImage1" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="/images/placeholders/placeholder200x150.png" />
+                           </image>
+                        </ImageView>
+                        <ImageView fx:id="commonGoalCardImage2" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="/images/placeholders/placeholder200x150.png" />
+                           </image>
+                        </ImageView>
+                         <Button id="openChatButton" maxHeight="300.0" maxWidth="200.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="100.0" text="Chat" onAction="#onChatButtonPressed" />
+                      </children></VBox>
+               </children>
+            </HBox>
+            <StackPane prefHeight="150.0" prefWidth="200.0">
+               <children>
+                  <ImageView fitHeight="150.0" pickOnBounds="true">
+                     <image>
+                        <Image url="/images/misc/base_pagina2.jpg" />
+                     </image>
+                  </ImageView>
+                  <HBox fx:id="tokenRow" alignment="CENTER" prefHeight="150.0" prefWidth="1300.0" spacing="60.0">
+                     <children>
+
+                     </children>
+                  </HBox>
+               </children>
+            </StackPane>
+         </children>
+      </VBox>
+   </children>
+</StackPane>

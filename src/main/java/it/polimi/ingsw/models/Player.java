@@ -1,7 +1,7 @@
 package it.polimi.ingsw.models;
 
 
-import it.polimi.ingsw.controller.events.ViewEvent;
+import it.polimi.ingsw.events.ViewEvent;
 import it.polimi.ingsw.distributed.PersonalGoalCardUpdate;
 import it.polimi.ingsw.distributed.PlayerUpdate;
 import it.polimi.ingsw.utils.Observable;

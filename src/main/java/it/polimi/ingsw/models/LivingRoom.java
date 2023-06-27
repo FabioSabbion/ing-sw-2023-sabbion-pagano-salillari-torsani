@@ -1,6 +1,6 @@
 package it.polimi.ingsw.models;
 
-import it.polimi.ingsw.controller.events.ViewEvent;
+import it.polimi.ingsw.events.ViewEvent;
 import it.polimi.ingsw.models.exceptions.NumPlayersException;
 import it.polimi.ingsw.models.exceptions.PickTilesException;
 import it.polimi.ingsw.utils.Observable;
@@ -58,8 +58,8 @@ public class LivingRoom extends Observable<LivingRoom, ViewEvent> implements Ser
 
     /**
      * Checks if a tile is not isolated
-     * @param row
-     * @param column
+     * @param row the row index
+     * @param column the column index
      */
     private boolean hasAdjacentTile(int row, int column) {
         if (row != 8 && this.board[row + 1][column] != null) return true;
@@ -69,6 +69,12 @@ public class LivingRoom extends Observable<LivingRoom, ViewEvent> implements Ser
         return false;
     }
 
+    /**
+     * whether the selected{@link Tile} has an empty side
+     * @param row the row index
+     * @param column the column index
+     * @return a boolean indicating whether the selected{@link Tile} has an empty side
+     */
     private boolean hasEmptySide(int row, int column) {
         if(row + 1 == 9 || column + 1 == 9 || row == 0 || column == 0) {
             return true;

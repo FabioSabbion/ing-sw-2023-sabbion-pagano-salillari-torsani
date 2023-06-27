@@ -120,8 +120,8 @@ public class CommonGoalCardTest {
         this.forPlayers = new PersonalGoalCard(
                 Collections.singletonList(
                         new MutablePair<Category, Coordinates>(Category.CATS, new Coordinates(0, 0))
-                )
-        );
+                ),
+                "");
         this.player1 = new Player("andri", forPlayers);
         this.player2 = new Player("fabio", forPlayers);
         this.player3 = new Player("lp", forPlayers);

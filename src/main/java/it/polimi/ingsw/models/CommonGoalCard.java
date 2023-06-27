@@ -1,6 +1,6 @@
 package it.polimi.ingsw.models;
 
-import it.polimi.ingsw.controller.events.ViewEvent;
+import it.polimi.ingsw.events.ViewEvent;
 import it.polimi.ingsw.distributed.CommonGoalCardUpdate;
 import it.polimi.ingsw.utils.Observable;
 
@@ -32,6 +32,11 @@ public class CommonGoalCard extends Observable<CommonGoalCardUpdate, ViewEvent> 
         this.cardID = cardID;
     }
 
+    /**
+     * checks the goal for the specified player
+     * @param player The player to check
+     * @return the points the player hase scored in the CommonGoalCard
+     */
     public int checkGoal(Player player) {
         // if the player has already been registered getting a certain result, we give back the same result
         if(orderOfCompletionList.contains(player)) {
@@ -49,6 +54,11 @@ public class CommonGoalCard extends Observable<CommonGoalCardUpdate, ViewEvent> 
         return 0;
     }
 
+    /**
+     * generates a CommonGoalCardUpdate from a CommonGoalCard
+     * @param card the CommonGoalCard of which to generate the update
+     * @return the CommonGoalCardUpdate generated
+     */
     static public CommonGoalCardUpdate from(CommonGoalCard card) {
         return new CommonGoalCardUpdate(card.cardID,
                 card.orderOfCompletionList.stream().map(Player::getNickname).toList());

@@ -37,13 +37,6 @@ public class CLIController implements ViewController {
     private final List<String> menuNotifications = new ArrayList<>();
     private List<String> offlinePlayers = new ArrayList<>();
 
-    public CLIController(ClientImpl client, Server server) {
-        this.client = client;
-        this.server = server;
-        this.state = State.START;
-
-        client.run(this);
-    }
 
     enum State {
         START,
@@ -56,7 +49,20 @@ public class CLIController implements ViewController {
 
     }
 
-    public void start() {
+    /**
+     * The start method initializes and starts the game by setting up the client and server, handling user input,
+     * and controlling the game flow.
+     * @param client: an instance of the ClientImpl class representing the client for the game.
+     * @param server: an instance of the Server class representing the server for the game.
+     */
+    @Override
+    public void start(ClientImpl client, Server server) {
+        this.client = client;
+        this.server = server;
+        this.state = State.START;
+
+        client.run(this);
+
         this.changeState(State.START);
         CLI.initialScreen();
 
@@ -69,7 +75,11 @@ public class CLIController implements ViewController {
         }
     }
 
-
+    /**
+     * The inputHandler method is responsible for handling user input during different states of the game.
+     * It processes the input and performs the corresponding actions based on the current state.
+     * @param input: the user's input.
+     */
     public void inputHandler(String input) {
         try {
             switch (this.state) {
@@ -91,9 +101,13 @@ public class CLIController implements ViewController {
         }
     }
 
-
-
-
+    /**
+     * This method is responsible for setting the nickname of the viewing player in the game.
+     * It checks if 'nickname' is made of alphanumerical characters
+     * and updates the viewingPlayerNickname field accordingly.
+     * It also notifies the server of the nickname change.
+     * @param nickname: a <code>String</code> representing the nickname to be set for the viewing player.
+     */
     @Override
     public void setNickname(String nickname) {
         try {
@@ -109,9 +123,14 @@ public class CLIController implements ViewController {
         } catch (RemoteException e) {
             throw new RuntimeException(e);
         }
-
     }
 
+    /**
+     * This method handles the player's menu choice.
+     * @param yourTurn: a boolean value indicating whether it is the player's turn.
+     *               If true lets the player pick the tiles from the livingRoom
+     * @param menuChoice: menu choice made by the player.
+     */
     @Override
     public void getPlayerChoice(boolean yourTurn, String menuChoice) {
 
@@ -152,7 +171,7 @@ public class CLIController implements ViewController {
     }
 
     /**
-     * Open the chat and let you send a message
+     * Opens the chat and let you send a message to everyone or to a specific player in the game
      */
     private void openChat() {
 
@@ -183,6 +202,12 @@ public class CLIController implements ViewController {
         this.changeState(State.CHAT);
     }
 
+    /**
+     * This method is responsible for sending a message to a specific recipient or to all players in the game.
+     * It handles the formatting of the input message, validates the recipient,
+     * and sends the message to the server for further processing.
+     * @param input: a <code>String</code> representing the message to be sent
+     */
     private void sendMessage(String input) {
         String[] splitInput = input.split(" ");
 
@@ -223,6 +248,10 @@ public class CLIController implements ViewController {
         this.changeState(State.GET_PLAYER_CHOICE);
     }
 
+    /**
+     * Adds all the new chat messages in <code>this.chatMessages</code>.
+     * @param messages: list of {@link Message}.
+     */
     @Override
     public void receiveMessages(List<Message> messages){
         for (Message message: messages){
@@ -232,7 +261,10 @@ public class CLIController implements ViewController {
 
 
     /**
-     * Receives the current players in the game and communicate them to the online players through menuNotifications
+     * The updatedPlayerList method is called when the player list is updated, either due to players joining or
+     * leaving the game. It compares the updated player list with the previous player list to determine if any players
+     * have disconnected or reconnected.
+     * It also updates the offline player list and displays relevant notifications to the player.
      * @param players
      */
     @Override
@@ -244,7 +276,7 @@ public class CLIController implements ViewController {
 
                 for (String updatedPlayer: players) {
                     if (offlinePlayers.contains(updatedPlayer)){
-                        menuNotifications.add(Color.RED.escape() + updatedPlayer + " has reconnected");
+                        menuNotifications.add(Color.RED.escape() + updatedPlayer + " has reconnected" + Color.RESET);
 
                         offlinePlayers.remove(updatedPlayer);
                     }
@@ -269,8 +301,10 @@ public class CLIController implements ViewController {
 
 
     /**
-     * Updates the CLI and communicates the updates with the viewingPlayer through menuNotification
-     * @param update
+     * The <code>updateGame</code> method is called when a game update is received from the server. It updates the game state,
+     * including the living room, player information, common goal cards, current player, and game ender. It also handles
+     * notifications, updates the CLI interface, and triggers state changes if necessary.
+     * @param update: a <code>GameUpdate</code> object containing the updated game information.
      */
     @Override
     public void updateGame(GameUpdate update) {
@@ -353,17 +387,29 @@ public class CLIController implements ViewController {
         }
     }
 
+    /**
+     * The serverError method is called to display an error message received from the server. It prints the error message in red color to the console.
+     * @param message: A <code>String</code> representing the error message received from the server.
+     */
     @Override
     public void serverError(String message) {
         System.out.println(Color.RED.escape() + message + Color.RESET);
     }
 
+    /**
+     * It displays a message asking the user to enter the number of players within a specified range.
+     */
     @Override
     public void askNumPlayers() {
         System.out.println("How many players will join your game? (2 - 4)");
         this.changeState(State.ASK_NUM_PLAYERS);
     }
 
+    /**
+     * This method is called to set the number of players in the game based on the user's input and updates the server.
+     * @param input: a <code>String</code>> representing the user's input for the number of players.
+     * @throws RemoteException
+     */
     public void setNumPlayers(String input) throws RemoteException {
         try {
             if (Integer.parseInt(input) < 2 || Integer.parseInt(input) > 4)
@@ -376,9 +422,13 @@ public class CLIController implements ViewController {
         } catch (NumberFormatException e) {
             this.serverError("You must choose a number");
         }
-
     }
 
+    /**
+     * It calculates the points earned by each player for a specific common goal card.
+     * @param cardID: represents the ID of the CommonGoalCard for which the points are to be calculated.
+     * @return a map where for each player's nickname there's the corresponding points for this specific CommonGoalCard.
+     */
     public Map<String, Integer> calculateCommonGoalCardPoints(int cardID) {
         Map<String, Integer> playerPoints = new HashMap<>();
 
@@ -397,21 +447,38 @@ public class CLIController implements ViewController {
     }
 
     /**
-     * Calculates viewingPlayer's PersonalGoalCard points
+     * Calculates viewingPlayer's PersonalGoalCard points.
      *
-     * @return
+     * @return total points of the viewingPlayer's PersonalGoalCard.
      */
     public int calculatePersonalGoalCardPoints() {
         return this.players.get(viewingPlayerNickname).personalGoalCard().point();
     }
+
+    /**
+     * Calculates <b>playerNickname</b>'s PersonalGoalCard points.
+     * @param playerNickname: a <code>String</code> representing the player's nickname
+     * @return total points of <b>playerNickname</b>'s PersonalGoalCard.
+     */
     public int calculatePersonalGoalCardPoints(String playerNickname) {
         return this.players.get(playerNickname).personalGoalCard().point();
     }
 
+    /**
+     * Changes CLIController's current state
+     * @param state
+     */
     private synchronized void changeState(State state) {
         this.state = state;
     }
 
+    /**
+     * This method is responsible for handling the action of a player picking the tiles from LivingRoom in a game. It takes
+     * a list of coordinates representing the tiles to be returned and an integer column indicating the column
+     * where the tiles should be placed
+     * @param coordinates: a list of coordinates indicating the tiles chosen in the board.
+     * @param column: an integer indicating the column where the returned tiles should be placed in the bookshelf.
+     */
     public void returnTiles(List<Coordinates> coordinates, int column) {
 
         var yourself = this.players.values().stream().filter(player -> player.nickname().equals(this.viewingPlayerNickname)).findFirst().get();
@@ -441,19 +508,34 @@ public class CLIController implements ViewController {
         }
     }
 
+    /**
+     * This method show the final ending screen, with the scoreboard and the winner. If the viewingPlayer is the last
+     * online player, he is automatically the winner.
+     */
     @Override
     public void showEndingScreen() {
         String winningPlayer = this.showFinalScoreBoard();
+
+        if (offlinePlayers.size() == players.size() - 1 && !offlinePlayers.contains(viewingPlayerNickname)){
+            winningPlayer = this.viewingPlayerNickname;
+        }
 
         this.gameFinished = true;
         cli.showEndScreen(winningPlayer);
     }
 
+
+    /**
+     *  This private method is responsible for displaying the <b>final scoreboard </b> of the game
+     *  and determining the winner based on the calculated points. The points are the sum of the PersonalGoalCard,
+     *  CommonGoalCard, and GameEnding points.
+     * @return String: The nickname of the winning player based on maximum score.
+     */
     private String showFinalScoreBoard() {
         Map<String, Integer> playerPoints = new HashMap<>();
 
         for (String player: new ArrayList<>(this.players.keySet())) {
-            playerPoints.put(player, calculatePersonalGoalCardPoints(player));
+            playerPoints.put(player, calculatePersonalGoalCardPoints(player) + this.players.get(player).bookshelf().getPoints());
         }
 
         for (CommonGoalCardUpdate card : this.commonGoalCards) {
@@ -463,6 +545,9 @@ public class CLIController implements ViewController {
                 playerPoints.put(player, playerPoints.get(player) + cardPoints.get(player));
             }
         }
+
+        if (gameEnder != null)
+            playerPoints.put(gameEnder.nickname(), playerPoints.get(gameEnder.nickname()) + 1 );
 
         System.out.print("\n".repeat(60));
         System.out.println(Color.BLUE.escape() + ASCIIArt.scoreBoard + Color.RESET);
@@ -477,7 +562,10 @@ public class CLIController implements ViewController {
         return playerPoints.entrySet().stream().filter(p -> p.getValue() == maxPoint).findFirst().get().getKey();
     }
 
-
+    /**
+     * This class represents a player's turn in the game. It manages the state
+     * and flow of the player's actions during their turn when choosing the tiles and the column from the livingRoom.
+     */
     class PlayerTurn {
         int rowLivingRoom, colLivingRoom, columnBookShelf, numTiles;
         List<Coordinates> coordinates;
@@ -506,6 +594,10 @@ public class CLIController implements ViewController {
             this.state = state;
         }
 
+        /**
+         * The inputHandler method is responsible for handling the user's input during the player's turn
+         * @param input: a String representing the user's input.
+         */
         public void inputHandler(String input) {
 
             try {
@@ -531,6 +623,11 @@ public class CLIController implements ViewController {
 
         }
 
+        /**
+         * Sets the column in the bookshelf where to place the choosen tiles.
+         * It also calls the returnTiles method with the given coordinates and column number.
+         * @param inputInt: the column number in the bookshelf chosen by the player.
+         */
         private void setColBookShelf(int inputInt) {
             if (inputInt < 0 || inputInt > 4)
                 serverError("You must pick a number between 0 and 4");
@@ -540,6 +637,10 @@ public class CLIController implements ViewController {
             }
         }
 
+        /**
+         * Lets the player choose the column in the livingRoom from which to pick the tile
+         * @param inputInt: the column number in the livingRoom chosen by the player
+         */
         private void setColLivingRoom(int inputInt) {
             if (inputInt < 0 || inputInt > 8)
                 serverError("Column must range from 0 to 8!");
@@ -549,6 +650,10 @@ public class CLIController implements ViewController {
             }
         }
 
+        /**
+         * Lets the player choose the row in the livingRoom from which to pick the tile
+         * @param inputInt: the row number in the livingRoom chosen by the player
+         */
         private void setRowLivingRoom(int inputInt) {
             if (inputInt < 0 || inputInt > 8)
                 serverError("Row must range from 0 to 8!");
@@ -558,18 +663,26 @@ public class CLIController implements ViewController {
             }
         }
 
+        /**
+         * Tells the player to choose a row in the livingRoom
+         */
         void getRowLivingRoom() {
             cli.showMain(currentPlayer);
             System.out.println("\nChoose Row (enter 'back' to go back to the menu)");
             this.changeState(TurnState.ROW_LIVING_ROOM);
         }
-
+        /**
+         * Tells the player to choose a column in the livingRoom
+         */
         void getColumnLivingRoom() {
             cli.showMain(currentPlayer);
             System.out.println("\nChoose Column (enter 'back' to go back to the menu)");
             this.changeState(TurnState.COL_LIVING_ROOM);
         }
 
+        /**
+         * Add a {@link Coordinates} made of the row and the column chosen by the player
+         */
         void addCoordinate() {
             coordinates.add(new Coordinates(rowLivingRoom, colLivingRoom));
             numTiles--;
@@ -582,12 +695,19 @@ public class CLIController implements ViewController {
             }
         }
 
+        /**
+         * Tells the player to choose a column in the bookshelf
+         */
         private void getColumnBookshelf() {
             cli.showMain(currentPlayer);
             System.out.printf("Choose your column (0-%d) (enter 'back' to go back to the menu)\n", Bookshelf.COLUMNS - 1);
             this.changeState(TurnState.COL_BOOKSHELF);
         }
 
+        /**
+         * Lets the player choose the number of {@link Tile} to pick, ranging from 1 to 3
+         * @param inputInt: the number of tiles chosen by the player
+         */
         public void setNumTiles(int inputInt) {
             if (inputInt < 1 || inputInt > 3)
                 serverError("Wrong number of tiles! Try Again...");

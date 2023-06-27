@@ -1,0 +1,8 @@
+.hover-button {
+    -fx-border-radius: 10px;
+}
+
+.hover-button:hover {
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
+}
