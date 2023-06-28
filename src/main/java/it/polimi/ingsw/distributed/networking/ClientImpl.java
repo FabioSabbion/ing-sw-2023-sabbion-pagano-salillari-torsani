@@ -10,6 +10,9 @@ import java.rmi.server.RMIServerSocketFactory;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.List;
 
+/**
+ * Implementation of RMI Client
+ */
 public class ClientImpl extends UnicastRemoteObject implements Client {
     ViewController view;
 
