@@ -9,6 +9,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * the main controller for the game, that implements various methods to control the actions of the players throughout
+ * the game.
+ */
 public class GameController {
     public final Game game;
     public final Chat chat;
@@ -27,6 +31,14 @@ public class GameController {
         this.chat = new Chat();
     }
 
+    /**
+     * manages the turn of a player, updating the state of the game
+     * @param coordinatesList the list of {@link Coordinates} of the tiles picked by the player
+     * @param column the column chosen by the player
+     * @param offlineNicknames the nicknames of the players that have disconnected
+     * @throws PickTilesException if the tiles chosen are not pickable
+     * @throws NotEnoughCellsException if the number of cells isn't valid
+     */
     private void gameTurn(List<Coordinates> coordinatesList, int column, List<String> offlineNicknames) throws PickTilesException, NotEnoughCellsException  {
         this.playerAction(coordinatesList, column);
         this.updateCommonGoalPoints();
@@ -48,6 +60,13 @@ public class GameController {
         }
     }
 
+    /**
+     * manages the action of a single player by inserting the chosen {@link Tile}s in the chosen column
+     * @param coordinatesList the list of coordinates of the tiles chosen
+     * @param column the column chosen by the player
+     * @throws PickTilesException if the tiles aren't pickable
+     * @throws NotEnoughCellsException if the number of cells isn't valid
+     */
     private void playerAction(List<Coordinates> coordinatesList, int column) throws PickTilesException, NotEnoughCellsException {
         List<Tile> tiles = this.game.getLivingRoom().chooseTiles(coordinatesList);
         this.game.getCurrentPlayer().getBookshelf().insertTiles(column, tiles);
@@ -79,6 +98,15 @@ public class GameController {
         return results;
     }
 
+    /**
+     * calls the method gameTurn if the player is the current player
+     * @param coordinatesList the list of coordinates of the tiles picked by the player
+     * @param column the column chosen by the player
+     * @param player the player that has to execute the gameTurn method
+     * @param offlineNicknames the nicknames of the players that have disconnected
+     * @throws PickTilesException if the tiles aren't pickable
+     * @throws NotEnoughCellsException if the number of cells isn't valid
+     */
     public void update(List<Coordinates> coordinatesList, int column, String player, List<String> offlineNicknames) throws PickTilesException, NotEnoughCellsException {
         if (player.equals(game.getCurrentPlayer().getNickname())) {
             this.gameTurn(coordinatesList, column, offlineNicknames);
