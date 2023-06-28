@@ -53,17 +53,19 @@ Complete Rules + TUI + GUI + RMI + Socket + 3 AF |30L|
 # Running the game
 ## Building the artifacts
 ```mvn clean install```
+
+JAR files can be found in the ```target``` folder
 ## Server
 It is sufficient to run the server through the command
-```java -jar server.jar``` which creates a RMI connection 
+```java -jar AppServer.jar``` which creates a RMI connection 
 on port 1099, and a socket connection on port 4445.
 ## Client
 You can play the game through a GUI or a CLI interface. To run the program
-you ```java -jar cli.jar``` or ```java -jar gui.jar``` 
+you ```java -jar AppClientCLI.jar``` or ```java -jar AppClientGUI.jar``` 
 followed by the connection type (```rmi```/```socket```)
 and the IP of the server (x.x.x.x) (in case of local game
 is sufficient entering ```localhost``` 
-instead of the full adrress)
+instead of the full address)
 
 # Test Coverage
 ![coverage.png](src%2Fmain%2Fresources%2Fimages%2Fscreenshots%2Fcoverage.png)
