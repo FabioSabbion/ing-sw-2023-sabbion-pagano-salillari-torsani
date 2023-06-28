@@ -305,8 +305,10 @@ public class CLIController implements ViewController {
         }
 
         if (this.state.equals(State.WAITING)) {
-            for (String player : players){
-                System.out.println(player);
+            if (players != null && !players.isEmpty()){
+                for (String player : players){
+                    System.out.println(player);
+                }
             }
         }
     }
