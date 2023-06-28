@@ -142,10 +142,10 @@ public class CLIController implements ViewController {
                 cli.showMain(currentPlayer);
 
             }
-            case "showPlayers", "3" -> {
+            case "showplayers", "3" -> {
                 cli.showPlayers(this.players, this.offlinePlayers);
             }
-            case "CommonGoalCards", "4" -> {
+            case "commongoalcards", "4" -> {
                 cli.showCommonGoalCards();
             }
             case "scoreboard", "5" -> {
