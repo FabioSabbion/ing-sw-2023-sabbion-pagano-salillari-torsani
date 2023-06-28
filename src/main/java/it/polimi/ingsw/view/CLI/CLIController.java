@@ -258,6 +258,11 @@ public class CLIController implements ViewController {
         for (Message message: messages){
            chatMessages.put(message.id(), message);
         }
+
+        if (this.state.equals(State.CHAT)){
+            System.out.print("\n".repeat(60));
+            this.openChat();
+        }
     }
 
 
