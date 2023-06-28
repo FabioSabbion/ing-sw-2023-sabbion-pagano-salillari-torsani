@@ -8,6 +8,10 @@ import java.rmi.ConnectException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 
+
+/**
+ * Entry point class for the Client CLI
+ */
 public class AppClientCLI {
     public static void main(String[] args) throws NotBoundException, RemoteException {
         ArgumentChecker.checkArguments(args);

@@ -4,6 +4,9 @@ import it.polimi.ingsw.distributed.Lobby;
 
 import java.util.Scanner;
 
+/**
+ * Entry point class for the Server
+ */
 public class AppServer {
     public static void main(String[] args) {
         Lobby.getInstance();
