@@ -135,9 +135,8 @@ public class ClientSkeleton implements Client {
                 }
             }
 
-        } catch (IOException | ClassNotFoundException e) {
-            // TODO: call method on Lobby to notify the client is disconnected
-            //throw new RuntimeException(e);
+        } catch (IOException | ClassNotFoundException ignored) {
+            // Client disconnection is managed inside Lobby
         } catch (LobbyException | PickTilesException | NotEnoughCellsException e) {
             serverError(e.getMessage());
         }

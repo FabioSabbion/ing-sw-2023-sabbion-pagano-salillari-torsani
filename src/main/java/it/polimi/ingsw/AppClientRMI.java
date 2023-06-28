@@ -9,6 +9,9 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 
+/**
+ * The AppClientRMI class provides a method to start a client RMI connection with a server.
+ */
 public class AppClientRMI {
     public static void start(ViewController viewController, String IP) throws RemoteException, NotBoundException {
         Registry registry = LocateRegistry.getRegistry(IP);

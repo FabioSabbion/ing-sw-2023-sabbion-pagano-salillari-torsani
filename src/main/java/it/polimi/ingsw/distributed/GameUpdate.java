@@ -1,18 +1,26 @@
 package it.polimi.ingsw.distributed;
 
-import it.polimi.ingsw.models.Bookshelf;
 import it.polimi.ingsw.models.LivingRoom;
 import it.polimi.ingsw.view.GUI.GuiParts;
 
 import javax.annotation.Nullable;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * The GameUpdate class represents an update of the game state that can be transmitted over the network.
+ * It contains information about the living room, players, common goal cards, game ender, current player, and an ID.
+ */
 @Nullable
 public record GameUpdate(LivingRoom livingRoom, List<PlayerUpdate> players, List<CommonGoalCardUpdate> commonGoalCards, PlayerUpdate gameEnder, PlayerUpdate currentPlayer, int ID) implements Serializable {
+    /**
+     * Filters the personal goal cards from the GameUpdate based on the specified nickname.
+     * @param gameUpdate gameUpdate The original GameUpdate object.
+     * @param nickname The nickname of the player to filter the personal goal cards for.
+     * @return A new GameUpdate object with the filtered personal goal cards.
+     */
     public static GameUpdate filterPersonalGoalCards(GameUpdate gameUpdate, String nickname) {
         return new GameUpdate(
             gameUpdate.livingRoom,
@@ -30,6 +38,17 @@ public record GameUpdate(LivingRoom livingRoom, List<PlayerUpdate> players, List
         this(livingRoom, players, commonGoalCards, gameEnder, currentPlayer, id++);
     }
 
+    /**
+     Creates a copy of the GameUpdate object with the specified parameters.
+     @param myNickname The nickname of the player making the copy.
+     @param toRefresh The list of GUI parts to refresh.
+     @param livingRoom The new living room state.
+     @param players The new list of player updates.
+     @param commonGoalCards The new list of common goal card updates.
+     @param gameEnder The new player update for the game ender.
+     @param currentPlayer The new player update for the current player.
+     @return A new GameUpdate object with the specified parameters.
+     */
     public GameUpdate copyWith(String myNickname, List<GuiParts> toRefresh, LivingRoom livingRoom, List<PlayerUpdate> players, List<CommonGoalCardUpdate> commonGoalCards, PlayerUpdate gameEnder, PlayerUpdate currentPlayer) {
         List<PlayerUpdate> newPlayerList = new ArrayList<>();
         for (int i = 0; i < this.players.size(); i++) {

@@ -9,6 +9,9 @@ import it.polimi.ingsw.view.ViewController;
 import java.io.IOException;
 import java.rmi.RemoteException;
 
+/**
+ * The AppClientSocket class provides a method to start a client socket connection with a server.
+ */
 public class AppClientSocket {
     public static void start(ViewController viewController, String IP) throws RemoteException {
         ServerStub serverStub = new ServerStub(IP, 4445);
