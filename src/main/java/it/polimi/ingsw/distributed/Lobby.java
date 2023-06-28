@@ -73,6 +73,10 @@ public class Lobby {
         })).start();
     }
 
+    /**
+     * Removes a disconnected client from the server.
+     * @param client The client to be removed
+     */
     public synchronized void removeDisconnectedClient(Client client) {
         this.removeDisconnected.execute(() -> {
             var disconnected = clientNickname.remove(client);
@@ -146,7 +150,11 @@ public class Lobby {
         return remainedClients;
     }
 
-
+    /**
+     * It sets a timer, lasting <code>Lobby.seconds</code>, after which the last online player is declared
+     * the winner of the game. This method is called when only one player remains in the game.
+     * @param lastClient remaining the game
+     */
     public void setLastSurvivingWinner(String lastClient) {
         var threadForTimer = new Thread(() -> {
             try {
@@ -190,6 +198,13 @@ public class Lobby {
         threadForTimer.start();
     }
 
+    /**
+     * The method assigns a nickname to a client, while checking if the nickname is already in use,
+     * and adds the client to an existing lobby, if <code>Lobby.numPlayer</code> has been defined.
+     * @param nickname of the joining player
+     * @param client to which assign the nickname above
+     * @throws LobbyException in case the number of player is still not known
+     */
     public synchronized void setNickname(String nickname, Client client) throws LobbyException {
         System.out.println("New nickname from client " + nickname);
 
@@ -268,6 +283,9 @@ public class Lobby {
         }
     }
 
+    /**
+     * It updates the player list for all waiting players in the lobby
+     */
     private void updatedWaitingPlayers() {
         final var waitingPlayersCopy = this.waitingPlayers.entrySet().stream().toList();
         for (var oldConnections: waitingPlayersCopy) {
@@ -281,6 +299,13 @@ public class Lobby {
 
     }
 
+    /**
+     * Sets up event listeners for a client connected to a game controller.
+     * The client is associated with a game controller to receive game updates
+     * and a chat observer to handle chat messages.
+     * @param client to set up the event listeners for.
+     * @param controller The game controller to listen to for game and chat updates.
+     */
     private void setClientListener(Client client, GameController controller) {
         controller.game.addObserver(new Observer<GameUpdateToFile, ViewEvent>() {
             @Override
@@ -337,6 +362,12 @@ public class Lobby {
         });
     }
 
+    /**
+     * Sets the number of players in the lobby.
+     * Only the first player in the lobby can set the number of players.
+     * @param numPlayer  The number of players to set.
+     * @throws LobbyException If the number of players is invalid or the player is not the first player in the lobby.
+     */
     public void setNumPlayer(int numPlayer) throws LobbyException {
         System.out.println("New number of players " + numPlayer);
         if (this.waitingPlayers != null && this.waitingPlayers.size() == 1) {
@@ -351,6 +382,15 @@ public class Lobby {
         }
     }
 
+    /**
+     * Updates the game controller with the player's actions.
+     * @param client The client making the move.
+     * @param coordinatesList The list of coordinates chosen by the player.
+     * @param column The column chosen by the player.
+     * @throws LobbyException If the client is not present in the lobby.
+     * @throws PickTilesException If there is an error in picking the tiles.
+     * @throws NotEnoughCellsException If there are not enough cells available for the move.
+     */
     public void updateController(Client client, List<Coordinates> coordinatesList, int column) throws LobbyException, PickTilesException, NotEnoughCellsException {
         var gameData = this.getNicknameController(client);
 
@@ -371,6 +411,12 @@ public class Lobby {
         gameData.getRight().update(coordinatesList, column, gameData.getLeft(), offlinePlayers);
     }
 
+    /**
+     * Retrieves the nickname and corresponding game controller for a client.
+     * @param client The client for which to retrieve the controller.
+     * @return A pair containing the client's nickname and the corresponding game controller.
+     * @throws LobbyException  If the client is not found in any controller.
+     */
     private Pair<String, GameController> getNicknameController(Client client) throws LobbyException {
         if (!this.clientNickname.containsKey(client)
                 || !this.nicknameController.containsKey(this.clientNickname.get(client))) {
@@ -381,6 +427,9 @@ public class Lobby {
         return new ImmutablePair<>(nickname, this.nicknameController.get(nickname));
     }
 
+    /**
+     * @return the singleton instance of the Lobby.
+     */
    public static Lobby getInstance() {
         if(Lobby.instance == null) {
             Lobby.instance = new Lobby();
@@ -390,10 +439,17 @@ public class Lobby {
         return Lobby.instance;
     }
 
+    /**
+     * @return current Lobby state
+     */
     public State getState() {
         return this.state;
     }
 
+    /**
+     * Loads the lobby state from a map of game updates.
+     * @param updates
+     */
     public void loadLobbyFromUpdates(Map<Integer, GameUpdateToFile> updates) {
         for (var update : updates.entrySet()) {
             var fileUpdt = update.getValue();
@@ -427,7 +483,12 @@ public class Lobby {
         }
     }
 
-
+    /**
+     * Sets a save file listener for the GameController.
+     * The listener saves game updates to a file when the game state
+     * changes and removes the game from persistence when it ends.
+     * @param controller The GameController to set the listener for.
+     */
     private void setControllerSaveFileListener(GameController controller) {
         controller.game.addObserver(new Observer<GameUpdateToFile, ViewEvent>() {
             @Override
@@ -447,6 +508,13 @@ public class Lobby {
         });
     }
 
+    /**
+     * Sends a message from a client to another client or to the entire chat.
+     * @param client The client sending the message.
+     * @param to The nickname of the recipient client. If null, the message is sent to the entire chat.
+     * @param message The content of the message.
+     * @throws LobbyException  if the game has ended and messages cannot be sent.
+     */
     public void sendMessage(Client client, @Nullable String to, String message) throws LobbyException {
         String from = clientNickname.get(client);
         try {
