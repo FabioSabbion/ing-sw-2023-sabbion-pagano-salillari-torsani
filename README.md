@@ -25,16 +25,15 @@ The final project shall include
   unit test source code.
 
 
-|  Requirements met   | Voto  |
-|-----|---|
-Simple Rules+ TUI + RMI o Socket | 18 |
-Complete Rules + TUI + RMI o Socket |20|
-Complete Rules + TUI + RMI o Socket + 1 FA |22|
-Complete Rules + TUI + GUI + RMI o Socket + 1 AF |24|
-Complete Rules + TUI + GUI + RMI + Socket + 1 AF |27|
-Complete Rules + TUI + GUI + RMI + Socket + 2 AF |30|
-Complete Rules + TUI + GUI + RMI + Socket + 3 AF |30L|
-
+|  Requirements met   | Voto            |
+|-----|-----------------|
+Simple Rules+ TUI + RMI o Socket | 18              |
+Complete Rules + TUI + RMI o Socket | 20              |
+Complete Rules + TUI + RMI o Socket + 1 FA | 22              |
+Complete Rules + TUI + GUI + RMI o Socket + 1 AF | 24              |
+Complete Rules + TUI + GUI + RMI + Socket + 1 AF | 27              |
+Complete Rules + TUI + GUI + RMI + Socket + 2 AF | 30              |
+<mark>Complete Rules + TUI + GUI + RMI + Socket + 3 AF</mark> | <mark>30L</mark>|
 ## Achieved Goals
 
 |  Functionality   | Status  |
