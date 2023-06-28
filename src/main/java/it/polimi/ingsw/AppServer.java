@@ -9,6 +9,7 @@ import java.util.Scanner;
  */
 public class AppServer {
     public static void main(String[] args) {
+        System.setProperty("java.rmi.server.hostname", args[0]);
         Lobby.getInstance();
 
 
