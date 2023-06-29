@@ -88,4 +88,9 @@ public class ServerRMI extends UnicastRemoteObject implements Server {
         });
     }
 
+    @Override
+    public void checkConnection() throws RemoteException {
+        // Client checked connection
+    }
+
 }

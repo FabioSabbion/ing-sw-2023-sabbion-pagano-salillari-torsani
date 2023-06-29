@@ -88,6 +88,17 @@ public class ServerStub implements Server{
         }
     }
 
+    @Override
+    public void checkConnection() throws RemoteException {
+        try {
+            oos.writeObject(new SocketMessage(EventType.KEEP_ALIVE, null));
+            oos.reset();
+            oos.flush();
+        } catch (IOException e) {
+            throw new RemoteException();
+        }
+    }
+
     public void receive(Client client) throws RemoteException, IOException {
         SocketMessage message;
         try {
@@ -107,9 +118,6 @@ public class ServerStub implements Server{
                 case LOBBY_ERROR -> {
                     String msg = (String) message.data;
                     client.serverError(msg);
-                }
-                case KEEP_ALIVE -> {
-                    //System.out.println("KEEP_ALIVE received");
                 }
                 case GAME_END -> {
                     GameUpdate gameUpdate = (GameUpdate) message.data;
