@@ -133,6 +133,9 @@ public class ClientSkeleton implements Client {
 
                     Lobby.getInstance().sendMessage(this, mess.to(), mess.message());
                 }
+                case KEEP_ALIVE -> {
+//                    System.err.println("KEEP_ALIVE received");
+                }
             }
 
         } catch (IOException | ClassNotFoundException ignored) {

@@ -117,9 +117,6 @@ public class ServerStub implements Server{
                     String msg = (String) message.data;
                     client.serverError(msg);
                 }
-                case KEEP_ALIVE -> {
-                    //System.out.println("KEEP_ALIVE received");
-                }
                 case GAME_END -> {
                     GameUpdate gameUpdate = (GameUpdate) message.data;
                     client.showEndingScoreboard(gameUpdate);
