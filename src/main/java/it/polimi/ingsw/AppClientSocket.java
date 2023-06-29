@@ -43,6 +43,25 @@ public class AppClientSocket {
             }
         }.start();
 
+        new Thread() {
+            @Override
+            public void run() {
+                while (true) {
+                    try {
+                        Thread.sleep(5000);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                    try {
+                        serverStub.checkConnection();
+                    } catch (RemoteException e) {
+                        System.err.println("Cannot establish a connection with the server.\nCheck your internet connection and try again.");
+                        System.exit(0);
+                    }
+                }
+            }
+        }.start();
+
 
         viewController.start(client, serverStub);
     }

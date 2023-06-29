@@ -44,4 +44,6 @@ public interface Server extends Remote {
      * @throws RemoteException if a communication error occurs during the remote invocation.
      */
     void sendMessageTo(@Nullable String to, String message, Client client) throws RemoteException;
+
+    void checkConnection() throws RemoteException;
 }
