@@ -25,15 +25,15 @@ The final project shall include
   unit test source code.
 
 
-|  Requirements met   | Voto            |
-|-----|-----------------|
-Simple Rules+ TUI + RMI o Socket | 18              |
-Complete Rules + TUI + RMI o Socket | 20              |
-Complete Rules + TUI + RMI o Socket + 1 FA | 22              |
-Complete Rules + TUI + GUI + RMI o Socket + 1 AF | 24              |
-Complete Rules + TUI + GUI + RMI + Socket + 1 AF | 27              |
-Complete Rules + TUI + GUI + RMI + Socket + 2 AF | 30              |
-<mark>Complete Rules + TUI + GUI + RMI + Socket + 3 AF</mark> | <mark>30L</mark>|
+|  Requirements met   | Voto    |
+|-----|---------|
+Simple Rules+ TUI + RMI o Socket | 18      |
+Complete Rules + TUI + RMI o Socket | 20      |
+Complete Rules + TUI + RMI o Socket + 1 FA | 22      |
+Complete Rules + TUI + GUI + RMI o Socket + 1 AF | 24      |
+Complete Rules + TUI + GUI + RMI + Socket + 1 AF | 27      |
+Complete Rules + TUI + GUI + RMI + Socket + 2 AF | 30      |
+**Complete Rules + TUI + GUI + RMI + Socket + 3 AF** | **30L** |
 ## Achieved Goals
 
 |  Functionality   | Status  |
@@ -56,15 +56,20 @@ Complete Rules + TUI + GUI + RMI + Socket + 2 AF | 30              |
 JAR files can be found in the ```target``` folder
 ## Server
 It is sufficient to run the server through the command
-```java -jar AppServer.jar``` which creates a RMI connection 
+```java -jar AppServer.jar x.x.x.x```, where x.x.x.x is the IP address of the computer running the server,  which creates a RMI connection 
 on port 1099, and a socket connection on port 4445.
+
+For example, ```java -jar AppServer.jar 192.168.116.45```
+
 ## Client
 You can play the game through a GUI or a CLI interface. To run the program
 you ```java -jar AppClientCLI.jar``` or ```java -jar AppClientGUI.jar``` 
 followed by the connection type (```rmi```/```socket```)
 and the IP of the server (x.x.x.x) (in case of local game
 is sufficient entering ```localhost``` 
-instead of the full address)
+instead of the full address).
+
+For example, ```java -jar AppClientCLI.jar rmi 192.168.116.45```
 
 # Test Coverage
 ![coverage.png](src%2Fmain%2Fresources%2Fimages%2Fscreenshots%2Fcoverage.png)
