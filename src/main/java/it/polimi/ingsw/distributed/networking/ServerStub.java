@@ -81,6 +81,8 @@ public class ServerStub implements Server{
     public void sendMessageTo(@Nullable String to, String message, Client client) throws RemoteException {
         try {
             oos.writeObject(new SocketMessage(EventType.MESSAGE_EVENT, new MessageUpdate(to, message)));
+            oos.reset();
+            oos.flush();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
