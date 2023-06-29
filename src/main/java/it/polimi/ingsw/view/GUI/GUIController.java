@@ -264,8 +264,12 @@ public class GUIController implements ViewController {
      */
     @Override
     public void receiveMessages(List<Message> messages) {
+        if (!messages.isEmpty() && messages.get(0).id() == 0) {
+            this.messages.clear();
+        }
         this.messages.addAll(messages);
-        GUI.addMessages(messages);
+
+        GUI.addMessages(this.messages);
     }
 
     /**
