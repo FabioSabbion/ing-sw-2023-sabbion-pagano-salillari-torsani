@@ -458,7 +458,7 @@ public class GUI extends Application {
             stringBuilder.append("[").append(m.timestamp().format(DateTimeFormatter.ofPattern("HH:mm:ss"))).append("]").append(m.to() != null ? (m.to().equals(guiController.getMyNickname()) ? " " : " (" + m.to() + ") ") : " (Everyone) ").append(m.from().equals(guiController.getMyNickname()) ? "You" : m.from()).append(": ").append(m.message()).append("\n");
         }
 
-        messagesTextArea.appendText(stringBuilder.toString());
+        messagesTextArea.setText(stringBuilder.toString());
     }
 
     /**
