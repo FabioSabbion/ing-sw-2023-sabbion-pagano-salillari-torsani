@@ -1,5 +1,8 @@
 package it.polimi.ingsw.events;
 
+/**
+ * enumerates the types of the events observable throughout the event
+ */
 public enum EventType {
     CONNECT,
     DISCONNECT,

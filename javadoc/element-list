@@ -1,0 +1,14 @@
+unnamed package
+it.polimi.ingsw
+it.polimi.ingsw.controller
+it.polimi.ingsw.distributed
+it.polimi.ingsw.distributed.exceptions
+it.polimi.ingsw.distributed.networking
+it.polimi.ingsw.events
+it.polimi.ingsw.models
+it.polimi.ingsw.models.exceptions
+it.polimi.ingsw.utils
+it.polimi.ingsw.view
+it.polimi.ingsw.view.CLI
+it.polimi.ingsw.view.CLI.utils
+it.polimi.ingsw.view.GUI

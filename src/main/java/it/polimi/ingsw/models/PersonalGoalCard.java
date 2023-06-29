@@ -48,7 +48,7 @@ public class PersonalGoalCard implements GoalCard, Serializable {
 
     /**
      * Builds a list of PersonalGoalCard from the respective JSON file
-     * @return List<PersonalGoalCard>
+     * @return A list of PersonalGoalCard
      */
     public static List<PersonalGoalCard> buildFromJson(){
         if(jsonFile == null) reloadJson();

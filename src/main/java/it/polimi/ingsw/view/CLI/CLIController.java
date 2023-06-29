@@ -142,10 +142,10 @@ public class CLIController implements ViewController {
                 cli.showMain(currentPlayer);
 
             }
-            case "showPlayers", "3" -> {
+            case "showplayers", "3" -> {
                 cli.showPlayers(this.players, this.offlinePlayers);
             }
-            case "CommonGoalCards", "4" -> {
+            case "commongoalcards", "4" -> {
                 cli.showCommonGoalCards();
             }
             case "scoreboard", "5" -> {
@@ -164,6 +164,7 @@ public class CLIController implements ViewController {
                 } else if (gameFinished) {
                     System.out.println(Color.YELLOW.escape() + "Thanks for playing!" + Color.RESET);
                     this.changeState(State.END_GAME);
+                    System.exit(0);
                 } else System.out.println("It's not your turn! Please enter a valid option...");
             }
             default -> System.out.println("That is not a valid option! Enter a valid one");
@@ -257,6 +258,11 @@ public class CLIController implements ViewController {
         for (Message message: messages){
            chatMessages.put(message.id(), message);
         }
+
+        if (this.state.equals(State.CHAT)){
+            System.out.print("\n".repeat(60));
+            this.openChat();
+        }
     }
 
 
@@ -296,6 +302,14 @@ public class CLIController implements ViewController {
             }
 
             cli.showPlayerTurn(currentPlayer, menuNotifications, gameFinished);
+        }
+
+        if (this.state.equals(State.WAITING)) {
+            if (players != null && !players.isEmpty()){
+                for (String player : players){
+                    System.out.println(player);
+                }
+            }
         }
     }
 

@@ -7,6 +7,9 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 
+/**
+ * Handler for Socket clients
+ */
 public class ClientHandler extends Thread {
     ObjectInputStream is = null;
     ObjectOutputStream os = null;

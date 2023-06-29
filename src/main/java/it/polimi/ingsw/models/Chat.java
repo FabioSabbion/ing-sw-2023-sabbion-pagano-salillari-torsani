@@ -24,7 +24,7 @@ public class Chat extends Observable<List<Message>, MessageEvent> {
      * @param from the sender
      * @param to the recipient
      */
-    public void sendMessage(String message, String from, @Nullable String to) {
+    public synchronized void sendMessage(String message, String from, @Nullable String to) {
         Message record = new Message(messageList.size(), from, to, message, LocalDateTime.now());
 
         messageList.add(record);

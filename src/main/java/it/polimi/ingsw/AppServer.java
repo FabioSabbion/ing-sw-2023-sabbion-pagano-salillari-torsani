@@ -4,8 +4,16 @@ import it.polimi.ingsw.distributed.Lobby;
 
 import java.util.Scanner;
 
+/**
+ * Entry point class for the Server
+ */
 public class AppServer {
     public static void main(String[] args) {
+        if (args.length != 1) {
+            System.out.println("Invalid number of arguments.\nThe argument should be the IP of the Server (x.x.x.x)");
+            return;
+        }
+        System.setProperty("java.rmi.server.hostname", args[0]);
         Lobby.getInstance();
 
 

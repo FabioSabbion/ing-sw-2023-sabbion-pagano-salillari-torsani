@@ -5,10 +5,7 @@ import it.polimi.ingsw.AppClientSocket;
 import it.polimi.ingsw.distributed.CommonGoalCardUpdate;
 import it.polimi.ingsw.distributed.GameUpdate;
 import it.polimi.ingsw.distributed.PlayerUpdate;
-import it.polimi.ingsw.models.Bookshelf;
-import it.polimi.ingsw.models.CommonGoalCard;
-import it.polimi.ingsw.models.Message;
-import it.polimi.ingsw.models.Tile;
+import it.polimi.ingsw.models.*;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
@@ -35,6 +32,7 @@ import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.rmi.ConnectException;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
@@ -192,15 +190,17 @@ public class GUI extends Application {
     static public void updateGameView(GameUpdate gameUpdate, List<GuiParts> toRefresh) {
         if (!checkFirstTime) {
             int cgc1 = gameUpdate.commonGoalCards().get(0).commonGoalCardID();
+            String filename1 = CommonGoalCardFactory.getGUIForCard(cgc1);
             int cgc2 = gameUpdate.commonGoalCards().get(1).commonGoalCardID();
+            String filename2 = CommonGoalCardFactory.getGUIForCard(cgc2);
             String pgc = gameUpdate.players().stream().filter(p -> p.nickname().equals(guiController.getMyNickname())).findFirst().orElseThrow().personalGoalCard().ID();
 
             ImageView commonGoalCardImage1 = (ImageView) primaryStage.getScene().lookup("#commonGoalCardImage1");
             ImageView commonGoalCardImage2 = (ImageView) primaryStage.getScene().lookup("#commonGoalCardImage2");
             ImageView personalGoalCardImage = (ImageView) primaryStage.getScene().lookup("#personalGoalCardImage");
 
-            commonGoalCardImage1.setImage(new Image("/images/common_goal_cards/"+ (cgc1+1) +".jpg"));
-            commonGoalCardImage2.setImage(new Image("/images/common_goal_cards/"+ (cgc2+1) +".jpg"));
+            commonGoalCardImage1.setImage(new Image("/images/common_goal_cards/"+ filename1));
+            commonGoalCardImage2.setImage(new Image("/images/common_goal_cards/"+ filename2));
             personalGoalCardImage.setImage(new Image("/images/personal_goal_cards/Personal_Goals"+pgc.split("_")[1]+".png"));
 
             // Update players buttons
@@ -337,7 +337,9 @@ public class GUI extends Application {
                 imageView.setFitHeight(100);
                 ImageView commonGoalCardImage = (ImageView) primaryStage.getScene().lookup("#commonGoalCardImage"+cgcIndex);
                 Platform.runLater(() -> {
-                    commonGoalCardImage.setStyle("-fx-opacity: 0.5");
+                    if (nickname.equals(guiController.getMyNickname())) {
+                        commonGoalCardImage.setStyle("-fx-opacity: 0.5");
+                    }
                     tokenRow.getChildren().add(imageView);
                 });
             }
@@ -534,10 +536,15 @@ public class GUI extends Application {
         String IP = getParameters().getRaw().get(1);
         guiController = new GUIController();
 
-        if (connectionType.equals("socket")) {
-            AppClientSocket.start(guiController, IP);
-        } else {
-            AppClientRMI.start(guiController, IP);
+        try {
+            if (connectionType.equals("socket")) {
+                AppClientSocket.start(guiController, IP);
+            } else {
+                AppClientRMI.start(guiController, IP);
+            }
+        } catch (ConnectException e){
+            System.err.println("Server unreachable! Try again");
+            System.exit(0);
         }
 
     }
